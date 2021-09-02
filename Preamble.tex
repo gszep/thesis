@@ -1,73 +1,41 @@
-% I may change the way this is done in a future version, 
-%  but given that some people needed it, if you need a different degree title 
-%  (e.g. Master of Science, Master in Science, Master of Arts, etc)
-%  uncomment the following 3 lines and set as appropriate (this *has* to be before \maketitle)
-% \makeatletter
-% \renewcommand {\@degree@string} {Master of Things}
-% \makeatother
+\title{Inferring bifurcations\\between phenotypes}
+\author{Grisha Szep}
 
-\title{
-The development of accurate \textit{in silico} multiscale physics models of the interface with biology
-}
-\author{Mohamed Ali al-Badri}
-\department{Department of Physics}
-\date{April 14, 2021}
+\department{Randall Division of Cell \& Molecular Biophysics}
+\sponsor{Microsoft Research Cambridge}
 
+\date{October 29, 2021}
 \maketitle
-\makedeclaration
+% \makedeclaration
 
 \begin{abstract} % 300 word limit
-There is an increasing demand for accurate modelling of biological processes where conventional experimental and computational methods break down. In particular, the engineering of biotechnology at the nano-scale makes accurate atomistic and dynamic simulations of complex systems at the bio-nano interface indispensable. This thesis explores the accurate modelling of systems within this domain, where accuracy is applied both in structural characterisation as well as defining the resulting chemical properties. Electronic structure theory calculations are applied for the development of bespoke molecular dynamics forcefield parameters. This work illustrates the capacity for costly quantum-mechanical calculations to be extrapolated to classical molecular dynamics simulations of systems composed of hundreds of thousands of atoms while retaining the accuracy observed in both experiment and state-of-the-art \textit{ab initio} methods. Accurate characterisation is studied using different theoretical tools to elucidate both the function and inhibition of proteins. The sensitivity of adsorbed protein denaturing, protein corona formation and the cellular uptake of a protein-nanomaterial complex to nanomaterial functionalisation is studied to explain interfacial interactions that drive unwanted phenomena in biotechnology. Additionally, the accuracy of the dynamic atomistic or electronic character of protein active sites is investigated. In particular, the cessation of proteolytic activity of SARS-CoV-2 is detailed through the disruption of a catalytic dyad in the main protease active site.  Finally, the accurate modelling of the strongly correlated electronic ground state of the hemocyanin oxygen transporting protein active site is investigated using a hybrid density functional theory + dynamical mean field theory (DFT+DMFT) quantum-mechanical treatment. These multiscale modelling applications convey the ability to extend preexisting theoretical tools to the burgeoning demand of accurate and large-scale modelling of biological phenomena, both to understand the otherwise impenetrable processes using conventional tools and to inform the development of new interdisciplinary tools in bio-nano engineering. 
-%This accurate model allows the accelerated sampling of rare-events in the application of high-throughput screening of drug ligands for SARS-CoV-2 main protease inhibitors.
+
+    The gene-expression history of an organism and its environment determine the organism’s phenotype. The phenotype is an inherently qualitative state, deduced by relative biochemical concentration measurements collected by methods such as flow cytometry or fluorescence microscopy. The biochemical threshold concentrations that distinguish different phenotypes can be modelled by applying bifurcation analysis to differential equation models and the search for these boundaries in experimental data can be done using dimensionality reduction and clustering techniques. This establishes a relationship between bifurcations, phenotypes and machine learning techniques that are the subject of this thesis.
+
+    The first chapter presents an interactive tool for exploring phenotypes in flow cytometry data. In particular we explore a multi-tissue, high-dimensional, immune cell dataset. The tool bridges machine learning methods and the popular FlowJo, used to annotate cells with gating strategies. An assortment of dimensionality reduction techniques are applied to create two dimensional embeddings and confusion matrices are used to quantify annotation agreement between immunologists. By leveraging the geospatial mapping library OpenLayers to render, annotate and analyze cells, immunologists can now efficiently navigate the phenotype space of Human Cell Atlas datasets.
+    
+    The next chapter focuses on a model-driven approach for exploring and designing phenotypes, where we demonstrate how model-guided design of synthetic E. Coli can elucidate pattern formation mechanisms in multicellular development. We infer the parameters of a biochemically motivated system of differential equations against time course fluorescence data acquired from plate reader experiments. Our design goals however were not in the temporal domain, rather we wanted to control the shape and size of a cusp bifurcation in the space of experimentally controlled input concentrations.
+    
+    To address these limitations, I define a differentiable semi-supervised cost function that uses bifurcation locations as targets. Bifurcations are encouraged by an unsupervised term that extremises the curvature of the determinant of the Jacobian. By exploring the cost landscape for minimal models that span the space of saddle-nodes and pitchforks, I show that the parameter space basins define regions of qualitatively equivalent differential equations. The differentiability of the cost function enables efficient optimisation using libraries such as Flux.jl that leverage automatic differentiation. The impact of this work would enable experimentalists to efficiently navigate design spaces of differential equation models.
+    
 \end{abstract}
 \newpage
-\clearpage
-\begin{center}
-    \thispagestyle{empty}
-    \epigraph{\textit{And say, All praise is due to Allah. He will show you His signs, and you will recognise them. And your Lord is not unaware of what you do.}}{The Holy Quran, 27:93}
-    \vspace*{\fill}
-    \vspace{-2cm}
-    \textit{To my beloved parents}
-    \vspace*{\fill}
-\end{center}
-\clearpage
+% \clearpage
+% \begin{center}
+%     \thispagestyle{empty}
+%     \epigraph{\textit{And say, All praise is due to Allah. He will show you His signs, and you will recognise them. And your Lord is not unaware of what you do.}}{The Holy Quran, 27:93}
+%     \vspace*{\fill}
+%     \vspace{-2cm}
+%     \textit{To my beloved parents}
+%     \vspace*{\fill}
+% \end{center}
+% \clearpage
 
 \begin{acknowledgements}
-First and foremost, I owe my supervisor Chris Lorenz my gratitude for always encouraging me in my pursuit of research questions, no matter how challenging. I have him to thank for introducing me to computational research; setting a Metropolis Monte Carlo project in my second year as an undergraduate at King's, after which I haven't looked back. Chris has never allowed me to be affected by the challenges of a PhD thanks to his support and open door. I will forever be grateful to him for his guidance and friendship.\\
-
-The work in this thesis is built on the knowledge and support of my supervisors and collaborators, Khuloud al-Jamal, Cedric Weber, Daniel Cole, Edward Linscott, Paul Smith, Robert Sinclair, Antoine Georges, Khaled Abdel-Maksoud and Jonathan Essex, to all of whom I am grateful. I would also like to thank the London Interdisciplinary Doctoral Programme (LIDo) team for all their hard work to equip us with the requisite skills to confidently tackle fundamental questions in biology, and for moulding a convivial collaborative environment for us to develop in outside our host institutions.\\
-\clearpage
-My thanks goes to my mentors at The Alan Turing Institute; Oliver Strickson, Eric Daub and Martin O'Reilly and the rest of the Hut 23 research software engineering team, who, over four months of working on the uncertainty quantification of multi-scale and multi-physics computer models project, welcomed, stimulated and taught me so much and I am indebted to them all for their generosity.\\
-
-Having spent more than 8 years at the physics department at King's, I am lucky to have met my King's family; especially the members of the Lorenz Lab, Paul Le Long, James French, John Ellis, Dylan Owen, Malcolm Fairbairn, Eva Philippaki, Nashwan Sabti, James Alvey, Bethan Cornell, Sreedevi Varma, Dries Seynaeve, Claudio Zeni, Eloy de Jong, Thomas Helfer and of course those who are no longer with us; Alan Michette and Alessandro De Vita. A special thank you to my friends to whom I could always turn to for support; Adam al-Makroudi, Fred Pedicona, Greg Szep, Nashwan Sabti, Khaled Abdel-Maksoud and Abdulah Fawaz.\\
-
-I dedicate this thesis to my family. Principally my parents, without whom I would not be enjoying the freedoms I have today; having both been imprisoned, tortured and persecuted out of their homeland, they sacrificed everything to carry a six-month old out of the horrors of fascism, and agonisingly made their way to a safe haven, where I have been welcomed and now call home. My wife Georgina, whose irritating ability to do everything perfectly in life and academia makes her someone I proudly call my role model and my best friend. The light of my life, my daughter Noura; spending the last year of the PhD at home due to the pandemic has been the greatest time of my life, just to see you grow up so quickly while ``Baba doing working" in the background. A lot of thanks and love to my best friends; my siblings. 
-
+    Acknowledgements to people I love
 \end{acknowledgements}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\chapter*{\edit{Conferences}} 
-
-\edit{During the PhD, I have presented at or attended the following conferences/workshops:}
-
-\begin{itemize}
-\item \edit{\textit{Green's function methods: the next generation III}, June 2017, Toulouse, France }
-\item \edit{\textit{International Summer School on Computational Quantum Materials}, May 2018, Quebec, Canada}
-\item \edit{\textit{The CCP9 Young Researchers \& Community Meeting}, July 2018, Cambridge, UK}
-\item \edit{\textit{The 6th Annual CCPBioSim Meeting: Molecular Simulations in Drug Discovery and Development}, September 2018, Oxford, UK}
-\item \edit{\textit{South West Computational Chemists Meeting}, November 2018, Bath, UK}
-\item \edit{\textit{Modeling Metal Nanoparticles: environment and dynamical effects}, December 2018, Grenoble, France}
-\item \edit{\textit{Forcefields: Status, Challenges \& Vision}, January 2019, Daresbury, UK }
-\item \edit{\textit{Computational Molecular Science}, March 2019, Warwick, UK}
-\item \edit{\textit{ONETEP Masterclass}, August 2019, Warwick, UK }
-\item \edit{\textit{American Physical Society Conference}, March 2020, Denver, CO, USA }
-\end{itemize}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

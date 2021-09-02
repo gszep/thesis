@@ -5,7 +5,7 @@
 
 # The target definitions are a bit of a lazy shortcut (we *could generate each of the intermediate files with specific rules only when we need to) but it works and it's short.
 
-LaTeXSources= $(wildcard *.tex *.bib) ucl_thesis.cls
+LaTeXSources= $(wildcard *.tex *.bib) thesis.cls
 
 .PHONY: all clean superclean test
 all: Main.pdf
