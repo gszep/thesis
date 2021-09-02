@@ -440,10 +440,7 @@
     \end{center}%
     \vspace{2em}%
     \begin{center}%
-                \begin{figure}[h]
-            \centering
-            \includegraphics[scale=0.125]{figures/kcl_crest.png}
-        \end{figure}
+    \includegraphics[scale=0.125]{figures/kcl_crest.png}
     \@department \\
     King's College London\\
     \end{center}%

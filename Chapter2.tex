@@ -3,8 +3,8 @@
 %
 \epigraph{``\textit{You must understand, young Hobbit, it takes a long time to say anything in Old Entish. And we never say anything unless it is worth taking a long time to say.}"}{J.R.R. Tolkien}
 %
-This chapter presents a description of the two computational methods which have been primarily applied throughout the course of this thesis. Certain aspects of the thesis (e.g. Chapter (\ref{Hemocyanin})) have required the use of other simulation methods, and these methods are outlined in the respective chapters.
-%This chapter outlines the methods applied in all work herein. Chapter (\ref{GO}) relies on methods covered in sections (\ref{chapter:MD}) and (\ref{chapter:onetep}), chapter(\ref{ProteinCorona}) relies only on section (\ref{chapter:MD}) and chapter (\ref{Hemocyanin}) relies on section (\ref{chapter:onetep}). Where applicable, any use of further methods have been outlined in-depth within the content of the respective chapters.
+This chapter presents a description of the two computational methods which have been primarily applied throughout the course of this thesis. Certain aspects of the thesis have required the use of other simulation methods, and these methods are outlined in the respective chapters.
+
 \section{Molecular dynamics}\label{chapter:MD}
 %
 Molecular dynamics (MD) is a simulation method to study the dynamic evolution of a system of particles over time in accordance with their predefined interaction rules. For a macromolecular system, this is a powerful tool that is used to complement experiments to investigate the system to atomic resolution in space and \edit{femto}second resolution in time, to predict structural and thermodynamic properties such as free energies.\cite{mcquarrie1965statistical} The structural and thermodynamic behaviour can be compared to experimental data and provide insight to complex processes such as adsorption or ligand binding. An MD engine is a collection of numerical algorithms that defines a set of forces that act on all particles in a system, and iteratively evolves them along trajectories according to Newton's equations of motion.
@@ -203,20 +203,20 @@ In a similar fashion, an isothermal-isobaric ($NPT$) ensemble can be generated b
     \frac{\mathrm{d}\mathbf{b}^2}{\dt} = V \mathbf{W^{-1}}\mathbf{b'}^{-1} (\mathbf{P}-\mathbf{P}_{ref})
 \end{equation}
 %
-The system pressure tensor ($\mathbf{P}$) is calculated from the difference in kinetic energy ($\mathbf{K}$) and the virial ($\bm{\Xi}$) tensors (Eq.~\ref{eq:virial}), where ($\otimes$) denotes the tensor product. 
+The system pressure tensor ($\mathbf{P}$) is calculated from the difference in kinetic energy ($\mathbf{K}$) and the virial tensors (Eq.~\ref{eq:virial}), where ($\otimes$) denotes the tensor product. 
 %The scalar pressure is calculated from the pressure tensor through $P = \mathrm{Tr}(\mathbf{P})/3$. 
 %
 \begin{subequations} \label{eq:virial}
 %\begin{eqnarray}
 \begin{align}
 \begin{split}
-    \mathbf{P} = \frac{2}{V}(\mathbf{K} - \bm{\Xi})
+    \mathbf{P} = \frac{2}{V}(\mathbf{K} - \Xi)
 \end{split}\\
 \begin{split}
     \mathbf{K} = \frac{1}{2}\sum_i m_i \mathbf{v}_i \otimes \mathbf{v}_i
 \end{split}\\
 \begin{split}
-    \bm{\Xi} = -\frac{1}{2}\sum_{i<j} \mathbf{r}_{ij} \otimes \mathbf{F}_{ij} 
+    \Xi = -\frac{1}{2}\sum_{i<j} \mathbf{r}_{ij} \otimes \mathbf{F}_{ij} 
 \end{split}
 \end{align}
 \end{subequations}
@@ -228,16 +228,16 @@ The coupling strength matrix ($\mathbf{W}$) is defined with respect to the isoth
     \mathcal{H}_{PR} = U + K + \sum_i P_{ii} V + \sum_{ij} \frac{1}{2} W_{ij} \left(\frac{\mathrm{d}\,b_{ij}}{\dt}\right)^2
 \end{equation}
 
-The equations of motion of the system's particles are given by (Eq.~\ref{eq:PR_motion}), where the added term takes the form of a friction term. It is however fictitious and solely there to define the particle equations of motion with respect to the simulation box vectors through the ($\bm{\Lambda}$) term.
+The equations of motion of the system's particles are given by (Eq.~\ref{eq:PR_motion}), where the added term takes the form of a friction term. It is however fictitious and solely there to define the particle equations of motion with respect to the simulation box vectors through the term.
 
 \begin{subequations} \label{eq:PR_motion}
 %\begin{eqnarray}
 \begin{align}
 \begin{split}
-    \frac{\mathrm{d}^2 \mathbf{r}_i}{\dt^2} = \frac{\mathbf{F}_i}{m_i} - \bm{\Lambda} \frac{\mathrm{d} \mathbf{r}_i}{\dt}
+    \frac{\mathrm{d}^2 \mathbf{r}_i}{\dt^2} = \frac{\mathbf{F}_i}{m_i} - \Lambda \frac{\mathrm{d} \mathbf{r}_i}{\dt}
 \end{split}\\
 \begin{split}
-    \bm{\Lambda} = \mathbf{b}^{-1} \left[  \mathbf{b} \frac{\mathrm{d}\mathbf{b'}}{\dt} + \frac{\mathrm{d}\mathbf{b}}{\dt} \mathbf{b'} \right] \mathbf{b'}^{-1}
+    \Lambda = \mathbf{b}^{-1} \left[  \mathbf{b} \frac{\mathrm{d}\mathbf{b'}}{\dt} + \frac{\mathrm{d}\mathbf{b}}{\dt} \mathbf{b'} \right] \mathbf{b'}^{-1}
 \end{split}
 \end{align}
 \end{subequations}
@@ -278,10 +278,10 @@ E_{corr}=-\frac{1}{2} \sum_{(i, j) \in M} \frac{q_{i} q_{j} \operatorname{erf}\l
 %
 In (Eq.~\ref{eq:ewald_lr}), the volume of the unit cell ($V$) is given by ($\mathbf{a}_1 \cdot \mathbf{a}_2 \times \mathbf{a}_3$), ($\mathbf{m}$) denotes the reciprocal lattice space vectors ($\mathbf{m}  =  m_1\mathbf{a}_1^{\ast} + m_2\mathbf{a}_2^{\ast} + m_3\mathbf{a}_3^{\ast}$) and ($S(\mathbf{m}) = \sum_{j}^{N} q_j \exp{(2 \pi i\, \mathbf{m\cdot r})}$) is the structure factor. The error function ($\mathrm{erf}(x)$) in (Eq.~\ref{eq:ewald_corr}) is related to the complementary error function in (Eq.~\ref{eq:ewald_sr}) by ($1 - \mathrm{erfc}(x)$). The ($\beta$) parameter in (Eq.~\ref{eq:ewald_sep}) determines the relative weight of the direct and reciprocal sums and can be used to control the rates of convergence of the respective terms. Algorithmic optimisation of the ($\beta$) parameter can reduce the time complexity of Ewald summation from ($\mathcal{O}(N^2)$) to ($\mathcal{O}(N^{3/2})$).\cite{karasawa1989acceleration,Darden1993} 
 
-The PME method also separates the short- and long-range interactions, similarly to the Ewald method in (Eq.~\ref{eq:ewald_sep}), where short-range and long-range interactions are evaluated in real and reciprocal space, respectively. The real space (short-range) sum has a time complexity of ($\mathcal{O}(N)$) by virtue of the pairwise minimum distance computation from domain decomposition, leaving the reciprocal space sum (Eq.~\ref{eq:ewald_lr}) as the bottleneck. The treatment of the long-range non-bonded interactions is accelerated to ($\mathcal{O}(N \log N)$) time complexity by assigning the charges ($q$) to a discrete grid (mesh) using cardinal B-spline interpolation, \cite{Essmann1995} resulting in a charge density field. The charge density field is defined on a discrete lattice in real space and is Fourier transformed to reciprocal space, enabling the long-range interaction term to be evaluated using a single sum over the grid in reciprocal ($\mathbf{k}$) space (Eq.~\ref{eq:pme}), where ($\bm{\tilde{\Phi}}_{lr}(\mathbf{k})$) denotes the Fourier transformed potential from Ewald summation --- implicit in (Eq.~\ref{eq:ewald_lr}) --- and $\tilde{\rho}(\mathbf{k})$ the Fourier transformed charge density field.
+The PME method also separates the short- and long-range interactions, similarly to the Ewald method in (Eq.~\ref{eq:ewald_sep}), where short-range and long-range interactions are evaluated in real and reciprocal space, respectively. The real space (short-range) sum has a time complexity of ($\mathcal{O}(N)$) by virtue of the pairwise minimum distance computation from domain decomposition, leaving the reciprocal space sum (Eq.~\ref{eq:ewald_lr}) as the bottleneck. The treatment of the long-range non-bonded interactions is accelerated to ($\mathcal{O}(N \log N)$) time complexity by assigning the charges ($q$) to a discrete grid (mesh) using cardinal B-spline interpolation, \cite{Essmann1995} resulting in a charge density field. The charge density field is defined on a discrete lattice in real space and is Fourier transformed to reciprocal space, enabling the long-range interaction term to be evaluated using a single sum over the grid in reciprocal ($\mathbf{k}$) space (Eq.~\ref{eq:pme}), where ($\tilde{\Phi}_{lr}(\mathbf{k})$) denotes the Fourier transformed potential from Ewald summation --- implicit in (Eq.~\ref{eq:ewald_lr}) --- and $\tilde{\rho}(\mathbf{k})$ the Fourier transformed charge density field.
 %
 \begin{equation} \label{eq:pme}
-    E_{lr} = \sum_{\mathbf{k}} \bm{\tilde{\Phi}}_{lr}(\mathbf{k}) \left| \tilde{\rho}(\mathbf{k})\right|^2  
+    E_{lr} = \sum_{\mathbf{k}} \tilde{\Phi}_{lr}(\mathbf{k}) \left| \tilde{\rho}(\mathbf{k})\right|^2  
 \end{equation}
 %
 %
@@ -320,7 +320,7 @@ The reformulation from wave functions to the density of electrons is based on Ho
 The Born-Oppenheimer approximation makes solving the Schr\"odinger equation easier by imposing the separation of nuclear and electronic motion to the wave function ($\Psi(\mathbf{r}, \mathbf{R})$).\cite{BO} This is justified by the difference in momentum of the nuclei compared to electrons, where the much heavier nucle\edit{i} must therefore have minuscule velocities. 
 %
 \begin{equation} \label{eq:BO}
-\Psi_{\rm{molecule}}(\mathbf{r}, \mathbf{R}) = \psi_{\rm{electrons}}(\mathbf{r}, \mathbf{R}) \phi_{\rm{nuclei}}(\mathbf{R})
+\Psi(\mathbf{r}, \mathbf{R}) = \psi(\mathbf{r}, \mathbf{R}) \phi(\mathbf{R})
 \end{equation}
 %
 \subsection{Hohenberg-Kohn Theorems}
@@ -562,7 +562,7 @@ By (Eq.~\ref{onetepmin}), two nested conjugate gradient constrained search loops
 %
 \subsection{Bespoke non-bonded forcefield parameters}\label{sec:ddec}
 %
-The Tkatchenko-Scheffler (TS) method is an approach to post process the ground state electronic density --- produced by the DFT calculations as outlined in (section \ref{sec:linear_scaling}) --- to derive the non-bonded forcefield parameters from (Eq.~\ref{eq:forcefield}) for use in MD simulations.\cite{tkatchenko2009accurate} It utilises the charge density dependence of both atomic charges as well as Lennard-Jones parameters, therefore accounting for the impact of the local chemical environment on the van der Waals contributions and point charges of atoms. The TS \edit{method} requires an atoms-in-molecule method, which uses the ground state DFT electronic density of the molecular system ($n_{\rm{mol}}(\mathbf{r})$) to divide into uniform overlapping atomic densities ($n_{A}(\mathbf{r})$) through a weighting factor $w_{A}(\mathbf{r})$ (Eq.~\ref{eq:TS}).\cite{tkatchenko2009accurate,manz2012improved}
+The Tkatchenko-Scheffler (TS) method is an approach to post process the ground state electronic density --- produced by the DFT calculations as outlined in (section \ref{sec:linear_scaling}) --- to derive the non-bonded forcefield parameters from (Eq.~\ref{eq:forcefield}) for use in MD simulations.\cite{tkatchenko2009accurate} It utilises the charge density dependence of both atomic charges as well as Lennard-Jones parameters, therefore accounting for the impact of the local chemical environment on the van der Waals contributions and point charges of atoms. The TS \edit{method} requires an atoms-in-molecule method, which uses the ground state DFT electronic density of the molecular system ($n(\mathbf{r})$) to divide into uniform overlapping atomic densities ($n_{A}(\mathbf{r})$) through a weighting factor $w_{A}(\mathbf{r})$ (Eq.~\ref{eq:TS}).\cite{tkatchenko2009accurate,manz2012improved}
 %
 \begin{equation} \label{eq:TS}
 n_{A}(\mathbf{r})=w_{A}(\mathbf{r})\,n_{\mathrm{mol}}(\mathbf{r})
@@ -637,7 +637,7 @@ The dispersion and repulsion coefficients are related to the Lennard-Jones param
 %
 \edit{Strongly correlated materials --- encompassing many transition metal oxides --- typically have incompletely-filled $d$- or $f$-shells, where the on-site Coulombic interactions are comparable with the band-gap. Electronic correlations in such systems give rise to complex behaviour that can no longer be described by the treatment of a single electron within a system of non-interacting particles. As such, single-electron theories such as the local-density approximation (LDA) in density functional theory (DFT) or Hartree-Fock theory fail to accurately describe their electronic structure.\cite{anisimov2010electronic}}
 
-\edit{Strongly correlated materials embody exotic electronic properties that are technologically advantageous or have evolved to be utilised by nature for biological function.\cite{al2020superexchange, weber13, Weber2014a} A study of the Hemocyanin protein core in Chapter (\ref{Hemocyanin}) requires such a treatment, where extensions to DFT methods are necessary to accurately describe the electronic structure of the strongly correlated metalloprotein active site.\cite{al2020superexchange}}
+\edit{Strongly correlated materials embody exotic electronic properties that are technologically advantageous or have evolved to be utilised by nature for biological function.\cite{al2020superexchange, weber13, Weber2014a} A study of the Hemocyanin protein core in Chapter requires such a treatment, where extensions to DFT methods are necessary to accurately describe the electronic structure of the strongly correlated metalloprotein active site.\cite{al2020superexchange}}
 %
 \subsection{\edit{Hubbard model}}
 %
