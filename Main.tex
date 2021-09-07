@@ -1,12 +1,11 @@
 \RequirePackage[l2tabu,orthodox]{nag}
 \documentclass[12pt,phd,a4paper,oneside]{thesis}
-\DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n} % reset mathcal to non fugly font
 
-\input{MainPackages}
+\input{Packages}
 \input{LinksAndMetadata}
 
 \input{FloatSettings} % For things like figures and tables
-\input{BibSettings}   % For bibliographies
+\bibliographystyle{unsrt}  % For bibliographies
 \input{Notation}
 
 \setcounter{secnumdepth}{3}
@@ -18,14 +17,13 @@
 \nobibliography*
 
 \include{Preamble}
-\include{Chapter1}
-\include{Chapter2}
-\include{Chapter3}
-\include{Chapter4}
-\include{Chapter5}
-\include{Chapter6}
-\include{Conclusions}
-% \include{Appendices} 
+\include{chapters/1}
+\include{chapters/2}
+\include{chapters/3}
+\include{chapters/4}
+\include{chapters/5}
+\include{chapters/6}
+\include{Appendices} 
 
 \addcontentsline{toc}{chapter}{Bibliography}
 \bibliography{biblio}
