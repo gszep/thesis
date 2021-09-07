@@ -1,0 +1,58 @@
+% defining commands for creating flowcharts
+\tikzstyle{startstop} = [rectangle,rounded corners,minimum width=3cm,minimum height=1cm,text centered,draw=black,fill=gray!30]
+\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, minimum height=1cm, text centered, draw=black]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=gray!30]
+\tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=yellow!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+% defining python syntax highlighting environment
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{9} % for bold
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{9}  % for normal
+
+% python syntax colors
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+
+% Python style for highlighting
+\newcommand\pythonstyle{\lstset{
+language=Python,
+basicstyle=\ttm,
+otherkeywords={self},             % Add keywords here
+keywordstyle=\ttb\color{deepblue},
+emph={MyClass,__init__},          % Custom highlighting
+emphstyle=\ttb\color{deepred},    % Custom highlighting style
+stringstyle=\color{deepgreen},
+frame=tb,                         % Any extra options here
+showstringspaces=false            %
+}}
+
+% python environment and inline
+\lstnewenvironment{python}[1][]{
+  \pythonstyle
+  \lstset{#1}
+}{}
+\newcommand\pythoninline[1]{{\pythonstyle\lstinline!#1!}}
+
+% mathematical formatting
+\newcommand{\Vector}[1]{\vec{#1}}
+\newcommand{\Matrix}[1]{\mathbf{#1}}
+
+\newcommand{\dt}{\mathrm{d}t}
+
+\newcommand{\edit}{\textcolor{blue}}
+\newcommand{\stolen}{\textcolor{red}}
+\newcommand{\duplicate}{\textcolor{teal}} %duplicate w/ methods in paper(s) -- may need further depth in intro
+
+\newcommand{\rates}{F_{\theta}}
+\newcommand{\tangent}{T_{\theta}}
+\newcommand{\steadystates}{\partial S_{\theta}}
+
+\newcommand{\Det}{\left| \frac{\partial\rates}{\partial u} \right|}
+\newcommand{\measure}{\varphi_{\theta}}
+
+\newcommand{\predictions}{\mathcal{P}}
+\newcommand{\targets}{\mathcal{D}}
+\newcommand{\loss}{L}
+\newcommand{\error}{E}
+\newcommand{\Reals}{\mathbb{R}}
