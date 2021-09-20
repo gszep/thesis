@@ -1,193 +1,72 @@
 \chapter{Parameter Inference with Bifurcation Diagrams}
 \label{chapter:inference}
-\epigraph{``No person will deny that the highest degree of attainable accuracy is an object to be desired, and it is generally found that the last advances towards precision require a greater devotion of time, labour, and expense, than those which precede them."}{Charles Babbage}
+\begin{music}
+    \parindent10mm \instrumentnumber{1} \setstaffs1{1} 
+    \generalmeter{\meterfrac34} \generalsignature{3}
+    \startextract % starting real score
+            \Notes \Dqbu dk \zhl{i*} \en
+        \bar
+            \Notes \Dqbu hi \zhu{h*} \en
+    \zendextract % terminate excerpt
+\end{music}
+\epigraph{\textit{the melody that will draw you into the infinite darkness}}{Nocturne of Shadow --- Ocarina of Time}
 
 \section{Preface}
-\begin{enumerate}
-    \item How does this paper address limitations of Chapter \ref{chapter:double-exclusive} 
-    \item Alternative approaches
-\end{enumerate}
+The novel inference method presented in this chapter addresses the specific limitations encountered during the interdisciplinary collaboration in synthetic developmental biology presented in Chapter \ref{chapter:double-exclusive} and lays the foundations for machine learning methods that leverage bifurcation theory. These methods would be relevant in fields where modelling and designing qualitative changes in behaviour is important, observations are scarce and have experiments with highly variable outcomes.
 
-In this section a single iteration of the model reduction loop
-outlined in Section \ref{section:refinement}
-is bench-marked against synthetic data that represent noisy single cell
-gene expression trajectory data. The results show how one could start
-with a hypothesis containing 30 parameters, and end up with only
-7 relevant parameters after one iteration.
+In Chapter \ref{chapter:double-exclusive} the genetic engineers wanted to design synthetic \textit{E. Coli} with a bistable cusp bifurcation with respect to two input signals as shown in Figure \ref{figure:double-exclusive:bistability}. The qualitative design goal was bistability in a region where both signals are present beyond some threshold concentration and monostable otherwise. The next step would have been to engineer an oscillatory region in the input signals --- a Hopf bifurcation. Combining these two designs could have lead to a candidate genetic circuit for forming self-organised patterns across the bacterial colony.
 
-\subsection{Synthetic Data Generation}
-The Euler-Maruyama method is used to generate $N/K$ points per
-trajectory for $K$ trajectories  from a ground truth field $\Vector{g}$ with a
-specific signal to noise ratio $\alpha$. The dataset 
-$\mathcal{D}=\{\Vector{u}_1^1\dots\Vector{u}_{N/K}^K\}$ is obtained by
-\vspace{-1em}
-\begin{align}
-    \Vector{u}_{n+1}^k =
-    \Vector{u}_{n}^k +\Vector{g}(\Vector{u}_{n}^k)\Delta t
-    +\frac{1}{\alpha}|\Vector{g}(\Vector{u}_{n}^k )|\Delta W\\
-    \text{for given initial conditions}\quad\Vector{u}_{1}^1 \dots \Vector{u}_{1}^K\nonumber\\
-    \Delta W \sim \mathcal{N}(0,\sqrt{\Delta t})\qquad\qquad
-\end{align}
-where $\Delta t$ is a sufficiently small chosen timestep, and $\Delta W$ is a Wiener
-process, distributed normally with a mean of zero and standard deviation of $\Delta t$.
-Figure \ref{fig:sample-data} shows example data generated from uniform cycle field
+The hierarchical monte-carlo approach --- details of which can be found in Appendix \ref{appendix:double-exclusive:inference} --- enabled the incorporation of knowledge from subsystems and variants of the synthetic \textit{E. Coli} under one model, in an effort to guide genetic engineers through a high dimensional design space towards their design goals. Model parameters were estimated using time-course fluorescence microplate measurements that included information about dynamical transients and colony growth in liquid culture as shown in Figure \ref{fig:microplate-data}. The biological design goals, however, were in state-space rather than the time-domain and are observed in flow cytometry measurements of colonies in exponential phase as shown in Supplementary Figure \ref{figure:double-exclusive:flow-hysteresis}. The disconnect between the domain that the data lives in and the domain of the design goals poses the risk of over-fitting the model on undesired information that exists in the data domain.
+
+In this early days of this thesis, we investigated whether it was possible to transform the time-domain data into the same domain that the design goals lived in: the state-space. This approach, and related works, are discussed in Section \ref{section:field-inference} and can in principle be used with the microfluidic fluorescence microscopy data shown in Figure \ref{figure:double-exclusive:bistability}c for parameter inference. However, the accuracy of the cell trajectories was limited by cell segmentation and tracking algorithms. Initial investigations into this approach also suggested that trajectories need to be of sufficient temporal resolution and sampled from a wide variety of initial conditions. Such data is not widely available and ultimately we decided to focus on a method that could be used with a well-known workhorse in biomedical research: flow cytometry.
+
+Section \ref{section:flow-calculations} describes an experimental design for flow cytometry for the purposes of extracting bifurcation information from cells. The experiments were designed and performed by \textbf{Paul Grant} and \textbf{Valerie Coppard}. Circling back to the original design goals, Section \ref{section:hopf-inference} illustrates how the \textit{bifurcation measure}, introduced in the incorporated publication in Sections \ref{inference:abstract} --- \ref{inference:acknowledgements}, can be extended for Hof bifurcations. \textbf{Grisha Szep} prepared the manuscript, designed the cost function, derived mathematical results, wrote and released the Julia package under the supervision of \textbf{Neil Dalchau} and \textbf{Attila Czicasz-Nagy}.
+
+\subsection{State Field Geometry in Trajectory Data}
+\label{section:field-inference}
+
+Consider we are given $K$ cell trajectories $\mathcal{D}_1$, $\mathcal{D}_2$ ... $\mathcal{D}_K$, each containing $N$ noisy observations of the state of the cell. Let the cell state be represented by state vector $u(t)\in\Reals^N$ which is hypothesized to obey a set of ordinary differential equations of the form \eqref{eq:odes}. Instead of integrating the equations \eqref{eq:odes} we would find an estimate for the derivative of the trajectories $\hat{f}$.
+
+This is known as the \textit{smoothing} step \cite{Gugushvili2012Smoothing} should be done using unsupervised methods, for example with Gaussian Process Regressors \cite{Seeger2004GaussianLearning.} as shown in in Figure \ref{fig:inferred-cycles}. This requires the inversion of an $K'\times K'$ data matrix where $K':=\sum_k |\mathcal{D}_k|$ is the total number of trajectory data points. This has a computational complexity $K'^3$ which is only tractable with sparse datasets.
+
+Let the region $\partial\mathcal{D}$ be a boundary defined by the Delaunay tessellation of the input data. Let us define the estimate $\hat f$ only within the region $\partial\mathcal{D}$ so that there are no extrapolation artefacts. For the Gaussian Process approach the estimate would be
 \begin{equation}
-    \Vector{g}(x,y)=\frac{1}{\sqrt{x^2+y^2}}
-    \begin{pmatrix}
-    -y \\ x
-    \end{pmatrix}
-    \label{eq:cycle-field}
+    \hat{f}(u)\sim
+        \mathcal{N}(\,\mu(u) ,\Matrix{\Sigma}(u)\,)
+    \quad\mathrm{for}\quad u\in\partial\mathcal{D}
 \end{equation}
-\vspace{-2em}
+\noindent where at any given state $u$ the field estimate $\hat{f}$ is generated by Gaussian distributions of mean vector $\mu$ and covariance matrix $\Matrix{\Sigma}$.Solving for these requires a choice of matrix-valued kernel function $\Matrix{K}(u,v)$ which encodes our knowledge about the local structure of the field. Sophisticated kernels for learning vector fields exist \cite{Fuselier2017ADecompositions} for decomposing fields in conservative and solenoidal components, which aid in localising fixed points and cycles.
+
 \begin{Figure}
-\includegraphics[width=70mm]{figures/sample-data-2.png}
-\includegraphics[width=70mm]{figures/sample-data-3.png}
-\caption{\textcolor{Emerald}{Datasets} $\mathcal{D}$ generated from cycle field \eqref{eq:cycle-field}
-for $K=7$ initial \\conditions. Signal to noise ratios are $\alpha=10,\sqrt{10}$
-on left, right respectively}
-\label{fig:sample-data}
+    \includegraphics[width=125mm]{figures/cycle-2.png}
+    \includegraphics[width=125mm]{figures/cycle-1.png}
+    \caption{Gaussian process regressors estimating derivative of the trajectories $\hat{f}$ from example trajectory datasets $\mathcal{D}_1$ ... $\mathcal{D}_K$ with varying signal to noise ratios. Interpolation error $E$ is shown as a heatmap; extrapolation fails}
+    \label{fig:inferred-cycles}
 \end{Figure}
 
-\subsection{Non-parametric Inference with Gaussian Processes}
-A non-parametric estimate of the vector field $\Vector{f}(\Vector{u})$ can be
-obtained by assuming $\mathcal{D}$ is generated by a Gaussian process.
-This requires the inversion of an $N\times N$ data matrix which has a computational
-complexity $N^3$ which is only tractable with sparse datasets. Since top-down
-feature specification is indeed sparse and it is always possible to partition
-and down-sample larger datasets, this approach is appropriate for our given
-objectives. Let the region $\partial\mathcal{D}$ be defined by the Delaunay tessellation of the
-input data $\mathcal{D}$. The inferred field is defined only within the region
-$\partial\mathcal{D}$ to minimise basis function artefacts.
-\begin{equation}
-    \Vector{f}(\Vector{u})\sim
-        \mathcal{N}(\,\Vector{\mu}(\Vector{u}) ,\Matrix{\Sigma}(\Vector{u})\,)
-    \quad\mathrm{for}\quad\Vector{u}\in\partial\mathcal{D}
-\end{equation}\\
-where at any given state $\Vector{u}$ the field is generated by Gaussian
-distributions of mean vector $\Vector{\mu}(\Vector{u})$ and covariance matrix $\Matrix{\Sigma}(\Vector{u})$.
-Solving for these requires a choice of matrix-valued kernel function $\Matrix{K}(\Vector{u},\Vector{v})$
-which encodes our knowledge about the local structure of the field.
-Sophisticated kernels for learning vector fields exist \cite{Fuselier2017ADecompositions} for decomposing
-fields in conservative and solonoidal components, which aid in localising fixed points and
-limit cycles. The simplest choice of kernel assumes the components are independent
-and have a finite correlation length $\gamma$, such as Gaussian radial basis functions.
-Here $\Matrix{I}$ is the identity matrix and the hyperparameter $\gamma$ has to be optimised.
+The simplest choice of kernel assumes the components are independent and have a finite correlation length $\gamma$, such as Gaussian radial basis functions. Here $\Matrix{I}$ is the identity matrix and the hyperparameter $\gamma$ has to be optimised.
 \begin{equation}
     \Matrix{K}(\Vector{u},\Vector{v}) = \Matrix{I}\,\mathbb{e}^{-\gamma|\Vector{u}-\Vector{v}|^2}
 \end{equation}
-The geometric error $E$ between the inferred field $\Vector{f}$ and the ground truth $\Vector{g}$ at a specific
-location in state space $\Vector{u}$ is a quatifty that should be zero
-when the fields are pointing in the same direction and one when they are pointing in opposite
-directions. Hence the use of the dot product
-\begin{align}
-    E(\Vector{f}|\Vector{g}) :=
-    \frac{1}{2}
-    \left(1-\frac{\Vector{f}\cdot\Vector{g}}{|\Vector{f}||\Vector{g}|}\right)\qquad\qquad\quad\\
-    = \frac{1-\cos\theta}{2}\quad\text{where $\theta$ is the angle between $\Vector{f}$ and $\Vector{g}$}
-\end{align}
-Figure \ref{fig:inferred-cycles} shows inferred fields using the
-$\pythoninline{GaussianProcessRegressor()}$ class from $\pythoninline{sklearn}$
-\cite{Seeger2004GaussianLearning.} from data generated from \eqref{eq:cycle-field}.
-Its clearly visible the field inference fails outside the data region $\partial\mathcal{D}$,
-justifying the desire to only define the inferred result within the region. It can
-also be seen that data generated with a lower signal-to-noise ratio $\alpha$ may
-results larger geometric mismatches within the data region. Figure \ref{fig:inferred-at-snr}
-reveals the robustness of this proceedure with respect to noise, showing a
-consistent mean error below $16\%$. However this does not necessarily mean that
-global dynamics are of the inferred field match that of the ground truth. In the
-right sub-figure of Figure \ref{fig:inferred-cycles} it can be seen that the noisy
-trajectories induce a stable fixed point at their centre.
 
-\begin{Figure}
-\includegraphics[width=70mm]{figures/cycle-2.png}
-\includegraphics[width=70mm]{figures/cycle-1.png}
-\caption{Gaussian process regressors inferring fields from \textcolor{Emerald}{cycle data} $\mathcal{D}$ with varying signal to noise ratios. Error $E$ is shown as a heatmap on \textcolor{orange}{inferred fields}  $\Vector{f}$ 
-within the data region $\partial\mathcal{D}$.}
-\label{fig:inferred-cycles}
-\end{Figure}
-\vspace{-2em}
-\begin{Figure}
-\includegraphics[width=80mm]{figures/cycle-snr.png}
-\caption{Mean geometric error of the inferred field $\Vector{f}$ as a function\\
-of signal-to-noise ratio $\alpha$ used to generate data $\mathcal{D}$}
-\label{fig:inferred-at-snr}
-\end{Figure}
+The second step is called \textit{matching} where the estimated field $\hat{f}$ is used as an optimisation target against some parametrised function $\rates$ with unknown parameters $\theta$.
 
-\subsection{Geometric Inference of Parameters}
-Suppose an accurate non-parametric representation $\Vector{f}$ of the observations
-$\mathcal{D}$ or top-down specified hypothesis $\mathcal{H}$ has been obtained.
-This section outlines a method by which parametric hypotheses
-$\Vector{h}(\Vector{\theta})$ can be matched to $\Vector{f}$, and to what extent
-parameters $\Vector{\theta}$ are relevant in matching the it. In order to
-to this the following geometric cost function $\mathcal{L}(\Vector{\theta})$ must
-be minimised
-\begin{align}
-    \mathcal{L}(\Vector{\theta}) &:= \mathbb{e}^{E(\Vector{f}|\Vector{h}(\Vector{\theta}))}
-    +\lambda ||\Vector{\theta}||\\
-    &= \sqrt{\mathbb{e}}\,
-    \mathbb{e}^{-\frac{\Vector{f}\cdot\Vector{h}(\Vector{\theta})}
-    {|\Vector{f}||\Vector{h}(\Vector{\theta})|}}
-    +\lambda ||\Vector{\theta}||
-\end{align}
-where $\lambda$ is a regularisation hyperparameter and $||\Vector{\theta}||$ is some
-norm with respect to the parameters. This norm encodes our prior assumptions on
-what parameters we expect to find or wish to find. To reduce the complexity of
-the inferred hypothesis, it should be assumed that as many parameters as possible
-are zero. This can be done by choosing the $\ell_1$ norm for regularisation. Suppose
-the hypothesis takes a mass-action form, then one could express the field as
+In our setting we would like to match the geometry of the field but not its magnitude; in this sense we are focusing on the qualitative aspects of the dynamics of a set of differential equations, rather than the quantitative dynamics or kinetics. This could be achieved with the following objective function
 \begin{equation}
-    \Vector{h}(\Vector{\theta})=\Matrix{\Theta}\,\Vector{\phi}
-    \quad\text{where}\quad\Vector{\phi}:=(u_1, u_2, u_1 u_2, u_1^2\,...\, )
+    \mathcal{L}(\theta|\mathcal{D}) := e^{-\frac{\hat{f}\cdot\rates}
+    {|\hat{f}||\rates|}}
 \end{equation}
-where the the parameter matrix $\Matrix{\Theta}$ multiplies a polynomial feature
-vector $\Vector{\phi}$. Figure \ref{fig:convergence} shows a convergening optimisations
-of $\mathcal{L}(\Vector{\theta})$ for the above hypothesis $\Vector{h}(\Vector{\theta})$
-against the ground truth field given by \eqref{eq:cycle-field} using $\pythoninline{scipy.optimize.minimize(method='SLSQP')}$. It is possible to identify sloppy
-vs stiff parameters by ordering them according to their variance from model to model.
-Most parameters are stiff and zero as set by the regularisation, leaving non-zero
-parameters which are either stiff or sloppy. Upon closer inspection of the sloppy
-parameters $\Vector{s}\in\Vector{\theta}$ it can be deduced that 
-\begin{equation}
-    \Vector{z}=\Matrix{W}\,\Vector{s}
-\end{equation}
-where $\Matrix{W}$ is a sparse rectangular matrix that constructs linear combinations
-of sloppy parameters to minimise the variance of the output $\Vector{z}$. There are
-several decomposition algorithms that one could use to obtain this matrix $\Matrix{W}$
-such as Independent Component Analysis. Figure \ref{fig:indepedent} reveals that
-the terms indeed are only sloppy to preserve their sums or differences. Out of 30
-parameters inferred this procedure suggests that only 7 of them are relevant for
-model construction.
+where the cost is minimal when the data derivative $\hat{f}$ and the parametrised model $\rates$ point in the same direction and maximal when they point in opposing directions.
 
-\begin{Figure}
-\includegraphics[width=70mm]{figures/convergence.png}
-\includegraphics[width=70mm]{figures/parameters.png}
-\caption{Left: convergence loss minimisation $\mathcal{L}(\Vector{\theta})$ for 100 initialisations of
-of the parameter vector $\Vector{\theta}$ Right: Final parameters for each obtained model,
-revealing sloppy and stiff terms}
-\label{fig:convergence}
-\end{Figure}
+Although we are getting close to focusing on qualitative features of a model, this objective function is still sensitive to the locations and shapes of fixed point and limit cycles. What if we cared about even higher-level features such as the number of fixed points? Or perhaps whether a system oscillates or not? This is where the language of bifurcation theory described in Chapter \ref{chapter:background} is optimally suited for this task, but fist we need to discuss how to set up experiments to detect bifurcations from flow cytometry data.
 
-\begin{Figure}
-\includegraphics[width=70mm]{figures/indepedent.png}
-\caption{Independent component analysis applied to the sloppy terms $\Vector{s}$.\\
-The independent terms are either sums or differences of the sloppy terms.}
-\label{fig:indepedent}
-\end{Figure}
-\newpage
-\subsection{Basis Function Models}
-Parametric models such as mass-action are can be expressed as
-\begin{equation}
-    \partial_t\Vector{u}(t) = \Matrix{\Theta}\,\Vector{\phi}(\Vector{u})
-\end{equation}
-the nullclines are
-\begin{equation}
-    \Matrix{\Theta}\,\Vector{\phi}(\Vector{u}) = 0
-\end{equation}
-suggesting isotropically re-scaling the parameters
-doesn't change the location of the nullclines $\Matrix{\Theta}\rightarrow\alpha\Matrix{\Theta}$
-where $\alpha$ is positive definite.
+\subsection{Bifurcations in Flow Cytometry Data}
+\label{section:flow-calculations}
+
+
 
 \subsection{Extending the Bifurcation Measure for Limit Cycles}
+\label{section:hopf-inference}
 
 \includepdf[pages=1-11, offset=75 -95, scale=0.85, frame,
         clip,trim=31mm 21mm 31mm 21mm,

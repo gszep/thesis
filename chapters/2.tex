@@ -1,16 +1,24 @@
 \chapter{Theoretical Background}
 \label{chapter:background}
+\epigraph{\textit{melody that will draw you into infinite darkness}}{Ocarina of Time}
 
-\epigraph{``\textit{You must understand, young Hobbit, it takes a long time to say anything in Old Entish. And we never say anything unless it is worth taking a long time to say.}"}{J.R.R. Tolkien}
-%
-%\epigraph{``To do the same thing over and over again is not only boredom: it is to be controlled by rather than to control what you do."}{Heraclitus}
-%\epigraph{``The worst thing you can do about a situation is nothing."}{Ice Cube}
+Convolutional neural networks trained on large databases \cite{mnist2012,imagenet2009} have shaped machine learning research over the past couple of decades. Today they serve as canonical learning material in courses and are often used as initial \textit{vanilla} approaches for data exploration and classification tasks and before creating more bespoke machine learning pipelines. The widespread success of much models created an expectation in the research community that with sufficient data and computational power provided by one of the reigning consumer internet businesses, a data-driven black-box model can be created for any application ranging from quantum mechanics to economics. Convolutional architectures together with language models eventually inspired recurrent architectures and attention models where are the key ingredients in the creation of \textit{Alpha Fold} \cite{Jumper2021HighlyAlphaFold} that takes a substantial step towards solving the protein-folding problem. Biotechnology researchers are eager to apply these methods but face the following obstacles
+
+\begin{itemize}
+    \item \textbf{Insufficient data} due to strategic experimental designs 
+    \item \textbf{Low extrapolation accuracy} for black box-models
+\end{itemize}
 
 In this section we will set the scene for chemical reaction systems and their
 methods of analysis of steady state and network perspectives. Dynamical
 methods makes use of field flow, linear stability and bifurcation analysis.
 
 \section{Describing Phenotypes with Bifurcations}
+
+\begin{equation}
+	\frac{\partial u}{\partial t} = F(u,t)
+	\label{eq:odes}
+\end{equation}
 
 Consider $N$ particles of $S$ species in a finite volume $\Omega$. These particles
 can undergo $R$ possible reactions when they meet within the volume. Suppose the
@@ -22,7 +30,7 @@ is the essence of the \textit{well-mixed} approximation \cite{Gillespie1992}.
 This suggests that at any time $t$ we may ignore spatial inhomogeneities and pin
 down the state of the system by a vector of species populations $s(t)\in\mathbb{N}^S$.
 All possible reactions in the mixture are encoded into a stoichiometric matrix
-$\mathbf{\Gamma}\in\mathbb{Z}^{S\times R}$ whos columns $\mathbf{\Gamma}[r]\in\mathbb{Z}^{S}$
+$\mathbf{\Gamma}\in\mathbb{Z}^{S\times R}$ whose columns $\mathbf{\Gamma}[r]\in\mathbb{Z}^{S}$
 represent the population change vector for a given reaction $r$. Each reaction
 has a propensity $\omega(r|s)\in[0,\infty)$ defined though transition
 probabilities for an infinitesimal time interval given population $s$;
@@ -33,7 +41,7 @@ probabilities for an infinitesimal time interval given population $s$;
 Suppose $\sigma[r]\mathrm{d}t$ gives the probability that the reaction $r$
 will occur within the time interval $\mathrm{d}t$ independent of population
 $s$. The constant $\sigma[r]$ could be in principle calculated from the
-microscopic physics of the reaction. In quantum mechamics this would involve
+microscopic physics of the reaction. In quantum mechanics this would involve
 calculating the wavefunction overlap or transition rates between initial and
 final configurations.
 
@@ -64,7 +72,7 @@ By applying the laws of probability and taking the $\mathrm{d}t\rightarrow 0$
 one can derive a time-evolution equation
 $\mathbb{P}(s,t)$ involving the definition \eqref{eq:fundamentalpremise} which
 has become known as the Chemical Master Equation \cite{Gillespie1992,Gillespie2007}.
-Note here the complexity lies within the nonlinear state dependence in the propensity
+Note here the complexity lies within the non-linear state dependence in the propensity
 $\omega(r|s)$. Were it not for this, we could solve this equation using
 spectral methods.
 \begin{align}
@@ -127,10 +135,10 @@ at \textcolor{Green}{stable} and \textcolor{orange}{unstable} fixed points $\psi
 \label{fig:nullclines}
 \end{figure}
 Nullclines determine local direction of evolution of the system. On a given
-nullcine $\partial_t\psi[s]=0$ the flow of the field must be orthogonal to
+nullcline $\partial_t\psi[s]=0$ the flow of the field must be orthogonal to
 the direction of $\psi[s]$. At intersections between two nullclines, the flow
-must be orthogonal to the plane defined by two axes. At the interections between
-all nullcines we may find the fixed points $\psi^*$ as shown in Figure \ref{fig:nullclines}.
+must be orthogonal to the plane defined by two axes. At the interactions between
+all nullcline we may find the fixed points $\psi^*$ as shown in Figure \ref{fig:nullclines}.
 
 Classification of fixed points $\psi^*$ is done by linearising the equation of motion
 \eqref{eq:reaction} with respect to field perturbation $\varepsilon(t)$ in their vicinity
@@ -153,7 +161,7 @@ evaluated at each fixed point $\psi^*$.
 	\label{eq:linearstability}
 \end{align}
 For reactions involving one or two distinguishable particles as
-in \eqref{eq:simplifiedpropensity} the nullcines become hyperplanes and the Jacobian
+in \eqref{eq:simplifiedpropensity} the nullclines become hyperplanes and the Jacobian
 simplifies. We can see that both the reaction topology given by stoichiometric
 coefficients $\Gamma[i,j]$ and the reaction rates $\sigma[r]$ contribute to
 rotating and shifting the hyperplanes and determining the location and stability
@@ -180,15 +188,15 @@ fixed points for a general \\two dimensional Jacobian in terms of trace $\mathrm
 determinant $|\mathbf{J}|$}
 \label{fig:stability}
 \end{figure}
-Varying the continous parameters $\sigma[r]$ moves the nullcines and may result in
-the creation or annihilation of fixed points of different classes. While an indiviual
+Varying the continuos parameters $\sigma[r]$ moves the nullclines and may result in
+the creation or annihilation of fixed points of different classes. While an individual
 fixed point may change location and local phase space flow, it cannot change class
 without involving another fixed point.
 
-These are called bifurcations and also fall into various catagories.
+These are called bifurcations and also fall into various categories.
 Figure \ref{fig:bifurcations} illustrates some of the possible one parameter
 supercritical bifurcations; subcritical cases are obtained by permuting
-stabilities of fixed points. Note the hysterisis loop in the saddle-node
+stabilities of fixed points. Note the hysteresis loop in the saddle-node
 bifurcation.
 \begin{figure}[H]
 \centering{}
@@ -201,8 +209,8 @@ bifurcation.
 as a function of parameter $\sigma[r]$. Insets show nullcline intersections.}
 \label{fig:bifurcations}
 \end{figure}
-Another catagory of bifurcations involves limit cycles, which emerge from fixed
-points where the linearised Jacobian eigenvalues have no real part. Limit cylces
+Another category of bifurcations involves limit cycles, which emerge from fixed
+points where the linearised Jacobian eigenvalues have no real part. Limit cycles
 have circulating field flow as shown in Figure \ref{fig:stability} along the
 $\mathrm{Tr}[\mathbf{J}]=0$, $|\mathbf{J}|>0$ axis.
 
@@ -229,7 +237,7 @@ Maybe also periodic orbit theory? Depends how useful it is.
 Here we first introduce diffusion macroscopically by simply adding the laplacian
 to mean field equation $\eqref{eq:reaction}$. We introduce the turning bifurcation and
 show how linear stability analysis is insufficient to capture pattern formation
-and rich inhomogenous steady states. A promising approach may be geometrisation
+and rich inhomogeneous steady states. A promising approach may be geometrisation
 of the moving local equilibria \cite{Halatek2018}.
 
 \section{Phenotype Inference with Machine Learning}
