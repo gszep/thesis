@@ -12,9 +12,25 @@
 \epigraph{\textit{the melody that will draw you into the infinite darkness}}{Nocturne of Shadow --- Ocarina of Time}
 
 \section{Preface}
+
+% Preface Section
+
+% subsection 1. (posing the problem: parameter synthesis for dynamical systems that result in bifurcations: saddle-node, hopf, turing etc (remind the reader of all of them; refer to the into for details.) motivated by previous chapter, we focus on pitchforks/saddle-nodes bifurcations )
+
+% subsection 2. (how could we apply this in practice? how do we extract bifurcations from trajectory data? from flow cytometry data? conclude with statement on why we went forward with flow cytometry measurements. ) 
+
+% subsection 3. On extending bifurcation measure to hopf (tbh)
+
+% subsection 4. (author contributions) 
+
+% Paper Section
+
+% Brief Concluding Section
+% paragraph 1. contextualise with respect to previous chapter
+
 The novel inference method presented in this chapter addresses the specific limitations encountered during the interdisciplinary collaboration in synthetic developmental biology presented in Chapter \ref{chapter:double-exclusive} and lays the foundations for machine learning methods that leverage bifurcation theory. These methods would be relevant in fields where modelling and designing qualitative changes in behaviour is important, observations are scarce and have experiments with highly variable outcomes.
 
-In Chapter \ref{chapter:double-exclusive} the genetic engineers wanted to design synthetic \textit{E. Coli} with a bistable cusp bifurcation with respect to two input signals as shown in Figure \ref{figure:double-exclusive:bistability}. The qualitative design goal was bistability in a region where both signals are present beyond some threshold concentration and monostable otherwise. The next step would have been to engineer an oscillatory region in the input signals --- a Hopf bifurcation. Combining these two designs could have lead to a candidate genetic circuit for forming self-organised patterns across the bacterial colony.
+In Chapter \ref{chapter:double-exclusive} we were concerned with the design of synthetic \textit{E. Coli} to exhibit a cusp bifurcation leading to a bistable response with respect to two input signals as shown in Figure \ref{figure:double-exclusive:bistability}. The qualitative design goal was bistability in a region where both signals are present beyond some threshold concentration and monostability otherwise. The next step would have been to engineer an oscillatory region in the input signals --- a Hopf bifurcation. Combining these two designs could have lead to a candidate genetic circuit for forming self-organised patterns across the bacterial colony.
 
 The hierarchical monte-carlo approach --- details of which can be found in Appendix \ref{appendix:double-exclusive:inference} --- enabled the incorporation of knowledge from subsystems and variants of the synthetic \textit{E. Coli} under one model, in an effort to guide genetic engineers through a high dimensional design space towards their design goals. Model parameters were estimated using time-course fluorescence microplate measurements that included information about dynamical transients and colony growth in liquid culture as shown in Figure \ref{fig:microplate-data}. The biological design goals, however, were in state-space rather than the time-domain and are observed in flow cytometry measurements of colonies in exponential phase as shown in Supplementary Figure \ref{figure:double-exclusive:flow-hysteresis}. The disconnect between the domain that the data lives in and the domain of the design goals poses the risk of over-fitting the model on undesired information that exists in the data domain.
 
