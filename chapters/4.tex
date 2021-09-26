@@ -85,6 +85,30 @@ Although we are getting close to focusing on qualitative features of a model, th
 \subsection{Extending the Bifurcation Measure for Limit Cycles}
 \label{section:hopf-inference}
 
+The bifurcation measure $\measure(s)$ along a steady state manifold direction $s\in\Reals$ as shown in Figure \ref{figure:inference:measure} detects a subset of bifurcations that include pitchforks and saddle-nodes. The measure detects breakdowns of stability via changes in the sign of the real part of any eigenvalue of the state-space Jacobian of a system of ordinary differential equations; details on the scope and limitations of the measure can be found in Appendix \ref{appendix:bifurcation-measure}.
+
+In order to detect bifurcations involving limit cycles, the measure must be extended to detect finiteness in real and imaginary parts eigenvalues of the state-space Jacobian. A breakdown in the stability of an eigenvalue at $s^*$ exists if
+\begin{align}
+    \frac{\partial\rates}{\partial u}v=\lambda(s) \,v
+    \quad\exists\lambda:\quad
+    \left.\lambda(s)\right|_{s=s^*}=0
+    \qquad
+    \left.\frac{d\lambda}{ds}\right|_{s=s^*}\neq 0
+    \label{eq:conditions}
+\end{align}
+These conditions are necessary and sufficient for a static bifurcation, meaning limit cycles and therefore imaginary parts of eigenvalues are not considered. Furthermore the bifurcation is assumed to be local, since global bifurcations cannot be detected using only the eigenvalues of the Jacobian.
+\begin{align}
+    \measure(s):=\sum_{\lambda(s)\in\frac{\partial\rates}{\partial u}}
+    \left(1+\left|\frac{\lambda(s)}{\frac{d}{ds}\lambda(s)}\right|\right)^{-1}
+\end{align}
+
+\begin{Figure}
+    \includegraphics[width=125mm]{figures/hopf-measure.pdf}
+    \caption{Bifurcation measure $\measure(s)$ and eigenvalues $\lambda(s)$ along the arclength $s$ for two different bifurcation curves demonstrating how maximising the measure along the curve encourages non-zero imaginary eigenvalue parts $\Im\mathrm{m}$, hence the Hopf bifurcations marked by stars.}
+    \label{fig:hopf-measure}
+\end{Figure}
+
+
 \includepdf[pages=1-11, offset=75 -95, scale=0.85, frame,
         clip,trim=31mm 21mm 31mm 21mm,
         pagecommand={}, addtotoc={
