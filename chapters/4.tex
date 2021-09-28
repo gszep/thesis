@@ -13,34 +13,26 @@
 \epigraph{\textit{the melody that will draw you into the infinite darkness}}{Nocturne of Shadow --- Ocarina of Time}
 
 \section{Preface}
+\subsection{Problem Statement \& Context}
 
-% Preface Section
+This chapter focuses on the problem of looking for parameter regimes for dynamical systems that result in bifurcations. This has been coined as \emph{inverse bifurcation analysis} \cite{Lu2006InverseSystems} and --- as motivated in Chapter \ref{chapter:introduction} --- becomes relevant to biomedical researchers in settings where the design goal of an organism is has a distinct phenotype.
 
-% subsection 1. (posing the problem: parameter synthesis for dynamical systems that result in bifurcations: saddle-node, hopf, turing etc (remind the reader of all of them; refer to the into for details.) motivated by previous chapter, we focus on pitchforks/saddle-nodes bifurcations )
+Such a phenotype can be a the \emph{double exclusive reporter} investigated in the interdisciplinary collaboration in synthetic developmental biology presented in Chapter \ref{chapter:double-exclusive}. This \emph{E. Coli} phenotype exhibits a cusp bifurcation leading to a bistable response with respect to two input signals as shown in Figure \ref{figure:double-exclusive:bistability}. The engineering goal could be a phenotype with a specific cell cycle \cite{Attila2008,Conrad2006BifurcationClock} which involves the positioning of \emph{Hopf bifurcations} that mark the onset of oscillations in protein concentrations from stable equilibria. Finally, that which possibly demonstrates the most engineering prowess, is the design of self-organised patterns such as stripes and spots in mammalian coat patterns. According to a long standing mathematical hypotheses \cite{Turing1952} that underpins developmental mechanisms this may involve the search for \emph{Turing bifurcations}.
 
-% subsection 2. (how could we apply this in practice? how do we extract bifurcations from trajectory data? from flow cytometry data? conclude with statement on why we went forward with flow cytometry measurements. ) 
+Before we get carried away and think that with the right tooling we could genetically control the length scale of spots or stripes on cats, we must remind ourselves that \emph{in vivo} gene regulatory networks mostly consist of unknown and experimentally inaccessible parameters. Furthermore, we find that usually there exist multiple equally valid models that describe the observed behaviour, and so turn to \emph{model selection} methods. Even if we had an accurate and unique model to describe an organism, generic tools for \emph{inverse bifurcation analysis} are limited; see Chapter \ref{chapter:background} for details. In an attempt to address the limitations encountered in Chapter \ref{chapter:double-exclusive} the published work in this chapter focuses exclusively on \emph{pitchfork} and \emph{saddle-node} bifurcations. Although the publication focuses on parameter synthesis for a subset of bifurcations, the approach lays foundations for differentiable optimisation methods that leverage bifurcation theory. A view towards how this approach can be used for the design of \emph{Turing patterns} and model selection is discussed in concluding Chapter \ref{chapter:conclusions}.
 
-% subsection 3. On extending bifurcation measure to hopf (tbh)
+\subsection{Extracting Bifurcations from Single Cell Data}
 
-% subsection 4. (author contributions) 
+The publication in this chapter assumes that the bifurcation data $\targets$ with respect to the experimental control parameter $p\in\Reals$ is known or already calculated from raw data. In the following sections we focus on methods for extracting bifurcation data $\targets$ from single cell trajectories and flow cytometry measurements.
 
-% Paper Section
+The decision to focus on single cell trajectories and flow cytometry came from the limitations of using microplate data in Chapter \ref{chapter:double-exclusive}. The model parameters $\theta$ were estimated using a hierarchical monte-carlo approach and time-course fluorescence microplate measurements (details of which can be found in Appendix \ref{appendix:double-exclusive:inference}). The time-courses include information about dynamical transients and colony growth in liquid culture as shown in Figure \ref{fig:microplate-data}. The desired cusp bifurcation, however, lives in state-space rather than the time-domain. The disconnect between the domain that the data lives in and the domain of the design goals poses the risk of over-fitting the model on undesired information that exists in the data domain. 
 
-% Brief Concluding Section
-% paragraph 1. contextualise with respect to previous chapter
+It is not possible to observe the cusp bifurcation in microplate data, due to the averaging of signals originating from heterogeneous cell populations. Instead, the cusp bifurcation can be observed in flow cytometry measurements of colonies in exponential phase (Supplementary Figure \ref{figure:double-exclusive:flow-hysteresis}) and microfluidic fluorescence microscopy data (Figure \ref{figure:double-exclusive:bistability}c) where computations on single-cell trajectories reveal the hysteresis loop which must necessarily accompany the cusp. 
 
-The novel inference method presented in this chapter addresses the specific limitations encountered during the interdisciplinary collaboration in synthetic developmental biology presented in Chapter \ref{chapter:double-exclusive} and lays the foundations for machine learning methods that leverage bifurcation theory. These methods would be relevant in fields where modelling and designing qualitative changes in behaviour is important, observations are scarce and have experiments with highly variable outcomes.
-
-In Chapter \ref{chapter:double-exclusive} we were concerned with the design of synthetic \textit{E. Coli} to exhibit a cusp bifurcation leading to a bistable response with respect to two input signals as shown in Figure \ref{figure:double-exclusive:bistability}. The qualitative design goal was bistability in a region where both signals are present beyond some threshold concentration and monostability otherwise. The next step would have been to engineer an oscillatory region in the input signals --- a Hopf bifurcation. Combining these two designs could have lead to a candidate genetic circuit for forming self-organised patterns across the bacterial colony.
-
-The hierarchical monte-carlo approach --- details of which can be found in Appendix \ref{appendix:double-exclusive:inference} --- enabled the incorporation of knowledge from subsystems and variants of the synthetic \textit{E. Coli} under one model, in an effort to guide genetic engineers through a high dimensional design space towards their design goals. Model parameters were estimated using time-course fluorescence microplate measurements that included information about dynamical transients and colony growth in liquid culture as shown in Figure \ref{fig:microplate-data}. The biological design goals, however, were in state-space rather than the time-domain and are observed in flow cytometry measurements of colonies in exponential phase as shown in Supplementary Figure \ref{figure:double-exclusive:flow-hysteresis}. The disconnect between the domain that the data lives in and the domain of the design goals poses the risk of over-fitting the model on undesired information that exists in the data domain.
-
-In this early days of this thesis, we investigated whether it was possible to transform the time-domain data into the same domain that the design goals lived in: the state-space. This approach, and related works, are discussed in Section \ref{section:field-inference} and can in principle be used with the microfluidic fluorescence microscopy data shown in Figure \ref{figure:double-exclusive:bistability}c for parameter inference. However, the accuracy of the cell trajectories was limited by cell segmentation and tracking algorithms. Initial investigations into this approach also suggested that trajectories need to be of sufficient temporal resolution and sampled from a wide variety of initial conditions. Such data is not widely available and ultimately we decided to focus on a method that could be used with a well-known workhorse in biomedical research: flow cytometry.
-
-Section \ref{section:flow-calculations} describes an experimental design for flow cytometry for the purposes of extracting bifurcation information from cells. The experiments were designed and performed by \textbf{Paul Grant} and \textbf{Valerie Coppard}. Circling back to the original design goals, Section \ref{section:hopf-inference} illustrates how the \textit{bifurcation measure}, introduced in the incorporated publication in Sections \ref{inference:abstract} --- \ref{inference:acknowledgements}, can be extended for Hof bifurcations. \textbf{Grisha Szep} prepared the manuscript, designed the cost function, derived mathematical results, wrote and released the Julia package under the supervision of \textbf{Neil Dalchau} and \textbf{Attila Czicasz-Nagy}.
-
-\subsection{State Field Geometry in Trajectory Data}
+\subsection*{Single Cell Trajectories}
 \label{section:field-inference}
+
+In this early days of this thesis, we investigated whether it was possible to transform the time-domain data into state-space. This approach, and related works, are discussed in this section and can in principle be used with the microfluidic fluorescence microscopy data for parameter inference.
 
 Consider we are given $K$ cell trajectories $\mathcal{D}_1$, $\mathcal{D}_2$ ... $\mathcal{D}_K$, each containing $N$ noisy observations of the state of the cell. Let the cell state be represented by state vector $u(t)\in\Reals^N$ which is hypothesized to obey a set of ordinary differential equations of the form \eqref{eq:odes}. Instead of integrating the equations \eqref{eq:odes} we would find an estimate for the derivative of the trajectories $\hat{f}$.
 
@@ -54,13 +46,6 @@ Let the region $\partial\mathcal{D}$ be a boundary defined by the Delaunay tesse
 \end{equation}
 \noindent where at any given state $u$ the field estimate $\hat{f}$ is generated by Gaussian distributions of mean vector $\mu$ and covariance matrix $\Matrix{\Sigma}$.Solving for these requires a choice of matrix-valued kernel function $\Matrix{K}(u,v)$ which encodes our knowledge about the local structure of the field. Sophisticated kernels for learning vector fields exist \cite{Fuselier2017ADecompositions} for decomposing fields in conservative and solenoidal components, which aid in localising fixed points and cycles.
 
-\begin{Figure}
-    \includegraphics[width=125mm]{figures/cycle-2.png}
-    \includegraphics[width=125mm]{figures/cycle-1.png}
-    \caption{Gaussian process regressors estimating derivative of the trajectories $\hat{f}$ from example trajectory datasets $\mathcal{D}_1$ ... $\mathcal{D}_K$ with varying signal to noise ratios. Interpolation error $E$ is shown as a heatmap; extrapolation fails}
-    \label{fig:inferred-cycles}
-\end{Figure}
-
 The simplest choice of kernel assumes the components are independent and have a finite correlation length $\gamma$, such as Gaussian radial basis functions. Here $\Matrix{I}$ is the identity matrix and the hyperparameter $\gamma$ has to be optimised.
 \begin{equation}
     \Matrix{K}(\Vector{u},\Vector{v}) = \Matrix{I}\,\mathbb{e}^{-\gamma|\Vector{u}-\Vector{v}|^2}
@@ -73,41 +58,63 @@ In our setting we would like to match the geometry of the field but not its magn
     \mathcal{L}(\theta|\mathcal{D}) := e^{-\frac{\hat{f}\cdot\rates}
     {|\hat{f}||\rates|}}
 \end{equation}
-where the cost is minimal when the data derivative $\hat{f}$ and the parametrised model $\rates$ point in the same direction and maximal when they point in opposing directions.
+\noindent where the cost is minimal when the data derivative $\hat{f}$ and the parametrised model $\rates$ point in the same direction and maximal when they point in opposing directions.
+
+\begin{Figure}
+    \includegraphics[width=125mm]{figures/cycle-2.png}
+    \includegraphics[width=125mm]{figures/cycle-1.png}
+    \caption{Gaussian process regressors estimating derivative of the trajectories $\hat{f}$ from example trajectory datasets $\mathcal{D}_1$ ... $\mathcal{D}_K$ with varying signal to noise ratios. Interpolation error $E$ is shown as a heatmap; extrapolation fails}
+    \label{fig:inferred-cycles}
+\end{Figure}
 
 Although we are getting close to focusing on qualitative features of a model, this objective function is still sensitive to the locations and shapes of fixed point and limit cycles. What if we cared about even higher-level features such as the number of fixed points? Or perhaps whether a system oscillates or not? This is where the language of bifurcation theory described in Chapter \ref{chapter:background} is optimally suited for this task, but fist we need to discuss how to set up experiments to detect bifurcations from flow cytometry data.
 
-\subsection{Bifurcations in Flow Cytometry Data}
+\begin{itemize}
+    \item \todo[inline]{Vector field estimates too noisy to get bifurcation points?}
+    \item \todo[inline]{Divergence and the stability of fixed points}
+    \item \todo[inline]{Curl and limit cycles. How does this relate to hopf example \ref{fig:inferred-cycles}}
+    \item \todo[inline]{Do we need a bistable example?}
+\end{itemize}
+
+The accuracy of the cell trajectories is limited by cell segmentation and tracking algorithms. Initial investigations into this approach also suggested that trajectories need to be of sufficient temporal resolution and sampled from a wide variety of initial conditions. Such data is not widely available and ultimately we decided to focus on a method that could be used with a well-known workhorse in biomedical research: flow cytometry.
+
+\subsection*{Flow Cytometry}
 \label{section:flow-calculations}
 
-
-
-\subsection{Extending the Bifurcation Measure for Limit Cycles}
-\label{section:hopf-inference}
-
-The bifurcation measure $\measure(s)$ along a steady state manifold direction $s\in\Reals$ as shown in Figure \ref{figure:inference:measure} detects a subset of bifurcations that include pitchforks and saddle-nodes. The measure detects breakdowns of stability via changes in the sign of the real part of any eigenvalue of the state-space Jacobian of a system of ordinary differential equations; details on the scope and limitations of the measure can be found in Appendix \ref{appendix:bifurcation-measure}.
-
-In order to detect bifurcations involving limit cycles, the measure must be extended to detect finiteness in real and imaginary parts eigenvalues of the state-space Jacobian. A breakdown in the stability of an eigenvalue at $s^*$ exists if
-\begin{align}
-    \frac{\partial\rates}{\partial u}v=\lambda(s) \,v
-    \quad\exists\lambda:\quad
-    \left.\lambda(s)\right|_{s=s^*}=0
-    \qquad
-    \left.\frac{d\lambda}{ds}\right|_{s=s^*}\neq 0
-    \label{eq:conditions}
-\end{align}
-These conditions are necessary and sufficient for a static bifurcation, meaning limit cycles and therefore imaginary parts of eigenvalues are not considered. Furthermore the bifurcation is assumed to be local, since global bifurcations cannot be detected using only the eigenvalues of the Jacobian.
-\begin{align}
-    \measure(s):=\sum_{\lambda(s)\in\frac{\partial\rates}{\partial u}}
-    \left(1+\left|\frac{\lambda(s)}{\frac{d}{ds}\lambda(s)}\right|\right)^{-1}
-\end{align}
+Suppose we would like to detect a cusp bifurcation in a cell population with respect to two experimental control conditions $p_1,p_2\in\Reals$. We set up a serial dilution along the rows for $p_1$ and along the columns for $p_2$ in two 96-well plates. Cells are seeded and allowed to grow in exponential phase in a finite concentration of one of the two conditions. This is done for both conditions, resulting in two cell populations: $p_1$-primed cells and $p_2$-primed cells. The priming concentrations must be chosen sufficiently high so that they lie either side of the cusp as shown in Figure \ref{fig:cusp-sampling}. The two populations are transferred into separate 96-well plates containing the dilutions of $p_1,p_2$, allowed to grow in exponential phase and then transferred into the flow cytometer.
 
 \begin{Figure}
-    \includegraphics[width=125mm]{figures/hopf-measure.pdf}
-    \caption{Bifurcation measure $\measure(s)$ and eigenvalues $\lambda(s)$ along the arclength $s$ for two different bifurcation curves demonstrating how maximising the measure along the curve encourages non-zero imaginary eigenvalue parts $\Im\mathrm{m}$, hence the Hopf bifurcations marked by stars.}
-    \label{fig:hopf-measure}
+    \missingfigure[figwidth=10cm, figheight=10cm]{}
+    \caption{Primed cells transferred into a dilution of $p_1$ and $p_2$ in a 96-well plate sample different parts of the hysteresis loop, revealing the cusp bifurcation}
+    \label{fig:cusp-sampling}
 \end{Figure}
 
+After gating live singlet cells and applying relevant compensation and auto-fluorescent normalisation, a figure similar to Supplementary Figure \ref{figure:double-exclusive:flow-hysteresis} can be produced to qualitatively assess if the cusp was sufficiently well sampled.
+
+To quantify bistability $\beta_{P|Q}(p)$ in each well $p=(p_1,p_2)$ we could calculate the separation or overlap between the fluorescence distributions of the two primed populations $P(x|p)$ and $Q(x|p)$. Here $x\in\Reals^{F}$ is an $F$-dimensional fluorescence vector. The simplest calculation is taking the difference between some summary statistic, such as mean or median, between the two distributions in each well. For example, using the mean we write
+\begin{align}
+    \beta_{P|Q}(p):=\left|
+    \int x P(x|p)\mathrm{d}x
+    -
+    \int x Q(x|p)\mathrm{d}x
+    \right|
+\end{align}
+This approach breaks down if multi-modal distributions exist in the data. This would be the case if something happened to prevent a subpopulation of cells to switch from one state another other. Reasons for this could include too much cell burdon or not enough time given for cells to reach a steady state. In this case, quantifying the efficiency of switching from either side of the cusp could be a quantity of interest.
+
+The set of limit points that define the shape of the cusp can be extracted from one of the contours of the bistability measure
+\begin{align}
+    \targets = \{  p : \beta_{P|Q}(p)=c \} 
+\end{align}
+where $c\in\Reals$ is chosen such that contour approximates the limit points between the bistable and monostable regions in $p$.
+
+\begin{itemize}
+    \item \todo[inline]{quantify efficiency of switching? data still available}
+    \item \todo[inline]{Flow cytometry setup for detecting hopf bifurcation?}
+\end{itemize}
+
+\subsection{Contributions}
+
+\textbf{Grisha Szep} prepared the manuscript, designed the cost function, derived mathematical results, wrote and released the Julia package under the supervision of \textbf{Neil Dalchau} and \textbf{Attila Czicasz-Nagy}.
 
 \includepdf[pages=1-11, offset=75 -95, scale=0.85, frame,
         clip,trim=31mm 21mm 31mm 21mm,
@@ -131,3 +138,25 @@ These conditions are necessary and sufficient for a static bifurcation, meaning 
         8, figure, {\textit{Fig. 4}\quad Bifurcation inference for the two-state model (11). A. Optimal parameter estimates $\theta^*$ for the targets $\targets=\{4,5\}$ reveal two clusters of qualitatively different regimes: mutual activation ($a_1 < 1$; cluster 1) and mutual inhibition ($a_1 > 1$; cluster 2). B. Example bifurcation diagrams indicate positively and negatively correlated dependencies between the two model states, as a function of the control condition.}, figure:inference:two-state-optima,
         8, figure, {\textit{Fig. 5}\quad Complexity scaling of calculating the gradient of the cost function. Calculations were performed on an Intel Core i7-6700HQ CPU @ 2.60GHz x 8 without GPU acceleration}, figure:scaling
 }]{publications/bifurcation-inference.pdf}
+
+\section{Bifurcation Measure for Limit Cycles}
+\label{section:hopf-inference}
+
+The bifurcation measure $\measure(s)$ along a fixed-point manifold direction $s\in\Reals$ as shown in Figure \ref{figure:inference:measure} detects a subset of bifurcations that include pitchforks and saddle-nodes. The measure detects breakdowns of stability via changes in the sign of the determinant of the state-space Jacobian of a system of ordinary differential equations; details on the scope and limitations of the measure can be found in Appendix \ref{appendix:bifurcation-measure}.
+
+In order to detect bifurcations involving limit cycles, the measure must be extended to detect changes in the real part $\Re\mathrm{e}[\lambda(s)]$ for any eigenvalue of the Jacobian. These conditions can no longer be compactly written in terms of the determinant. Instead, the measure can be defined as the sum of eigenvalue terms 
+\begin{align}
+    \measure(s):=\sum_{\lambda(s)\in\frac{\partial\rates}{\partial u}}
+    \left(\left|\frac{d}{ds}\log\Re\mathrm{e}[\lambda(s)]\right|^{-1}+1\right)^{-1}
+    \label{eq:hopf-measure}
+\end{align}
+
+The directional derivative of the logarithm diverges under zero conditions: when eigenvalues vanish $\lambda(s)=0$ and when the directional derivative $\frac{d}{ds}\Re\mathrm{e}[\lambda(s)]$ diverges. These properties are sufficient for detecting the onset of damped oscillations and emergence of limit cycles via Hopf bifurcation as shown in Figure \ref{fig:hopf-measure}. Eigenvalues with negative real part which gain a finite imaginary part give rise to damped oscillations. At this onset we observe a discontinuity in the derivative $\frac{d}{ds}\Re\mathrm{e}[\lambda(s)]$ which is detected by equation \eqref{eq:hopf-measure}. Once damped oscillations exist, flipping the stability of the stable fixed point gives rise to a limit cycle, which can be detected by inspecting $\Re\mathrm{e}[\lambda(s)]$.
+
+\begin{Figure}
+    \includegraphics[width=125mm]{figures/hopf-measure.pdf}
+    \caption{Bifurcation measure $\measure(s)$ and eigenvalues $\lambda(s)$ along the arclength $s$ for two different bifurcation curves demonstrating how the measure detects non-zero imaginary parts $\Im\mathrm{m}[\lambda]$ (onset of damped oscillations marked by circle) and sign changes in real parts $\Re\mathrm{e}[\lambda]$ (Hopf bifurcations marked by stars)}
+    \label{fig:hopf-measure}
+\end{Figure}
+
+In principle it is possible to construct measures to detect a variety of bifurcations as long as the conditions can be expressed in terms of derivatives with respect to fixed-point manifold direction $s$. Measures can be used sequentially or in parallel to encourage optimisers to run through a sequence of bifurcations or place specific bifurcation types next to each other.
