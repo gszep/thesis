@@ -130,33 +130,11 @@ where $c\in\Reals$ is chosen such that contour approximates the limit points bet
         6,subsection,2,Genetic Toggle Switch,inference:genetic,
         7,subsection,2,Complexity,inference:complexity,
         9,section,1,Conclusion \& Broader Impact,inference:impact,
-        9,section,1,Acknowledgements,inference:acknowledgements},
+        10,section,1,References,inference:references},
     addtolist={
         3, figure, {\textit{Fig. 1}\quad Illustration of bifurcation diagrams for minimal models of bifurcations. A. Saddle-node bifurcations arise for $\rates(u,p) = p + \theta_{1}u+\theta_{2}u^3$ when $\theta = (\frac{5}{2},-1)$. B. Pitchfork bifurcations arise for $\rates(u,p) = \theta_{1} + p u+\theta_{2}u^3$ when $\theta=(\frac{1}{2},-1)$. Targets are illustrated by light yellow vertical lines. Bifurcation curves are shown as solid blue and red lines, with lighter shades indicating the determinant crossing zero at locations $\predictions(\theta)$ giving rise to unstable solutions.}, figure:inference:minimal-models,
         4, figure, {\textit{Fig. 2}\quad Bifurcation measure $\measure(s)$ and determinant $\Det$ along the arclength $s$ of two different bifurcation curves demonstrating how maximising the measure along the curve maintains the existing bifurcation marked by a circle, while encouraging new bifurcations marked by stars.}, figure:inference:measure,
-        7, figure, {\textit{Fig. 3}\quad Saddle-node $\rates(u,p) = p + \theta_{1}u+\theta_{2}u^3$ and pitchfork $\rates(u,p) = \theta_{1} + u p +\theta_{2}u^3$ optimised with respect to $\theta$ so that predicted bifurcations $\predictions(\theta)$ match targets $\targets$ in control condition $p$. The right panel shows bifurcations diagrams for the three optimal $\theta^*$ marked by stars on the left panel. The optimisation trajectories in white follow the gradient of the cost, approaching the black lines of global minima in the left panel}, figure:inference:minimal-models:results,
-        8, figure, {\textit{Fig. 4}\quad Bifurcation inference for the two-state model (11). A. Optimal parameter estimates $\theta^*$ for the targets $\targets=\{4,5\}$ reveal two clusters of qualitatively different regimes: mutual activation ($a_1 < 1$; cluster 1) and mutual inhibition ($a_1 > 1$; cluster 2). B. Example bifurcation diagrams indicate positively and negatively correlated dependencies between the two model states, as a function of the control condition.}, figure:inference:two-state-optima,
-        8, figure, {\textit{Fig. 5}\quad Complexity scaling of calculating the gradient of the cost function. Calculations were performed on an Intel Core i7-6700HQ CPU @ 2.60GHz x 8 without GPU acceleration}, figure:scaling
+        6, figure, {\textit{Fig. 3}\quad Saddle-node $\rates(u,p) = p + \theta_{1}u+\theta_{2}u^3$ and pitchfork $\rates(u,p) = \theta_{1} + u p +\theta_{2}u^3$ optimised with respect to $\theta$ so that predicted bifurcations $\predictions(\theta)$ match targets $\targets$ in control condition $p$. The right panel shows bifurcations diagrams for the three optimal $\theta^*$ marked by stars on the left panel. The optimisation trajectories in white follow the gradient of the cost, approaching the black lines of global minima in the left panel}, figure:inference:minimal-models:results,
+        7, figure, {\textit{Fig. 4}\quad Bifurcation inference for the two-state model (11). A. Optimal parameter estimates $\theta^*$ for the targets $\targets=\{4,5\}$ reveal two clusters of qualitatively different regimes: mutual activation ($a_1 < 1$; cluster 1) and mutual inhibition ($a_1 > 1$; cluster 2). B. Example bifurcation diagrams indicate positively and negatively correlated dependencies between the two model states, as a function of the control condition.}, figure:inference:two-state-optima,
+        8, figure, {\textit{Fig. 5}\quad A. Execution time (time to calculate cost gradient) with respect to states $N$. B. Convergence times (the time it takes to find and match a bifurcation to within 1\% of a specified target) with respect to the number of parameters $M$, comparing against a gradient-free approach: Nelder-Mead. Calculations were performed on an Intel Core i7-6700HQ CPU @ 2.60GHz x 8 without GPU acceleration.}, figure:scaling
 }]{publications/bifurcation-inference.pdf}
-
-\section{Bifurcation Measure for Limit Cycles}
-\label{section:hopf-inference}
-
-The bifurcation measure $\measure(s)$ along a fixed-point manifold direction $s\in\Reals$ as shown in Figure \ref{figure:inference:measure} detects a subset of bifurcations that include pitchforks and saddle-nodes. The measure detects breakdowns of stability via changes in the sign of the determinant of the state-space Jacobian of a system of ordinary differential equations; details on the scope and limitations of the measure can be found in Appendix \ref{appendix:bifurcation-measure}.
-
-In order to detect bifurcations involving limit cycles, the measure must be extended to detect changes in the real part $\Re\mathrm{e}[\lambda(s)]$ for any eigenvalue of the Jacobian. These conditions can no longer be compactly written in terms of the determinant. Instead, the measure can be defined as the sum of eigenvalue terms 
-\begin{align}
-    \measure(s):=\sum_{\lambda(s)\in\frac{\partial\rates}{\partial u}}
-    \left(\left|\frac{d}{ds}\log\Re\mathrm{e}[\lambda(s)]\right|^{-1}+1\right)^{-1}
-    \label{eq:hopf-measure}
-\end{align}
-
-The directional derivative of the logarithm diverges under zero conditions: when eigenvalues vanish $\lambda(s)=0$ and when the directional derivative $\frac{d}{ds}\Re\mathrm{e}[\lambda(s)]$ diverges. These properties are sufficient for detecting the onset of damped oscillations and emergence of limit cycles via Hopf bifurcation as shown in Figure \ref{fig:hopf-measure}. Eigenvalues with negative real part which gain a finite imaginary part give rise to damped oscillations. At this onset we observe a discontinuity in the derivative $\frac{d}{ds}\Re\mathrm{e}[\lambda(s)]$ which is detected by equation \eqref{eq:hopf-measure}. Once damped oscillations exist, flipping the stability of the stable fixed point gives rise to a limit cycle, which can be detected by inspecting $\Re\mathrm{e}[\lambda(s)]$.
-
-\begin{Figure}
-    \includegraphics[width=125mm]{figures/hopf-measure.pdf}
-    \caption{Bifurcation measure $\measure(s)$ and eigenvalues $\lambda(s)$ along the arclength $s$ for two different bifurcation curves demonstrating how the measure detects non-zero imaginary parts $\Im\mathrm{m}[\lambda]$ (onset of damped oscillations marked by circle) and sign changes in real parts $\Re\mathrm{e}[\lambda]$ (Hopf bifurcations marked by stars)}
-    \label{fig:hopf-measure}
-\end{Figure}
-
-In principle it is possible to construct measures to detect a variety of bifurcations as long as the conditions can be expressed in terms of derivatives with respect to fixed-point manifold direction $s$. Measures can be used sequentially or in parallel to encourage optimisers to run through a sequence of bifurcations or place specific bifurcation types next to each other.

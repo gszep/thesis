@@ -20,10 +20,19 @@
 
 \chapter{Parameter Inference with Bifurcation Diagrams}
 \label{appendix:inference}
-\includepdf[pages=1-4, offset=75 -90, scale=0.85, frame,
-        clip,trim=25mm 5mm 25mm 15mm,
+\includepdf[pages=1-6, offset=75 -90, scale=0.85, frame,
+        clip,trim=33mm 20mm 33mm 20mm,
         pagecommand={}, addtotoc={
                 1,section,1,Bifurcation Diagrams as Tangent Fields,appendix:tangent-fields,
-                2,section,1,Conditions for Bifurcations,appendix:bifurcation-measure,
-                3,section,1,Leibniz Rule for Space Curves,appendix:leibniz-rule
+                2,section,1,Bifurcation Measure Properties,appendix:bifurcation-measure,
+                3,section,1,Leibniz Rule for Space Curves,appendix:leibniz-rule,
+                5,section,1,Application to the Double Exclusive Model,appendix:more-complex-model,
+                6,section,1,Extension for Hopf Bifurcations,appendix:hopf-measure},
+        addtolist={
+                1, figure, {\textit{Supplementary Figure 1}\quad Two implicit surfaces $f_{\theta}(z)=0$ and $g_{\theta}(z)=0$ in $\mathbb{R}^3$ intersecting to form a space curve which is tangent to field $\tangent(z)$ and perpendicular to gradients $\partial_{z}f_{\theta}$ and $\partial_{z}g_{\theta}$}, figure:implicit-surfaces,
+                2, figure, {\textit{Supplementary Figure 2}\quad Left/Right : Determinant $\Det$ and tangent field $\tangent(z)$ for the saddle-node/pitchfork models for some set values of $\theta$ revealing that $\Det=0$ defines bifurcations}, figure:determinant-field,
+                5, figure, {\textit{Supplementary Figure 3}\quad Bifurcation inference for the \emph{double exclusive reporter}. A. Optimal parameter estimates $\theta^*$ for the targets $\targets=\{1,2\}$ (indicated by yellow lines in panel B) reveal four regions  with two geometrically different regimes: mutual activation (region 1) and mutual inhibition (regions 2-4). B. Example bifurcation diagrams indicate that region 2 has swapped kinetics between $L$ and $T$ to region 3. Region 4 has models with non-zero imaginary parts to eigenvalues indicating damped oscillations (shown in light green).},
+                figure:double-exclusive-optima,
+                6, figure, {\textit{Supplementary Figure 4}\quad Bifurcation measure $\measure(s)$ and eigenvalues $\lambda(s)$ along the arclength $s$ for two different bifurcation curves demonstrating how the measure detects non-zero imaginary parts $\Im\mathrm{m}[\lambda]$ (onset of damped oscillations marked by circle) and sign changes in real parts $\Re\mathrm{e}[\lambda]$ (Hopf bifurcations marked by stars)},
+                figure:hopf-measure
 }]{publications/bifurcation-inference-si.pdf}
