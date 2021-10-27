@@ -15,8 +15,9 @@
 \section{Preface}
 \subsection{Problem Statement \& Context}
 
-This chapter focuses on the problem of looking for parameter regimes for dynamical systems that result in bifurcations. This has been coined as \emph{inverse bifurcation analysis} \cite{Lu2006InverseSystems} and --- as motivated in Chapter \ref{chapter:introduction} --- becomes relevant to biomedical researchers in settings where the design goal of an organism is has a distinct phenotype.
+This chapter focuses on the problem of looking for parameter regimes for dynamical systems that result in bifurcations. This has been coined as \emph{inverse bifurcation analysis} \cite{Lu2006InverseSystems}. Formally we are looking for parameters $\theta$ for which the equation \eqref{eq:odes} has at least one fixed point for which one of the bifurcation criteria (see Section \ref{section:bifurcation-definitions}) is satisfied. 
 
+Inverse bifurcation analysis becomes relevant to biomedical researchers in settings where there is a design goal to engineer an organism with a distinct phenotype (as discussed in Chapter \ref{chapter:introduction}).
 Such a phenotype can be a the \emph{double exclusive reporter} investigated in the interdisciplinary collaboration in synthetic developmental biology presented in Chapter \ref{chapter:double-exclusive}. This \emph{E. Coli} phenotype exhibits a cusp bifurcation leading to a bistable response with respect to two input signals as shown in Figure \ref{figure:double-exclusive:bistability}. The engineering goal could be a phenotype with a specific cell cycle \cite{Attila2008,Conrad2006BifurcationClock} which involves the positioning of \emph{Hopf bifurcations} that mark the onset of oscillations in protein concentrations from stable equilibria. Finally, that which possibly demonstrates the most engineering prowess, is the design of self-organised patterns such as stripes and spots in mammalian coat patterns. According to a long standing mathematical hypotheses \cite{Turing1952} that underpins developmental mechanisms this may involve the search for \emph{Turing bifurcations}.
 
 Before we get carried away and think that with the right tooling we could genetically control the length scale of spots or stripes on cats, we must remind ourselves that \emph{in vivo} gene regulatory networks mostly consist of unknown and experimentally inaccessible parameters. Furthermore, we find that usually there exist multiple equally valid models that describe the observed behaviour, and so turn to \emph{model selection} methods. Even if we had an accurate and unique model to describe an organism, generic tools for \emph{inverse bifurcation analysis} are limited; see Chapter \ref{chapter:background} for details. In an attempt to address the limitations encountered in Chapter \ref{chapter:double-exclusive} the published work in this chapter focuses exclusively on \emph{pitchfork} and \emph{saddle-node} bifurcations. Although the publication focuses on parameter synthesis for a subset of bifurcations, the approach lays foundations for differentiable optimisation methods that leverage bifurcation theory. A view towards how this approach can be used for the design of \emph{Turing patterns} and model selection is discussed in concluding Chapter \ref{chapter:conclusions}.
@@ -29,7 +30,8 @@ The decision to focus on single cell trajectories and flow cytometry came from t
 
 It is not possible to observe the cusp bifurcation in microplate data, due to the averaging of signals originating from heterogeneous cell populations. Instead, the cusp bifurcation can be observed in flow cytometry measurements of colonies in exponential phase (Supplementary Figure \ref{figure:double-exclusive:flow-hysteresis}) and microfluidic fluorescence microscopy data (Figure \ref{figure:double-exclusive:bistability}c) where computations on single-cell trajectories reveal the hysteresis loop which must necessarily accompany the cusp. 
 
-\subsection*{Single Cell Trajectories}
+\subsection{Single Cell Trajectories}
+% Non-parametric ___ using Gaussian Process regression
 \label{section:field-inference}
 
 In this early days of this thesis, we investigated whether it was possible to transform the time-domain data into state-space. This approach, and related works, are discussed in this section and can in principle be used with the microfluidic fluorescence microscopy data for parameter inference.
@@ -67,6 +69,8 @@ In our setting we would like to match the geometry of the field but not its magn
     \label{fig:inferred-cycles}
 \end{Figure}
 
+\subsection{XXX}
+
 Although we are getting close to focusing on qualitative features of a model, this objective function is still sensitive to the locations and shapes of fixed point and limit cycles. What if we cared about even higher-level features such as the number of fixed points? Or perhaps whether a system oscillates or not? This is where the language of bifurcation theory described in Chapter \ref{chapter:background} is optimally suited for this task, but fist we need to discuss how to set up experiments to detect bifurcations from flow cytometry data.
 
 \begin{itemize}
@@ -78,7 +82,7 @@ Although we are getting close to focusing on qualitative features of a model, th
 
 The accuracy of the cell trajectories is limited by cell segmentation and tracking algorithms. Initial investigations into this approach also suggested that trajectories need to be of sufficient temporal resolution and sampled from a wide variety of initial conditions. Such data is not widely available and ultimately we decided to focus on a method that could be used with a well-known workhorse in biomedical research: flow cytometry.
 
-\subsection*{Flow Cytometry}
+\subsection{Flow Cytometry}
 \label{section:flow-calculations}
 
 Suppose we would like to detect a cusp bifurcation in a cell population with respect to two experimental control conditions $p_1,p_2\in\Reals$. We set up a serial dilution along the rows for $p_1$ and along the columns for $p_2$ in two 96-well plates. Cells are seeded and allowed to grow in exponential phase in a finite concentration of one of the two conditions. This is done for both conditions, resulting in two cell populations: $p_1$-primed cells and $p_2$-primed cells. The priming concentrations must be chosen sufficiently high so that they lie either side of the cusp as shown in Figure \ref{fig:cusp-sampling}. The two populations are transferred into separate 96-well plates containing the dilutions of $p_1,p_2$, allowed to grow in exponential phase and then transferred into the flow cytometer.
@@ -109,12 +113,12 @@ where $c\in\Reals$ is chosen such that contour approximates the limit points bet
 
 \begin{itemize}
     \item \todo[inline]{quantify efficiency of switching? data still available}
-    \item \todo[inline]{Flow cytometry setup for detecting hopf bifurcation?}
+    \item \todo[inline]{Mention limitation: detecting hopf bifurcation not possible}
 \end{itemize}
 
 \subsection{Contributions}
 
-\textbf{Grisha Szep} prepared the manuscript, designed the cost function, derived mathematical results, wrote and released the Julia package under the supervision of \textbf{Neil Dalchau} and \textbf{Attila Czicasz-Nagy}.
+\textbf{Grisha Szep} prepared the manuscript, designed the cost function, derived mathematical results, wrote and released the Julia package under the supervision of \textbf{Neil Dalchau} and \textbf{Attila Czikasz-Nagy}.
 
 \includepdf[pages=1-11, offset=75 -95, scale=0.85, frame,
         clip,trim=31mm 21mm 31mm 21mm,
