@@ -18,28 +18,59 @@
 This chapter focuses on the problem of looking for parameter regimes for dynamical systems that result in bifurcations. This has been coined as \emph{inverse bifurcation analysis} \cite{Lu2006InverseSystems}. Formally we are looking for parameters $\theta$ for which the equation \eqref{eq:odes} has at least one fixed point for which one of the bifurcation criteria (see Section \ref{section:bifurcation-definitions}) is satisfied. Furthermore we would like to create a specified type and number of bifurcations to be placed along control condition $p$.
 
 Inverse bifurcation analysis becomes relevant to biomedical researchers in settings where there is a design goal to engineer an organism with a distinct phenotype (as discussed in Chapter \ref{chapter:introduction}).
-Such a phenotype can be a the \emph{double exclusive reporter} investigated in the interdisciplinary collaboration in synthetic developmental biology presented in Chapter \ref{chapter:double-exclusive}. This \emph{E. Coli} phenotype exhibits a cusp bifurcation leading to a bistable response with respect to two input signals as shown in Figure \ref{figure:double-exclusive:bistability}. The engineering goal could be a phenotype with a specific cell cycle \cite{Attila2008,Conrad2006BifurcationClock} which involves the positioning of \emph{Hopf bifurcations} that mark the onset of oscillations in protein concentrations from stable equilibria. Finally the design of self-organised patterns such as stripes and spots in mammalian coat patterns could be another engineering goal. According to a long standing mathematical hypotheses \cite{Turing1952} that underpins developmental mechanisms this may involve the search for \emph{Turing bifurcations}.
+Such a phenotype can be a the \emph{double exclusive reporter} investigated in the interdisciplinary collaboration in synthetic developmental biology presented in Chapter \ref{chapter:double-exclusive}. This \emph{E. Coli} phenotype exhibits a cusp bifurcation leading to a bistable response with respect to two input signals as shown in Figure \ref{fig:double-exclusive:bistability}. The engineering goal could be a phenotype with a specific cell cycle \cite{Attila2008,Conrad2006BifurcationClock} which involves the positioning of \emph{Hopf bifurcations} that mark the onset of oscillations in protein concentrations from stable equilibria. Finally the design of self-organised patterns such as stripes and spots in mammalian coat patterns could be another engineering goal. According to a long standing mathematical hypotheses \cite{Turing1952} that underpins developmental mechanisms this may involve the search for \emph{Turing bifurcations}.
 
 Before we get carried away and think that with the right tooling we could genetically control the length scale of spots or stripes on cats, we must remind ourselves that \emph{in vivo} gene regulatory networks mostly consist of unknown and experimentally inaccessible parameters. Furthermore, we find that usually there exist multiple equally valid models that describe the observed behaviour, and so turn to \emph{model selection} methods. Even if we had an accurate and unique model to describe an organism, generic tools for \emph{inverse bifurcation analysis} are limited as we've explored in Chapter \ref{chapter:background} and experienced in practice in Chapter \ref{chapter:double-exclusive}. In an attempt to address these limitations, the incorporated publication (sections \ref{inference:abstract} -- \ref{inference:impact}) focuses on the design of systems of ordinary differential equations with \emph{pitchfork} and \emph{saddle-node} bifurcation diagrams. Although the publication focuses on parameter synthesis for a subset of bifurcations, steps towards \emph{Hopf} bifurcations are made (see Appendix \ref{appendix:hopf-measure}), and the approach lays foundations for differentiable optimisation methods that leverage bifurcation theory. A view towards how this approach can be used for the design of \emph{Turing patterns} and model selection is discussed in concluding Chapter \ref{chapter:conclusions}.
 
-\clearpage
 \subsection{Inferring Bifurcations from Data}
 
-In sections \ref{inference:abstract} -- \ref{inference:impact} we assume that the bifurcation data $\targets$ with respect to the experimental control parameter $p\in\Reals$ is known or already calculated from raw data. In the following sections we focus on methods for extracting bifurcation data $\targets$ from two data sources: single cell trajectories and flow cytometry measurements.
+In sections \ref{inference:abstract} -- \ref{inference:impact} we assume that the bifurcation data $\targets$ with respect to the experimental control condition $p\in\Reals$ is known or already extracted from raw data. We can break down the extraction process into steps: steady state inference, field inference and fixed-point inference; each discussed separately in its own subsection. These steps are sequenced together into two possible routes towards bifurcation data $\targets$ as depicted in Figure \ref{fig:inferring-bifurcations}.
 
-We can break down the extraction process into a number of inference steps as depicted in Figure \ref{fig:inferring-bifurcations}.
+At best we could have state trajectory data like single cell trajectories extracted via segmentation and tracking in fluorescence microscopy movies (for example the data acquired using the CellASIC platform in Figure \ref{fig:double-exclusive:bistability}c). Having the the state as a function of time $u(t)$, sampled at sufficiently broad initial conditions $u(0)$, enables the \emph{non-parametric} estimation of field geometry $F(u)$. We can then extract important state-space structures, such as stable and unstable fixed points, their eigenvalues $\lambda$, from the field geometry $F(u)$ at different values of the control condition $p$, and hence identify possible bifurcations.
 
 \begin{Figure}
     \includegraphics[width=14cm]{inferring-bifurcations}
     \caption{Bifurcation point extraction along the condition $p$ via two possible routes: steady state inference (a,d$\rightarrow$c) and fixed point inference (a,d$\rightarrow$b,e$\rightarrow$c). The fixed point inference route requires the geometry of the field $F(u)$ at different values of the condition $p$ and yields additional information about unstable fixed points.}
     \label{fig:inferring-bifurcations}
 \end{Figure}
+Data on steady states $u(t\rightarrow\infty)$ are more abundant and typically found in flow cytometry measurements. It is possible to infer the steady state manifold directly from such data (Figure \ref{fig:inferring-bifurcations} a,d$\rightarrow$c) but we would not be able to extract information on unstable fixed points or eigenvalues $\lambda$ of state-space structures. Since the criteria for bifurcations are not directly accessible, indirect measures (such as the population separation that can be seen in Figure \ref{fig:double-exclusive:flow-hysteresis}) must be used to extract bifurcations.
 
-The decision to focus on single cell trajectories and flow cytometry came from the limitations of using microplate data in Chapter \ref{chapter:double-exclusive}. The model parameters $\theta$ were estimated using a hierarchical monte-carlo approach and time-course fluorescence microplate measurements (details of which can be found in Appendix \ref{appendix:double-exclusive:inference}). The time-courses include information about dynamical transients and colony growth in liquid culture as shown in Figure \ref{fig:microplate-data}. The desired cusp bifurcation, however, lives in state-space rather than the time-domain. The disconnect between the domain that the data lives in and the domain of the design goals poses the risk of over-fitting the model on undesired information that exists in the data domain. 
+\subsubsection{Bifurcations via Steady State Inference}
+\label{section:steady-state-inference}
 
-It is not possible to observe the cusp bifurcation in microplate data, due to the averaging of signals originating from heterogeneous cell populations. Instead, the cusp bifurcation can be observed in flow cytometry measurements of colonies in exponential phase (Supplementary Figure \ref{figure:double-exclusive:flow-hysteresis}) and microfluidic fluorescence microscopy data (Figure \ref{figure:double-exclusive:bistability}c) where computations on single-cell trajectories reveal the hysteresis loop which must necessarily accompany the cusp. 
+Suppose we would like to detect a cusp bifurcation in a cell population with respect to two experimental control conditions $p_1,p_2\in\Reals$. We set up a serial dilution along the rows for $p_1$ and along the columns for $p_2$ in two 96-well plates. Cells are seeded and allowed to grow in exponential phase in a finite concentration of one of the two conditions. This is done for both conditions, resulting in two cell populations: $p_1$-primed cells and $p_2$-primed cells. The priming concentrations must be chosen sufficiently high so that they lie either side of the cusp as shown in Figure \ref{fig:cusp-sampling}. The two populations are transferred into separate 96-well plates containing the dilutions of $p_1,p_2$, allowed to grow in exponential phase and then transferred into the flow cytometer.
 
-\subsection{Single Cell Trajectories}
+\begin{Figure}
+    \missingfigure[figwidth=10cm, figheight=10cm]{}
+    \caption{Primed cells transferred into a dilution of $p_1$ and $p_2$ in a 96-well plate sample different parts of the hysteresis loop, revealing the cusp bifurcation}
+    \label{fig:cusp-sampling}
+\end{Figure}
+
+After gating live singlet cells and applying relevant compensation and auto-fluorescent normalisation, a figure similar to Supplementary Figure \ref{fig:double-exclusive:flow-hysteresis} can be produced to qualitatively assess if the cusp was sufficiently well sampled.
+
+To quantify bistability $\beta_{P|Q}(p)$ in each well $p=(p_1,p_2)$ we could calculate the separation or overlap between the fluorescence distributions of the two primed populations $P(x|p)$ and $Q(x|p)$. Here $x\in\Reals^{F}$ is an $F$-dimensional fluorescence vector. The simplest calculation is taking the difference between some summary statistic, such as mean or median, between the two distributions in each well. For example, using the mean we write
+\begin{align}
+    \beta_{P|Q}(p):=\left|
+    \int x P(x|p)\mathrm{d}x
+    -
+    \int x Q(x|p)\mathrm{d}x
+    \right|
+\end{align}
+This approach breaks down if multi-modal distributions exist in the data. This would be the case if something happened to prevent a subpopulation of cells to switch from one state another other. Reasons for this could include too much cell burdon or not enough time given for cells to reach a steady state. In this case, quantifying the efficiency of switching from either side of the cusp could be a quantity of interest.
+
+The set of limit points that define the shape of the cusp can be extracted from one of the contours of the bistability measure
+\begin{align}
+    \targets = \{  p : \beta_{P|Q}(p)=c \} 
+\end{align}
+where $c\in\Reals$ is chosen such that contour approximates the limit points between the bistable and monostable regions in $p$.
+
+\begin{itemize}
+    \item \todo[inline]{quantify efficiency of switching? data still available}
+    \item \todo[inline]{Mention limitation: detecting hopf bifurcation not possible}
+\end{itemize}
+
+
+\subsubsection{Non-parameteric Vector Field Inference}
 % Non-parametric ___ using Gaussian Process regression
 \label{section:field-inference}
 
@@ -78,8 +109,6 @@ In our setting we would like to match the geometry of the field but not its magn
     \label{fig:inferred-cycles}
 \end{Figure}
 
-\subsection{XXX}
-
 Although we are getting close to focusing on qualitative features of a model, this objective function is still sensitive to the locations and shapes of fixed point and limit cycles. What if we cared about even higher-level features such as the number of fixed points? Or perhaps whether a system oscillates or not? This is where the language of bifurcation theory described in Chapter \ref{chapter:background} is optimally suited for this task, but fist we need to discuss how to set up experiments to detect bifurcations from flow cytometry data.
 
 \begin{itemize}
@@ -91,39 +120,8 @@ Although we are getting close to focusing on qualitative features of a model, th
 
 The accuracy of the cell trajectories is limited by cell segmentation and tracking algorithms. Initial investigations into this approach also suggested that trajectories need to be of sufficient temporal resolution and sampled from a wide variety of initial conditions. Such data is not widely available and ultimately we decided to focus on a method that could be used with a well-known workhorse in biomedical research: flow cytometry.
 
-\subsection{Flow Cytometry}
-\label{section:flow-calculations}
-
-Suppose we would like to detect a cusp bifurcation in a cell population with respect to two experimental control conditions $p_1,p_2\in\Reals$. We set up a serial dilution along the rows for $p_1$ and along the columns for $p_2$ in two 96-well plates. Cells are seeded and allowed to grow in exponential phase in a finite concentration of one of the two conditions. This is done for both conditions, resulting in two cell populations: $p_1$-primed cells and $p_2$-primed cells. The priming concentrations must be chosen sufficiently high so that they lie either side of the cusp as shown in Figure \ref{fig:cusp-sampling}. The two populations are transferred into separate 96-well plates containing the dilutions of $p_1,p_2$, allowed to grow in exponential phase and then transferred into the flow cytometer.
-
-\begin{Figure}
-    \missingfigure[figwidth=10cm, figheight=10cm]{}
-    \caption{Primed cells transferred into a dilution of $p_1$ and $p_2$ in a 96-well plate sample different parts of the hysteresis loop, revealing the cusp bifurcation}
-    \label{fig:cusp-sampling}
-\end{Figure}
-
-After gating live singlet cells and applying relevant compensation and auto-fluorescent normalisation, a figure similar to Supplementary Figure \ref{figure:double-exclusive:flow-hysteresis} can be produced to qualitatively assess if the cusp was sufficiently well sampled.
-
-To quantify bistability $\beta_{P|Q}(p)$ in each well $p=(p_1,p_2)$ we could calculate the separation or overlap between the fluorescence distributions of the two primed populations $P(x|p)$ and $Q(x|p)$. Here $x\in\Reals^{F}$ is an $F$-dimensional fluorescence vector. The simplest calculation is taking the difference between some summary statistic, such as mean or median, between the two distributions in each well. For example, using the mean we write
-\begin{align}
-    \beta_{P|Q}(p):=\left|
-    \int x P(x|p)\mathrm{d}x
-    -
-    \int x Q(x|p)\mathrm{d}x
-    \right|
-\end{align}
-This approach breaks down if multi-modal distributions exist in the data. This would be the case if something happened to prevent a subpopulation of cells to switch from one state another other. Reasons for this could include too much cell burdon or not enough time given for cells to reach a steady state. In this case, quantifying the efficiency of switching from either side of the cusp could be a quantity of interest.
-
-The set of limit points that define the shape of the cusp can be extracted from one of the contours of the bistability measure
-\begin{align}
-    \targets = \{  p : \beta_{P|Q}(p)=c \} 
-\end{align}
-where $c\in\Reals$ is chosen such that contour approximates the limit points between the bistable and monostable regions in $p$.
-
-\begin{itemize}
-    \item \todo[inline]{quantify efficiency of switching? data still available}
-    \item \todo[inline]{Mention limitation: detecting hopf bifurcation not possible}
-\end{itemize}
+\subsubsection{Fixed Point Inference}
+\label{section:fixed-point-inference}
 
 \subsection{Contributions}
 
@@ -145,9 +143,9 @@ where $c\in\Reals$ is chosen such that contour approximates the limit points bet
         9,section,1,Conclusion \& Broader Impact,inference:impact,
         10,section,1,References,inference:references},
     addtolist={
-        3, figure, {\textit{Fig. 1}\quad Illustration of bifurcation diagrams for minimal models of bifurcations. A. Saddle-node bifurcations arise for $\rates(u,p) = p + \theta_{1}u+\theta_{2}u^3$ when $\theta = (\frac{5}{2},-1)$. B. Pitchfork bifurcations arise for $\rates(u,p) = \theta_{1} + p u+\theta_{2}u^3$ when $\theta=(\frac{1}{2},-1)$. Targets are illustrated by light yellow vertical lines. Bifurcation curves are shown as solid blue and red lines, with lighter shades indicating the determinant crossing zero at locations $\predictions(\theta)$ giving rise to unstable solutions.}, figure:inference:minimal-models,
-        4, figure, {\textit{Fig. 2}\quad Bifurcation measure $\measure(s)$ and determinant $\Det$ along the arclength $s$ of two different bifurcation curves demonstrating how maximising the measure along the curve maintains the existing bifurcation marked by a circle, while encouraging new bifurcations marked by stars.}, figure:inference:measure,
-        6, figure, {\textit{Fig. 3}\quad Saddle-node $\rates(u,p) = p + \theta_{1}u+\theta_{2}u^3$ and pitchfork $\rates(u,p) = \theta_{1} + u p +\theta_{2}u^3$ optimised with respect to $\theta$ so that predicted bifurcations $\predictions(\theta)$ match targets $\targets$ in control condition $p$. The right panel shows bifurcations diagrams for the three optimal $\theta^*$ marked by stars on the left panel. The optimisation trajectories in white follow the gradient of the cost, approaching the black lines of global minima in the left panel}, figure:inference:minimal-models:results,
-        7, figure, {\textit{Fig. 4}\quad Bifurcation inference for the two-state model (11). A. Optimal parameter estimates $\theta^*$ for the targets $\targets=\{4,5\}$ reveal two clusters of qualitatively different regimes: mutual activation ($a_1 < 1$; cluster 1) and mutual inhibition ($a_1 > 1$; cluster 2). B. Example bifurcation diagrams indicate positively and negatively correlated dependencies between the two model states, as a function of the control condition.}, figure:inference:two-state-optima,
-        8, figure, {\textit{Fig. 5}\quad A. Execution time (time to calculate cost gradient) with respect to states $N$. B. Convergence times (the time it takes to find and match a bifurcation to within 1\% of a specified target) with respect to the number of parameters $M$, comparing against a gradient-free approach: Nelder-Mead. Calculations were performed on an Intel Core i7-6700HQ CPU @ 2.60GHz x 8 without GPU acceleration.}, figure:scaling
+        3, figure, {\textit{Fig. 1}\quad Illustration of bifurcation diagrams for minimal models of bifurcations. A. Saddle-node bifurcations arise for $\rates(u,p) = p + \theta_{1}u+\theta_{2}u^3$ when $\theta = (\frac{5}{2},-1)$. B. Pitchfork bifurcations arise for $\rates(u,p) = \theta_{1} + p u+\theta_{2}u^3$ when $\theta=(\frac{1}{2},-1)$. Targets are illustrated by light yellow vertical lines. Bifurcation curves are shown as solid blue and red lines, with lighter shades indicating the determinant crossing zero at locations $\predictions(\theta)$ giving rise to unstable solutions.}, fig:inference:minimal-models,
+        4, figure, {\textit{Fig. 2}\quad Bifurcation measure $\measure(s)$ and determinant $\Det$ along the arclength $s$ of two different bifurcation curves demonstrating how maximising the measure along the curve maintains the existing bifurcation marked by a circle, while encouraging new bifurcations marked by stars.}, fig:inference:measure,
+        6, figure, {\textit{Fig. 3}\quad Saddle-node $\rates(u,p) = p + \theta_{1}u+\theta_{2}u^3$ and pitchfork $\rates(u,p) = \theta_{1} + u p +\theta_{2}u^3$ optimised with respect to $\theta$ so that predicted bifurcations $\predictions(\theta)$ match targets $\targets$ in control condition $p$. The right panel shows bifurcations diagrams for the three optimal $\theta^*$ marked by stars on the left panel. The optimisation trajectories in white follow the gradient of the cost, approaching the black lines of global minima in the left panel}, fig:inference:minimal-models:results,
+        7, figure, {\textit{Fig. 4}\quad Bifurcation inference for the two-state model (11). A. Optimal parameter estimates $\theta^*$ for the targets $\targets=\{4,5\}$ reveal two clusters of qualitatively different regimes: mutual activation ($a_1 < 1$; cluster 1) and mutual inhibition ($a_1 > 1$; cluster 2). B. Example bifurcation diagrams indicate positively and negatively correlated dependencies between the two model states, as a function of the control condition.}, fig:inference:two-state-optima,
+        8, figure, {\textit{Fig. 5}\quad A. Execution time (time to calculate cost gradient) with respect to states $N$. B. Convergence times (the time it takes to find and match a bifurcation to within 1\% of a specified target) with respect to the number of parameters $M$, comparing against a gradient-free approach: Nelder-Mead. Calculations were performed on an Intel Core i7-6700HQ CPU @ 2.60GHz x 8 without GPU acceleration.}, fig:scaling
 }]{publications/bifurcation-inference.pdf}

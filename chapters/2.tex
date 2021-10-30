@@ -4,6 +4,8 @@
 
 Convolutional neural networks trained on large databases \cite{mnist2012,imagenet2009} have shaped machine learning research over the past couple of decades. Today they serve as canonical learning material in courses and are often used as initial \textit{vanilla} approaches for data exploration and classification tasks and before creating more bespoke machine learning pipelines. The widespread success of much models created an expectation in the research community that with sufficient data and computational power provided by one of the reigning consumer internet businesses, a data-driven black-box model can be created for any application ranging from quantum mechanics to economics. Convolutional architectures together with language models eventually inspired recurrent architectures and attention models where are the key ingredients in the creation of \textit{Alpha Fold} \cite{Jumper2021HighlyAlphaFold} that takes a substantial step towards solving the protein-folding problem. Biotechnology researchers are eager to apply these methods but face the following obstacles
 
+In practice we can only observe a subset of the states $u$, for example by incorporating fluorescent proteins downstream of the coding sequences of the proteins that participate in the  mechanism. Incorporating any fluorescent proteins into the host genome contributes to cell burdon, at worst can disrupt the mechanism under study, and therefore incorporation sites much be chosen sparsely such that the bifurcation is still observable in the data.
+
 \begin{itemize}
     \item \textbf{Insufficient data} due to strategic experimental designs 
     \item \textbf{Low extrapolation accuracy} for black box-models
@@ -117,7 +119,7 @@ In the mean field approximation \eqref{eq:reaction} we may investigate the
 steady state $\partial_t\psi=0$. This gives rise to a set of $S$ polynomial
 equations in the components $\psi[s]\in[0,\infty)$ of steady state $\psi^*$
 These define $S-1$ dimensional nullcline hypersurfaces embedded in $S$
-dimensional state space.
+dimensional state-space.
 \begin{align}
 	\sum_{r=1}^R\Gamma[s',r]\sigma[r]
 		\prod_{s=1}^S{\psi[s] \choose g[s,r]}

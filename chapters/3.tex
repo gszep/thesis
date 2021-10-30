@@ -160,7 +160,6 @@ shown in figure \ref{fig:boundary} confirm this prediction.
 \subsection{Contributions}
 Contributions for this work are as follows
 
-
 \includepdf[pages=1-8, offset=75 -90, scale=0.85, frame,
         clip,trim=10mm 5mm 10mm 0mm,
         pagecommand={}, addtotoc={
@@ -180,8 +179,14 @@ Contributions for this work are as follows
         7,subsection,2,Microfluidics microscopy,double-exclusive:microscopy,
         7,subsection,2,Solid culture assays,double-exclusive:cultures},
     addtolist={
-        2, figure, {\textit{Fig. 1}\quad A synthetic gene circuit for morphogen interpretation.}, figure:double-exclusive:overview,
-        3, figure, {\textit{Fig. 2}\quad Mutual inhibition produces bistability.}, figure:double-exclusive:bistability,
-        5, figure, {\textit{Fig. 3}\quad Formation of stable boundaries.}, figure:double-exclusive:boundaries,
-        6, figure, {\textit{Fig. 4}\quad Addition of a Relay circuit creates self-organised domains of gene expression.}, figure:double-exclusive:relay
+        2, figure, {\textit{Fig. 1}\quad A synthetic gene circuit for morphogen interpretation.}, fig:double-exclusive:overview,
+        3, figure, {\textit{Fig. 2}\quad Mutual inhibition produces bistability.}, fig:double-exclusive:bistability,
+        5, figure, {\textit{Fig. 3}\quad Formation of stable boundaries.}, fig:double-exclusive:boundaries,
+        6, figure, {\textit{Fig. 4}\quad Addition of a Relay circuit creates self-organised domains of gene expression.}, fig:double-exclusive:relay
 }]{publications/double-exclusive.pdf}
+
+\subsection{Afterword}
+
+The decision to focus on single cell trajectories and flow cytometry came from the limitations of using microplate data in Chapter \ref{chapter:double-exclusive}. The model parameters $\theta$ were estimated using a hierarchical monte-carlo approach and time-course fluorescence microplate measurements (details of which can be found in Appendix \ref{appendix:double-exclusive:inference}). The time-courses include information about dynamical transients and colony growth in liquid culture as shown in Figure \ref{fig:microplate-data}. The desired cusp bifurcation, however, lives in state-space rather than the time-domain. The disconnect between the domain that the data lives in and the domain of the design goals poses the risk of over-fitting the model on undesired information that exists in the data domain. 
+
+It is not possible to observe the cusp bifurcation in microplate data, due to the averaging of signals originating from heterogeneous cell populations. Instead, the cusp bifurcation can be observed in flow cytometry measurements of colonies in exponential phase (Supplementary Figure \ref{fig:double-exclusive:flow-hysteresis}) and microfluidic fluorescence microscopy data (Figure \ref{fig:double-exclusive:bistability}c) where computations on single-cell trajectories reveal the hysteresis loop which must necessarily accompany the cusp. 
