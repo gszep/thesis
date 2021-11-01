@@ -38,35 +38,25 @@ Data on steady states $u(t\rightarrow\infty)$ are more abundant and typically fo
 \subsubsection{Bifurcations via Steady State Inference}
 \label{section:steady-state-inference}
 
-Suppose we would like to detect a cusp bifurcation in a cell population with respect to two experimental control conditions $p_1,p_2\in\Reals$. We set up a serial dilution along the rows for $p_1$ and along the columns for $p_2$ in two 96-well plates. Cells are seeded and allowed to grow in exponential phase in a finite concentration of one of the two conditions. This is done for both conditions, resulting in two cell populations: $p_1$-primed cells and $p_2$-primed cells. The priming concentrations must be chosen sufficiently high so that they lie either side of the cusp as shown in Figure \ref{fig:cusp-sampling}. The two populations are transferred into separate 96-well plates containing the dilutions of $p_1,p_2$, allowed to grow in exponential phase and then transferred into the flow cytometer.
+Suppose we would like to detect a cusp bifurcation and limit points in a cell population with respect to two experimental control conditions $p,p\prime\in\Reals$. We can set up a serial dilution along the columns for $p$ and along the rows for $p\prime$ in two 96-well plates. Cells allowed to grow in exponential phase in a finite concentration of either $p\ll p\prime$ or $p\gg p\prime$. Let us call this the \emph{priming} stage of the protocol as shown in Figure \ref{fig:cusp-sampling}a, resulting in two cell populations: $p$-primed cells and $p\prime$-primed cells. The priming concentrations must be chosen sufficiently high so that the resultant population states lie either side of the cusp. The two populations are transferred into separate 96-well plates containing the dilutions of $p,p'$; we call this the \emph{conditioning} stage in Figure \ref{fig:cusp-sampling}a.
 
 \begin{Figure}
     \includegraphics[width=14cm]{hysteresis}
-    \caption{}
+    \caption{Protocols (a) for extracting limit points with respect to conditions $p,p'$. Steady state distributions (b). Similarity measure (c)}
     \label{fig:cusp-sampling}
 \end{Figure}
 
-After gating live singlet cells and applying relevant compensation and auto-fluorescent normalisation, a figure similar to Supplementary Figure \ref{fig:double-exclusive:flow-hysteresis} can be produced to qualitatively assess if the cusp was sufficiently well sampled.
-
-To quantify bistability $\beta_{P|Q}(p)$ in each well $p=(p_1,p_2)$ we could calculate the separation or overlap between the fluorescence distributions of the two primed populations $P(x|p)$ and $Q(x|p)$. Here $x\in\Reals^{F}$ is an $F$-dimensional fluorescence vector. The simplest calculation is taking the difference between some summary statistic, such as mean or median, between the two distributions in each well. For example, using the mean we write
+The cells are then transferred into a flow cytometer, gated for live singlets and processed with relevant compensation and auto-fluorescent normalisation, which would produce the population distributions $P(u)$ for the $p$-primed cells and $Q(u)$ for $p'$-primed cells in each well. By overlaying distributions $P(u),Q(u)$ for each well, a figure similar to Figure \ref{fig:cusp-sampling}b (or Figure \ref{fig:double-exclusive:flow-hysteresis}) can be produced. Finally, the limit points can be defined by a level set of distribution similarity measure $D(P||Q)$ in the $p,p\prime$-plane as shown in Figure \ref{fig:cusp-sampling}c. This similarity measure could be Kullback–Leibler divergence or something as simple as the distance between distribution medians. The level set must be some small positive amount $\epsilon$ above zero, picking out the onset of dissimilarity between steady state distributions $P(u)$ and $Q(u)$, and hence the onset hysteresis. We can define the limit points as
 \begin{align}
-    \beta_{P|Q}(p):=\left|
-    \int x P(x|p)\mathrm{d}x
-    -
-    \int x Q(x|p)\mathrm{d}x
-    \right|
+    \targets = \{  (p,p\prime) : D(P||Q)=\epsilon, \epsilon>0 \} 
 \end{align}
-This approach breaks down if multi-modal distributions exist in the data. This would be the case if something happened to prevent a subpopulation of cells to switch from one state another other. Reasons for this could include too much cell burdon or not enough time given for cells to reach a steady state. In this case, quantifying the efficiency of switching from either side of the cusp could be a quantity of interest.
 
-The set of limit points that define the shape of the cusp can be extracted from one of the contours of the bistability measure
-\begin{align}
-    \targets = \{  p : \beta_{P|Q}(p)=c \} 
-\end{align}
-where $c\in\Reals$ is chosen such that contour approximates the limit points between the bistable and monostable regions in $p$.
+This approach may break down if multi-modal distributions exist in the data. This would be the case if something happened to prevent a subpopulation of cells to switch from one state another other. Reasons for this could include too much cell burdon or not enough time given for cells to reach a steady state. In this case, quantifying the efficiency of switching from either side of the cusp could be a quantity of interest.
+
+This approach would not work for extracting dynamic bifurcations such as \emph{Hopf} since only steady state information is available. Furthermore, the accuracy of this method is subject to noise amplitude. This method works well for cases where changes in the number of stable steady states can be resolved in the measured steady state distributions.
 
 \begin{itemize}
-    \item \todo[inline]{quantify efficiency of switching? data still available}
-    \item \todo[inline]{Mention limitation: detecting hopf bifurcation not possible}
+    \item \todo[inline]{quantify efficiency of switching?}
 \end{itemize}
 
 

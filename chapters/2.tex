@@ -1,118 +1,78 @@
 \chapter{Theoretical Background}
 \label{chapter:background}
-\epigraph{\textit{melody that will draw you into infinite darkness}}{Ocarina of Time}
+\begin{music}
+    \parindent10mm \instrumentnumber{1} \setstaffs1{1} 
+    \generalmeter{\meterfrac34} \generalsignature{-1}
+    \startextract
+		\notes  \en
+    \zendextract
+\end{music}
+\epigraph{\textit{the passion of friendship will soon blossom into a righteous power}}{Bolero of Fire --- Ocarina of Time}
 
-Convolutional neural networks trained on large databases \cite{mnist2012,imagenet2009} have shaped machine learning research over the past couple of decades. Today they serve as canonical learning material in courses and are often used as initial \textit{vanilla} approaches for data exploration and classification tasks and before creating more bespoke machine learning pipelines. The widespread success of much models created an expectation in the research community that with sufficient data and computational power provided by one of the reigning consumer internet businesses, a data-driven black-box model can be created for any application ranging from quantum mechanics to economics. Convolutional architectures together with language models eventually inspired recurrent architectures and attention models where are the key ingredients in the creation of \textit{Alpha Fold} \cite{Jumper2021HighlyAlphaFold} that takes a substantial step towards solving the protein-folding problem. Biotechnology researchers are eager to apply these methods but face the following obstacles
+% Convolutional neural networks trained on large databases \cite{mnist2012,imagenet2009} have shaped machine learning research over the past couple of decades. Today they serve as canonical learning material in courses and are often used as initial \textit{vanilla} approaches for data exploration and classification tasks and before creating more bespoke machine learning pipelines. The widespread success of much models created an expectation in the research community that with sufficient data and computational power provided by one of the reigning consumer internet businesses, a data-driven black-box model can be created for any application ranging from quantum mechanics to economics. Convolutional architectures together with language models eventually inspired recurrent architectures and attention models where are the key ingredients in the creation of \textit{Alpha Fold} \cite{Jumper2021HighlyAlphaFold} that takes a substantial step towards solving the protein-folding problem. Biotechnology researchers are eager to apply these methods but face the following obstacles
 
-In practice we can only observe a subset of the states $u$, for example by incorporating fluorescent proteins downstream of the coding sequences of the proteins that participate in the  mechanism. Incorporating any fluorescent proteins into the host genome contributes to cell burdon, at worst can disrupt the mechanism under study, and therefore incorporation sites much be chosen sparsely such that the bifurcation is still observable in the data.
+% \begin{itemize}
+%     \item \textbf{Insufficient data} due to strategic experimental designs 
+%     \item \textbf{Low extrapolation accuracy} for black box-models
+% \end{itemize}
 
-\begin{itemize}
-    \item \textbf{Insufficient data} due to strategic experimental designs 
-    \item \textbf{Low extrapolation accuracy} for black box-models
-\end{itemize}
-
-In this section we will set the scene for chemical reaction systems and their
-methods of analysis of steady state and network perspectives. Dynamical
-methods makes use of field flow, linear stability and bifurcation analysis.
+This section lays out a background dynamical systems theory and machine learning relevant to biomedical research fields. We establish the connection between the concept of phenotypes and bifurcations, and lay out assumptions and definitions that are used throughout other chapters.
 
 \section{Describing Phenotypes with Bifurcations}
 
+A phenotype is a qualitative state of an organism that can be described by several quantitative features. This could be, for example, a phenotype of antimicrobial resistant bacteria \cite{Baym2016SpatiotemporalLandscapes}. We can break down this observation as follows: a cell can be in the qualitative state of \emph{resistant} or \emph{not resistant} at a certain concentration $p$ of antibiotic. Another example could be that of action potentials in neurons \cite{}. A neuron can either be \emph{firing} or \emph{not firing} in response to a given electro-chemical potential $p$. Whole organism phenotypes, such as pigment patterns \emph{Zebrafish} \cite{}, can also be described this way. In this case the phenotype emerges as the organism develops and therefore we look for emergence of \emph{patterns} or \emph{no patterns} over time $p=t$.
+
+Suppose that the transition between phenotypes is controlled by possibly quite complicated changes in a subset of many unknown parameters $\theta$. The antimicrobial resistance originates from selective pressures in the environment which change biochemical pathways which we can encode in parameters $\theta$. Neurons also have pathways that regulate aspects such as thickness of myelin sheaths on axons, that in turn dictate how sensitive, if at all, they are to firing. In the case of the \emph{Zebrafish} the parameters $\theta$ encode whether a particular mutation in the genome is present or not. In some sense we can consider changes in $\theta$ as changes in the organism genotype that may or may not lead to a new phenotype. Only after exposing the organism to a change in controlled condition $p$, and observing a qualitative change in behaviour, can we claim to have identified a new phenotype.
+
+The idea of describing phenotypes in this way has been done before by Waddington \cite{}. His epigenetic landscape is a metaphor for how changes gene regulation, in our case represented by changes in $\theta$, determines the fate of cells. He imagines the cell as a marble, rolling down a series of forking valleys representing a differentiation cascade, eventually settling in its final phenotype. Let us adopt this metaphor for organism behaviours in response to a controlled condition (Figure \ref{fig:waddington}). Changing the control condition places the marble at different points in the valley and each fork in the valley corresponds to different available behaviours to the organism.
+
+\begin{Figure}
+\includegraphics[scale=0.6]{waddington}
+\caption{Waddington landscapes representing the set of available behaviours for two phenotypes in response to a controlled condition $p$. Phenotypes are related by changes in landscape topology via changes in $\theta$}
+\label{fig:waddington}
+\end{Figure}
+
+\noindent
+Changing the parameters $\theta$ changes the topology of the valleys potentially giving rise to new behaviours and therefore new phenotypes. Due to the robustness \cite{} and fragility \cite{} of organisms we expect most changes in $\theta$ to either kill the organism or do nothing at all. The emerging picture suggests that the route between phenotypes is a carefully created sequence of changes in $\theta$.
+
+The problem is that the space of decisions that change $\theta$ is intractably large. Furthermore there is no guarantee that any two phenotypes would be connected via experimentally accessible changes in $\theta$. We will see in the incorporated publication in Chapter \ref{chapter:double-exclusive} how differential equation modelling and machine learning can be used to guide experiments and the genetic engineering of \emph{E. coli} towards a phenotype referred to as the \emph{double exclusive reporter}. 
+
+In the collaboration, bifurcation theory \cite{} was used to detect the onset of the desired phenotypic behaviour in a set of differential equations that model the engineered genetic circuits in \emph{E. coli}. We will see in the following sections how bifurcation theory is perfectly suited for modelling transitions between phenotypes, and hence popularised in fields such as synthetic biology and ecology. Through the use of machine learning and bifurcation theory in the same collaboration, we identified a gap: \emph{there existed no differentiable machine learning method that leveraged bifurcation theory directly}. The incorporated publication in Chapter \ref{chapter:inference} fills this gap, enabling an efficient exploration of phenotypes in the high-dimensional space of $\theta$.
+
+\subsection{Differential Equation Models}
+
+In order to leverage bifurcation theory we must describe our organism as a dynamical system. This means that there must be some state $u(t)$, that fully ....
+
+In practice we can only observe a subset of the states, for example by incorporating fluorescent proteins downstream of the coding sequences of the proteins that participate in the antimicrobial resistance. Incorporating any fluorescent proteins into the host genome contributes to cell burdon and at worst can disrupt the mechanism under study. Therefore incorporation sites much be chosen sparsely such that the qualitative behaviour is still observable in the data.
+
+Partial observation can be modelled explicitly with latent variables \cite{} or the explicit modelling of system and measurement device as is done in control theory \cite{}. For the scope of this thesis we will let the modeller have complete freedom on how to choose relevant state variables $u\in\Reals^N$ and write down their own set of differential equations, with unknown parameters $\theta\in\Reals^M$ of the form
+
 \begin{equation}
-	\frac{\partial u}{\partial t} = F(u,t)
+	\frac{\partial u}{\partial t} = \rates(u)
+	\quad\mathrm{where}\quad
+	\begin{cases}
+		\quad F: \Reals^N\rightarrow\Reals^N \\
+		\quad \theta\in\Reals^M
+	\end{cases}
 	\label{eq:odes}
 \end{equation}
 
-Consider $N$ particles of $S$ species in a finite volume $\Omega$. These particles
-can undergo $R$ possible reactions when they meet within the volume. Suppose the
-timescales of equilibration with respect to volume and temperature are much faster
-than that of species number equilibration. This means that non-reactive collisions
-occur more frequently than collisions that trigger any of the $R$ reactions. This
-is the essence of the \textit{well-mixed} approximation \cite{Gillespie1992}.
+\subsection{Microscopic Derivations \& Approximations}
+These equations can originate from mean-field approximations of the chemical master equation \cite{} representing biochemical reaction networks \cite{}. This typically yields models with a large number of parameters $M$ and states $N$. The equations could have also undergone a series of quasi-steady state approximations \cite{} yielding hill-functions. Various other model reduction methods exist \cite{} in an attempt to reduce the number of state variables $N$ and parameters $M$.
 
-This suggests that at any time $t$ we may ignore spatial inhomogeneities and pin
-down the state of the system by a vector of species populations $s(t)\in\mathbb{N}^S$.
-All possible reactions in the mixture are encoded into a stoichiometric matrix
-$\mathbf{\Gamma}\in\mathbb{Z}^{S\times R}$ whose columns $\mathbf{\Gamma}[r]\in\mathbb{Z}^{S}$
-represent the population change vector for a given reaction $r$. Each reaction
-has a propensity $\omega(r|s)\in[0,\infty)$ defined though transition
-probabilities for an infinitesimal time interval given population $s$;
-\begin{align}
-	\omega(r|s)\mathrm{d}t := \mathbb{P}(s+\mathbf{\Gamma}[r],t+\mathrm{d}t|s,t)
-	\label{eq:fundamentalpremise}
-\end{align}
-Suppose $\sigma[r]\mathrm{d}t$ gives the probability that the reaction $r$
-will occur within the time interval $\mathrm{d}t$ independent of population
-$s$. The constant $\sigma[r]$ could be in principle calculated from the
-microscopic physics of the reaction. In quantum mechanics this would involve
-calculating the wavefunction overlap or transition rates between initial and
-final configurations.
+\subsection{Neural Differential Equations \& Gaussian Processes}
+While principled derivation from microscopic rules exist, often the the number of variables $N$ participating in the mechanism under study becomes intractable. When the desire for predictive performance out-weighs the desire for mechanistic explanations, the states $u$ are chosen to be the observable subset for which we have data, and the right-hand side $\rates$ can be a machine learning model such as a neural network or gaussian process \cite{}. In this case the number of parameters becomes much larger than the number of states $M\gg N$. A recent breakthrough in back-propagation through differential equation solvers \cite{} has made these models tractable in optimisation routines, and popularised them in literature \cite{}.
 
-The propensity is proportional this rate, up to combinatoric multiplicity
-taking into account the species population $s$. A reaction $r$ chooses $g[i,r]$
-particles for each reactant species $i$ from the $well-mixed$ solution containing
-$s[i]$ particles. Thus the multiplicity is simply given by a binomial coefficient
-per species. This results in a propensity that is polynomial in the components
-$s[i]$, where the highest power term gives us the \textit{order} of the reaction.
-\begin{align}
-	\omega(r|s)=
-	\sigma[r]
-		\prod_{i=1}^S{s[i] \choose g[i,r]}
-	\label{eq:propensity}
-\end{align}
-For reactions involving distinguishable particle species, all
-components $ g[i,r]\in\{ 0,1\}$ and simplifies the combinatoric term to a
-product of all reactant populations.
-\begin{align}
-	g[i,r]\in\{ 0,1\}\quad\forall i,r\quad\implies\quad
-	\omega(r|s)=
-	\sigma[r]
-	\prod_{i=1}^S s[i]^{g[i,r]}
-	\label{eq:simplifiedpropensity}
-\end{align}
-\subsection{Chemical Master Equation}
-By applying the laws of probability and taking the $\mathrm{d}t\rightarrow 0$
-one can derive a time-evolution equation
-$\mathbb{P}(s,t)$ involving the definition \eqref{eq:fundamentalpremise} which
-has become known as the Chemical Master Equation \cite{Gillespie1992,Gillespie2007}.
-Note here the complexity lies within the non-linear state dependence in the propensity
-$\omega(r|s)$. Were it not for this, we could solve this equation using
-spectral methods.
-\begin{align}
-	\partial_t\mathbb{P}(s,t) &=
-	\sum_{r=1}^R
-	\omega(r|s-\mathbf{\Gamma}[r])\mathbb{P}(s-\mathbf{\Gamma}[r],t)-\omega(r|s)\mathbb{P}(s,t)
-	\label{eq:cme}
-\end{align}
-Multiplying the Chemical Master Equation \eqref{eq:cme} by $s$ and summing over all $s$
-obtains a system of differential equations for the first moment
-$\left\langle s \right\rangle$ in terms of vectorised propensity
-$\omega(s|\mathbf{\Gamma})\in[0,\infty)^R$ which couples to higher order moments,
-unfolding an infinte heirarchy.
-\begin{align}
-	\partial_t
-	\left\langle s \right\rangle &=
-	\mathbf{\Gamma} \big\langle \omega(s|\mathbf{\Gamma}) \big\rangle
-	\label{eq:momentheirarchy}
-\end{align}
-\subsection{Reaction Equation}
-The mean field approximation factorises higher order moments, implying
-$\big\langle f(s) \big\rangle=f(\langle s\rangle)$ for any nonlinear
-function $f$. This is equivalent to neglecting fluctuations in the
-$N,\Omega\rightarrow\infty$
-thermodynamic limit, and it is here where the mass-action assumption
-becomes manifest \cite{Gillespie2007}.
-
-This closes the infinite heirarchy
-\eqref{eq:momentheirarchy} yielding a nonlinear set of coupled ordinary
-differential equations for a continuous vector field $\psi(t)\in[0,\infty)^S$.
-These have come to be known as the Reaction Rate Equations, and are
-typical for modelling processes in systems biology.
+\subsection{Partial Differential Equations}
+When studying spatio-temporal dynamics of organisms, a popular choice is to incorporate a diffusive term that models the exchange of matter between spatial locations
 \begin{align}
 	\partial_t
 	\psi &=
 	\mathbf{\Gamma}\omega(\psi|\mathbf{\Gamma})
 	\label{eq:reaction}
 \end{align}
+
+\subsection{Stochastic Differential Equations}
 
 \subsection{Bifurcation Analysis}
 In the mean field approximation \eqref{eq:reaction} we may investigate the
@@ -128,14 +88,12 @@ dimensional state-space.
 	\label{eq:steadystate}
 \end{align}
 
-\begin{figure}[H]
-\centering{}
-\captionsetup{justification=centering}
+\begin{Figure}
 \includegraphics[scale=0.35]{figures/nullclines}
 \caption{Schematic of two nullclines with their orthogonal local\\ field flows intersecting
 at \textcolor{Green}{stable} and \textcolor{orange}{unstable} fixed points $\psi^*$}
 \label{fig:nullclines}
-\end{figure}
+\end{Figure}
 Nullclines determine local direction of evolution of the system. On a given
 nullcline $\partial_t\psi[s]=0$ the flow of the field must be orthogonal to
 the direction of $\psi[s]$. At intersections between two nullclines, the flow
@@ -181,15 +139,14 @@ The sign of eigenvalues $\lambda$ of Jacobian $\mathbf{J}$ determine whether a f
 is stable $\lambda<0$ or unstable $\lambda>0$. As an illustrative example we can characterise
 fixed points given an arbitrary two dimensional Jacobian. Figure \ref{fig:stability} reveals
 the regions of stability and phase space flows.
-\begin{figure}[H]
-\centering{}
-\captionsetup{justification=centering}
+\begin{Figure}
 \includegraphics[scale=0.35]{figures/stability}
 \caption{Classification of \textcolor{Green}{stable} and \textcolor{orange}{unstable}
 fixed points for a general \\two dimensional Jacobian in terms of trace $\mathrm{Tr}[\mathbf{J}]$ and
 determinant $|\mathbf{J}|$}
 \label{fig:stability}
-\end{figure}
+\end{Figure}
+
 Varying the continuos parameters $\sigma[r]$ moves the nullclines and may result in
 the creation or annihilation of fixed points of different classes. While an individual
 fixed point may change location and local phase space flow, it cannot change class
@@ -200,9 +157,7 @@ Figure \ref{fig:bifurcations} illustrates some of the possible one parameter
 supercritical bifurcations; subcritical cases are obtained by permuting
 stabilities of fixed points. Note the hysteresis loop in the saddle-node
 bifurcation.
-\begin{figure}[H]
-\centering{}
-\captionsetup{justification=centering}
+\begin{Figure}
 \includegraphics[scale=0.35]{figures/saddlenode}
 \includegraphics[scale=0.35]{figures/transcritical}
 \includegraphics[scale=0.35]{figures/pitchfork}
@@ -210,7 +165,8 @@ bifurcation.
 \textcolor{Green}{stable} and \\\textcolor{orange}{unstable} fixed points $\psi^*$
 as a function of parameter $\sigma[r]$. Insets show nullcline intersections.}
 \label{fig:bifurcations}
-\end{figure}
+\end{Figure}
+
 Another category of bifurcations involves limit cycles, which emerge from fixed
 points where the linearised Jacobian eigenvalues have no real part. Limit cycles
 have circulating field flow as shown in Figure \ref{fig:stability} along the
@@ -220,16 +176,15 @@ Note how oscillations emerge at small amplitudes in the Hopf bifurcation,
 whereas the large amplitude oscillations may instantly emerge in an infinite-period
 or cyclic-fold bifurcation. In Figure \ref{fig:limitcycles} the shaded regions
 represent the peaks and troughs of the oscillations.
-\begin{figure}[H]
-\centering{}
-\captionsetup{justification=centering}
+\begin{Figure}
 \includegraphics[scale=0.35]{figures/limitcycles}
 \caption{Hopf, Cyclic-fold and Infinite-Period bifurcation diagram showing
 \textcolor{Green}{stable} and \textcolor{orange}{unstable}\\ fixed points
 and limit cycles as a function of parameter $\sigma[r]$.
 Insets show nullclines [tbc]}
 \label{fig:limitcycles}
-\end{figure}
+\end{Figure}
+
 \subsection{Attractor Geometry and Universality}
 In this section we would explore the geometrisation of phase space, lyapunov
 exponents and universality. Perhaps a discussion on phase transitions and
