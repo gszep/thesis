@@ -20,7 +20,9 @@ This section lays out a background dynamical systems theory and machine learning
 
 \section{Describing Phenotypes with Bifurcations}
 
-A phenotype is a qualitative state of an organism that can be described by several quantitative features. This could be, for example, a phenotype of antimicrobial resistant bacteria \cite{Baym2016SpatiotemporalLandscapes}. We can break down this observation as follows: a cell can be in the qualitative state of \emph{resistant} or \emph{not resistant} at a certain concentration $p$ of antibiotic. Another example could be that of action potentials in neurons \cite{}. A neuron can either be \emph{firing} or \emph{not firing} in response to a given electro-chemical potential $p$. Whole organism phenotypes, such as pigment patterns \emph{Zebrafish} \cite{}, can also be described this way. In this case the phenotype emerges as the organism develops and therefore we look for emergence of \emph{patterns} or \emph{no patterns} over time $p=t$.
+A phenotype is a qualitative state of an organism that can be described by several quantitative features. Before considering the additional complexity that comes with biology, let us first consider a simple mechanical metaphor: light bulbs. Light bulbs come in various combinations of quantitative features $\theta$ which could be shape, colour, materials and circuit design. The purpose of a light bulb is to fulfil a single function: beyond a certain threshold of voltage $p$ the brightness increases, pushing the qualitative state of the bulb from \emph{off} to \emph{on}.
+
+This could be, for example, a phenotype of antimicrobial resistant bacteria \cite{Baym2016SpatiotemporalLandscapes}. We can break down this observation as follows: a cell can be in the qualitative state of \emph{resistant} or \emph{not resistant} at a certain concentration $p$ of antibiotic. Another example could be that of action potentials in neurons \cite{}. A neuron can either be \emph{firing} or \emph{not firing} in response to a given electro-chemical potential $p$. Whole organism phenotypes, such as pigment patterns \emph{Zebrafish} \cite{}, can also be described this way. In this case the phenotype emerges as the organism develops and therefore we look for emergence of \emph{patterns} or \emph{no patterns} over time $p=t$.
 
 Suppose that the transition between phenotypes is controlled by possibly quite complicated changes in a subset of many unknown parameters $\theta$. The antimicrobial resistance originates from selective pressures in the environment which change biochemical pathways which we can encode in parameters $\theta$. Neurons also have pathways that regulate aspects such as thickness of myelin sheaths on axons, that in turn dictate how sensitive, if at all, they are to firing. In the case of the \emph{Zebrafish} the parameters $\theta$ encode whether a particular mutation in the genome is present or not. In some sense we can consider changes in $\theta$ as changes in the organism genotype that may or may not lead to a new phenotype. Only after exposing the organism to a change in controlled condition $p$, and observing a qualitative change in behaviour, can we claim to have identified a new phenotype.
 
@@ -121,7 +123,7 @@ evaluated at each fixed point $\psi^*$.
 	\label{eq:linearstability}
 \end{align}
 For reactions involving one or two distinguishable particles as
-in \eqref{eq:simplifiedpropensity} the nullclines become hyperplanes and the Jacobian
+in ... the nullclines become hyperplanes and the Jacobian
 simplifies. We can see that both the reaction topology given by stoichiometric
 coefficients $\Gamma[i,j]$ and the reaction rates $\sigma[r]$ contribute to
 rotating and shifting the hyperplanes and determining the location and stability
