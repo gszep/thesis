@@ -42,16 +42,16 @@ set_theme!(Theme(
 figure = Figure(resolution = 72 .* (8,8) )
 ax = Axis(figure[1,1],
     ylabel = "",
-    xlabel = L"vector field $F_\theta$"
+    xlabel = ""
 )
 
 streamplot!( ax, x-> limit_cycle(x,r->norm(r+[2,-2])-1) + 5*fixed_point(x,[1,-1]),
-    -5..2, -2..4, density=1, linewidth=3, colormap=[:lightblue])
+    -5..2, -2..4, density=1, linewidth=3, colormap=[:lightblue], stepsize=0.1)
 
 scatter!( ax, [1/15], [1.2], markersize=8, color=:lightblue)
 scatter!( ax, [1], [-1], markersize=8, color=:darkblue)
 figure
-
+save("figures/trajectory-1.pdf",figure)
 
 using GLMakie
 using DataStructures: CircularBuffer

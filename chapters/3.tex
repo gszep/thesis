@@ -1,4 +1,4 @@
-\chapter{Interpretation of morphogen gradients by a bistable circuit}
+\chapter{Interpretation of Morphogen Gradients by a Bistable Circuit}
 \label{chapter:double-exclusive}
 \epigraph{\textit{memory of younger days}}{Ocarina of Time}
 \section{Preface}
@@ -53,7 +53,7 @@ that patterns develop before the colony reaches stationary phase.
 The role of theory and computation in this project is to help identify the
 parameter regimes that produce controllable and self-organised patterns.
 
-\subsection{Developmental Context}
+\subsection{Problem Statement \& Context}
 During the development of any organism a hierarchy of self-organisation takes place that leads
 to the breaking of symmetry from a spherical cluster of undifferentiated cells to the formation
 of organ segments and limbs. This process is known as morphogenesis. figure \ref{fig:morph}
@@ -67,7 +67,7 @@ Drosophila can drastically affect its development.
 Bottom: Mutation where legs grow in-place of antenna}
 \label{fig:morph}
 \end{Figure}
-\subsection{Morphogen-driven Patterns}
+\subsubsection{Morphogen-driven Patterns}
 One of the central questions in developmental biology is how positional information is
 sensed by a population of cells and how sharp gene expression boundaries between
 populations are maintained for robust organ and body segment development. The
@@ -84,7 +84,7 @@ Drosophila embryo into segments which are later differentiated by \textit{Hox} g
 \label{fig:gap}
 \end{Figure}
 
-\subsection{Self-organised Patterns}
+\subsubsection{Self-organised Patterns}
 How are morphogen gradients set up and maintained? How can they be robust against
 changes in size and geometry? A canonical example of self-organisation in bacteria
 is the quorum sensing system \cite{Miller2002QuorumBacteria}. Each cell secretes a
@@ -101,7 +101,7 @@ suggests both morphogen-driven and Turing patterning mechanisms play a role in d
 \label{fig:turing}
 \end{Figure}
 
-\subsection{Learnings \& Limitations}
+\subsubsection{Learnings \& Limitations}
 This section outlines the results on determining the bi-stability landscape for the
 \textit{double-exclusive reporter}, and how its geometry helps determine the conditions for
 moving and stationary sharp boundary formation. The design of the device is summarised 
@@ -135,7 +135,7 @@ concentrations. Bottom: Steady state predictions between data regions.}
 \label{fig:microplate-data}
 \end{Figure}
 
-\subsection{Microtiter Plate Data}
+\subsubsection{Microtiter Plate Data}
 The synthetic bacterial cultures are grown in suspended media and plated on
 96 well microtiter plates in different concentrations of signalling molecules
 $C_6$, $C_{12}$ and de-repressesors \textit{ATC},\textit{IPTG}. Then
@@ -146,7 +146,7 @@ population eventually reaches stationary phase. figure \ref{fig:microplate-data}
 several different conditions overlayed on top of a model what predicts
 the steady state behaviour between collected data regions.
 
-\subsection{Spatial Experiments}
+\subsubsection{Spatial Experiments}
 Simulations of the model revealed that if the final homogenous concentrations
 of $C_6$ and $C_{12}$ lie within the bistable region, then the prepatterned
 signals will form a sharp boundary at their interface. Spatial experiments
@@ -185,7 +185,7 @@ Contributions for this work are as follows
         6, figure, {\textit{Fig. 4}\quad Addition of a Relay circuit creates self-organised domains of gene expression.}, fig:double-exclusive:relay
 }]{publications/double-exclusive.pdf}
 
-\subsection{Afterword}
+\section{Afterword}
 
 The decision to focus on single cell trajectories and flow cytometry came from the limitations of using microplate data in Chapter \ref{chapter:double-exclusive}. The model parameters $\theta$ were estimated using a hierarchical monte-carlo approach and time-course fluorescence microplate measurements (details of which can be found in Appendix \ref{appendix:double-exclusive:inference}). The time-courses include information about dynamical transients and colony growth in liquid culture as shown in Figure \ref{fig:microplate-data}. The desired cusp bifurcation, however, lives in state-space rather than the time-domain. The disconnect between the domain that the data lives in and the domain of the design goals poses the risk of over-fitting the model on undesired information that exists in the data domain. 
 
