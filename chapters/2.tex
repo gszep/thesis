@@ -72,7 +72,7 @@ For the purposes of this thesis we will assume that the behaviour of the organis
 	\label{eq:differential-equations}
 \end{equation}
 
-\noindent The total derivative $\frac{du}{dt}$ gives us the rate of change of the states with respect to time $t$ and all variables have been vectorised with the appropriate dimension. In principle the right-hand-side $\rates$ can be arbitrarily complicated, containing spatial derivatives or even machine learning models such as neural networks. We shall see later when such models become relevant in biomedical modelling. First we shall demonstrate the benefits of casting a problem in differential equations.
+\noindent The total derivative $\frac{du}{dt}$ gives us the rate of change of the states with respect to time $t$ and all variables have been vectorised with the appropriate dimension. In principle the right-hand-side $\rates$ can be arbitrarily complicated, containing spatial derivatives or even machine learning models such as neural networks. We shall see later when such models become relevant in biomedical modelling.
 
 \subsubsection{Trajectories \& Field Geometry}
 
@@ -84,7 +84,7 @@ In principle once equations \eqref{eq:differential-equations} have been written 
 Here the integral reveals that in order to determine where the state is at time $t$ we need to sum all the contributions of the function $\rates$ from the initial time $t'$ all the way up to final time $t$. The function $\rates$ depends on the state $u$ and must be updated with the integration variable $s$. This calculation can be interpreted, as shown in Figure \ref{fig:fields}, as choosing an initial point $u'=u(t')$ in a vector field $\rates$ and following the field lines until time $t$ at which the final point $u=u(t)$ has been reached.
 
 \begin{Figure}
-\includegraphics[scale=0.9]{fields}
+\includegraphics[scale=0.72]{fields}
 \caption{Illustration of a trajectory between $u=u(t)$ and $u'=u(t')$ over finite time $t-t'$ following the field lines of $\rates$. In this example field lines either point towards steady state $\steady$ or a limit cycle $\cycle(t)$. There are two unstable fixed points marked by crosses: a saddle point separating the basins of attraction and an unstable focus enclosed by the limit cycle.}
 \label{fig:fields}
 \end{Figure}
@@ -93,7 +93,94 @@ By considering the geometry of the field $\rates$ in state space we can determin
 
 When equations \eqref{eq:differential-equations} describe the behaviours of an organism, the attractors determine the set of qualitative behaviours available to the organism of genotype $\theta$, whilst experiencing experimental conditions $p$. If changes to the genotype $\theta$ change the number, type or stability of the attractors then we will observe new qualitative behaviours and hence a new phenotype. If changes to conditions $p$ lead to changes in the state space geometry, this is interpreted as a different behavioural state available to the same phenotype. We can see therefore how casting a biomedical problem into the language of differential equations, allows us to characterise phenotypic traits with the geometry of attractors in state space. 
 
+\subsubsection{Lyapunov Spectrum Analysis}
+
+We can determine the stability of attractors by looking at the geometry of field lines in its vicinity. Do they converge or diverge? Does the field rotate? We could answer these questions tracking the evolution of small perturbations $\delta u$ between adjacent trajectories. Let us begin by substituting the perturbed trajectory $u+\delta u$ into equations \eqref{eq:differential-equations}
+\begin{equation}
+	\frac{d}{dt}(u+\delta u) = \rates(u+\delta u,p)
+\end{equation}
+After Taylor expanding the field $\rates$ and recognising that equations \eqref{eq:differential-equations} lead to a cancellation in the terms involving the unperturbed trajectory $u$ we arrive at
+\begin{equation}
+	\frac{d}{dt}(\delta u) =
+	\left.\jacobian\right|_{u=u(t)}\!\!\delta u + \mathcal{O}(\delta u^2)
+	\label{eq:linearised-differential-equations}
+\end{equation}
+where $\jacobian$ is the Jacobian of the field and additional terms $\mathcal{O}(\delta u^2)$ involve taking higher order derivatives of the field $\rates$. Choosing a perturbation sufficiently small such that we can ignore higher order terms yields a first order homogenous ordinary matrix differential equation of the form $\dot{\delta u}(t)\approx J(t)\delta u(t)$ where $J(t)$ is a time-varying Jacobian. These equations can be solved formally with time-ordered matrix exponentiation \cite{}
+
+\begin{Figure}
+\includegraphics[scale=1.5]{lyapunov}
+\caption{Illustration how the time ordering operator $\mathcal{T}\left\{e^{\int_{t'}^t J(s) \mathrm{d}s}\right\}$ propagates the separation $\delta u(t)$ between adjacent trajectories $u$ and $u+\delta u$ by repeated application of the exponentiated Jacobian $e^{J(t)\Delta t}$ evaluated along unperturbed trajectory $u(t)$}
+\label{fig:lyapunov}
+\end{Figure}
+\begin{equation}
+	\delta u(t) \approx
+	\mathcal{T}\left\{e^{\int_{t'}^t J(s) \mathrm{d}s}\right\}\delta u(t')
+	\quad\mathrm{where}\quad
+	J(t) := \left.\jacobian\right|_{u=u(t)}
+	\label{eq:matrix-exponential}
+\end{equation}
+The time-ordering defines an ordered product of matrix exponentials
+\begin{equation}
+	\mathcal{T}\left\{ e^{\int_{t'}^t J(s) \mathrm{d}s} \right \}:=
+	\lim_{\Delta t\rightarrow 0}\left(
+		e^{J(t)\Delta t}e^{J(t-\Delta t)\Delta t}\,\dots\,
+		e^{J(t'+\Delta t)\Delta t}e^{J(t')\Delta t}
+	\right)
+	\label{eq:time-ordering-operator}
+\end{equation}
+which can be calculated by repeated exponentiation of the Jacobian $e^{J(t)\Delta t}$ evaluated at different times along the unperturbed trajectory $u(t)$. Although this expression may look complicated it is just another matrix whos eigenvalues reveal whether the trajectories diverge $|\delta u(t\rightarrow\infty)|\rightarrow\infty$ or converge $|\delta u(t\rightarrow\infty)|\rightarrow0$. The rates of convergence or divergence are known as Lyapunov exponents, and can be defined in a local patch of state space as the eigenvalues of
+\begin{equation}
+	\Lambda(u) := \frac{1}{\Delta t}\log\left(
+		\mathcal{T}\left\{ e^{\int_{t}^{t+\Delta t} J(s) \mathrm{d}s} \right \}
+	\right)
+	\label{eq:lyapunov-spectrum}
+\end{equation}
+Note that to calculate this matrix we need to choose an initial point in state space $u=u(t)$, obtain the trajectory up to $u(t+\Delta t)$ and evaluate the Jacobian along the trajectory in the time ordered integral.
+
 \subsubsection{Linear Stability Analysis}
+
+Thusfar we dealt with stability in arbitrary patches of state space $u$ and asked questions about local flows. What happens when we look at flows in the vicinity of fixed points $\steady$ that satisfy the equation
+\begin{equation}
+	\left.\frac{du}{dt}\right|_{u=\steady}=\rates(\steady,p) = 0
+	\label{eq:fixed-point-equation}
+\end{equation}
+In this case, since there is no time-dependence in the equation \eqref{eq:matrix-exponential}, the time-ordered integral simplifies yielding a matrix exponential equation for perturbations from fixed points $\delta\steady(t)$
+\begin{equation}
+	\delta\steady(t) \approx
+	e^{(t-t')\left.\jacobian\right|_{u=\steady}}\delta\steady(t')
+	\label{eq:fixed-point-perturbations}
+\end{equation}
+The Jacobian evaluated at fixed points $\left.\jacobian\right|_{u=\steady}$ can be expressed in terms of its eigenvectors $v_\lambda$ and eigenvalues $\lambda$ and therefore 
+\begin{equation}
+	\delta\steady(t)  \approx \sum_{\lambda}
+	\alpha_{\lambda}v_{\lambda}e^{\lambda(t-t')}\quad\mathrm{where}\quad
+	\lambda v_{\lambda} = \lambda\left.\jacobian\right|_{u=\steady} v\in\Reals^N
+\end{equation}
+\begin{equation*}
+	\mathrm{with}\,\alpha_{\lambda}\,
+	\mathrm{given\,\,by\,\,initial\,\,condition}
+	\,\delta\steady(t')
+	\label{eq:fixed-point-perturbations-diagonal}
+\end{equation*}
+We can see that the sign of the real parts to eigenvalues $\Re\mathrm{e}\lambda$ determine the exponential growth or shrinkage of fixed point perturbations $\delta\steady(t)$ in the direction parallel to the corresponding eigenvector $v_{\lambda}$. The imaginary parts $\Im\mathrm{m}\lambda$ determine the frequency of oscillations around the fixed point. If at least one of the eigenvalues has a positive real part $\Re\mathrm{e}\lambda$ the field pushes trajectories away from the fixed point in direction $v_{\lambda}$ which means the fixed point is unstable.
+
+\begin{Figure}
+\includegraphics[scale=0.35]{figures/stability}
+\caption{Classification of \textcolor{Green}{stable} and \textcolor{orange}{unstable}
+fixed points for a general \\two dimensional Jacobian in terms of trace $\mathrm{Tr}[J]$ and
+determinant $|J|$}
+\label{fig:stability}
+\end{Figure}
+
+For a two dimensional system we can express the two eigenvalues of the $2\times 2$ Jacobian in terms of its trace $\mathrm{Tr}[J]$ and determinant $|J|$. Figure \ref{fig:stability} reveals the regions of stability and field flows for an arbitrary two dimensional system in terms of the Jacobian trace and determinant. We can see now how changing the model can lead to changes in sign in one of the eigenvalues of the Jacobian. This leads to a change in stability of a fixed point which is in fact type of bifurcation. This diagram gives us an intuition for the types of fixed points that are possible, but not all of them can be characterised in this way. Degenerate fixed points may lead to vanishing of the Jacobian and hence require investigation of higher-order derivates of the field $\rates$ which were dropped in the approximation \eqref{eq:matrix-exponential}. In contrast to what is shown in Figure \ref{fig:stability} it is not possible to know whether a limit cycle is present by looking at the eigenvalues of its corresponding fixed point alone.
+
+In the vicinity of non-degenerate fixed points $\steady$ the Lyapunov spectrum \eqref{eq:lyapunov-spectrum} is is simply given by the Jacobian eigenvalues. Another scenario in which this simplication occurs is for small time intervals $\Delta t\rightarrow 0$ when evaluating the spectrum. Therefore
+\begin{equation}
+	\lim_{\Delta t\rightarrow 0}\Lambda(u) = \Lambda(\steady) =  \jacobian
+	\label{eq:jacobian-spectrum}
+\end{equation}
+
+While the rest of this thesis does not deal with chaotic systems, we would like make the reader aware of equation \eqref{eq:lyapunov-spectrum} which can be used as a substitute for the Jacobian for characterising chaotic attractors. Note that a suitably chosen timescale $\Delta t$ to match the onset of chaos must be chosen in this case. 
 
 \subsubsection{Limit Cycle Analysis}
 
@@ -200,16 +287,7 @@ of their intersections.
 	\label{eq:simplifiedjacobian}
 \end{align}
 The sign of eigenvalues $\lambda$ of Jacobian $\mathbf{J}$ determine whether a fixed point
-is stable $\lambda<0$ or unstable $\lambda>0$. As an illustrative example we can characterise
-fixed points given an arbitrary two dimensional Jacobian. Figure \ref{fig:stability} reveals
-the regions of stability and phase space flows.
-\begin{Figure}
-\includegraphics[scale=0.35]{figures/stability}
-\caption{Classification of \textcolor{Green}{stable} and \textcolor{orange}{unstable}
-fixed points for a general \\two dimensional Jacobian in terms of trace $\mathrm{Tr}[\mathbf{J}]$ and
-determinant $|\mathbf{J}|$}
-\label{fig:stability}
-\end{Figure}
+is stable $\lambda<0$ or unstable $\lambda>0$. 
 
 Signal response curves
 
