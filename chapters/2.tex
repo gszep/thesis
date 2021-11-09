@@ -43,7 +43,7 @@ In the biological context, we can consider changes in $\theta$ as changes in the
 \label{fig:waddington}
 \end{Figure}
 
-In order to enumerate the phenotype distribution in the the high-dimensional parameter space $\theta$ for a given organism we must construct a model. Such a model $\rates(u,p)$ must be parametrised by $\theta$ and relate the states of the organism $u$ to experimentally controlled conditions $p$. Ideally a subset of $u$ can be observed experimentally so that we may observe bifurcations in the data, as demonstrated in the right-hand panel of Figure \ref{fig:bulb}. In the following section we shall go through a class of models that can leverage bifurcation theory.  
+In order to enumerate the phenotype distribution in the the high-dimensional parameter space $\theta$ for a given organism we must construct a model. By parameterising such a model $\rates(u,p)$ by $\theta$, we can relate the states of the organism $u$ to experimentally controlled conditions $p$. Ideally a subset of $u$ can be observed experimentally so that we may observe bifurcations in the data, as demonstrated in the right-hand panel of Figure \ref{fig:bulb}. In the following section we shall go through a class of models that can leverage bifurcation theory.  
 
 % The problem is that the space of decisions that change $\theta$ is intractably large. Furthermore there is no guarantee that any two phenotypes would be connected via experimentally accessible changes in $\theta$. We will see in the incorporated publication in Chapter \ref{chapter:double-exclusive} how differential equation modelling and machine learning can be used to guide experiments and the genetic engineering of \emph{E. coli} towards a phenotype referred to as the \emph{double exclusive reporter}. 
 
@@ -188,6 +188,48 @@ While the rest of this thesis does not deal with chaotic systems, we would like 
 \subsection{Bifurcation Analysis}
 \label{section:bifurcation-analysis}
 
+\subsubsection{Static Non-degenerate Bifurcations}
+
+Varying the continuos parameters $\sigma[r]$ moves the nullclines and may result in
+the creation or annihilation of fixed points of different classes. While an individual
+fixed point may change location and local phase space flow, it cannot change class
+without involving another fixed point.
+
+These are called bifurcations and also fall into various categories.
+Figure \ref{fig:bifurcations} illustrates some of the possible one parameter
+supercritical bifurcations; subcritical cases are obtained by permuting
+stabilities of fixed points. Note the hysteresis loop in the saddle-node
+bifurcation.
+\begin{Figure}
+\includegraphics[scale=0.35]{figures/saddlenode}
+\includegraphics[scale=0.35]{figures/transcritical}
+\includegraphics[scale=0.35]{figures/pitchfork}
+\caption{Saddle-node, Transcritical and Pitchfork bifurcation diagram showing
+\textcolor{Green}{stable} and \\\textcolor{orange}{unstable} fixed points $\psi^*$
+as a function of parameter $\sigma[r]$. Insets show nullcline intersections.}
+\label{fig:bifurcations}
+\end{Figure}
+
+\subsubsection{Dynamic Bifurcations}
+Another category of bifurcations involves limit cycles, which emerge from fixed
+points where the linearised Jacobian eigenvalues have no real part. Limit cycles
+have circulating field flow as shown in Figure \ref{fig:stability} along the
+$\mathrm{Tr}[\mathbf{J}]=0$, $|\mathbf{J}|>0$ axis.
+
+Note how oscillations emerge at small amplitudes in the Hopf bifurcation,
+whereas the large amplitude oscillations may instantly emerge in an infinite-period
+or cyclic-fold bifurcation. In Figure \ref{fig:limitcycles} the shaded regions
+represent the peaks and troughs of the oscillations.
+\begin{Figure}
+\includegraphics[scale=0.35]{figures/limitcycles}
+\caption{Hopf, Cyclic-fold and Infinite-Period bifurcation diagram showing
+\textcolor{Green}{stable} and \textcolor{orange}{unstable}\\ fixed points
+and limit cycles as a function of parameter $\sigma[r]$.
+Insets show nullclines [tbc]}
+\label{fig:limitcycles}
+\end{Figure}
+
+\subsubsection{Parameter Continuation}
 
 \subsection{Spatially Extended Systems}
 
@@ -225,109 +267,6 @@ While principled derivation from microscopic rules exist, often the the number o
 
 
 \subsubsection{Stochastic Differential Equations}
-
-In the mean field approximation \eqref{eq:reaction} we may investigate the
-steady state $\partial_t\psi=0$. This gives rise to a set of $S$ polynomial
-equations in the components $\psi[s]\in[0,\infty)$ of steady state $\psi^*$
-These define $S-1$ dimensional nullcline hypersurfaces embedded in $S$
-dimensional state-space.
-\begin{align}
-	\sum_{r=1}^R\Gamma[s',r]\sigma[r]
-		\prod_{s=1}^S{\psi[s] \choose g[s,r]}
-		\bigg|_{\psi=\psi^*}
-		=0\qquad\forall s'=1,2,\dots,S
-	\label{eq:steadystate}
-\end{align}
-
-\begin{Figure}
-\includegraphics[scale=0.35]{figures/nullclines}
-\caption{Schematic of two nullclines with their orthogonal local\\ field flows intersecting
-at \textcolor{Green}{stable} and \textcolor{orange}{unstable} fixed points $\psi^*$}
-\label{fig:nullclines}
-\end{Figure}
-Nullclines determine local direction of evolution of the system. On a given
-nullcline $\partial_t\psi[s]=0$ the flow of the field must be orthogonal to
-the direction of $\psi[s]$. At intersections between two nullclines, the flow
-must be orthogonal to the plane defined by two axes. At the interactions between
-all nullcline we may find the fixed points $\psi^*$ as shown in Figure \ref{fig:nullclines}.
-
-Classification of fixed points $\psi^*$ is done by linearising the equation of motion
-\eqref{eq:reaction} with respect to field perturbation $\varepsilon(t)$ in their vicinity
-and determining the eigenvalues of the resultant $S\times S$ Jacobian $\mathbf{J}(\psi)$
-evaluated at each fixed point $\psi^*$.
-\begin{align}
-	\varepsilon(t) \sim
-	\mathbb{e}^{\mathbf{J}(\psi)|_{\psi=\psi^*}t}\qquad\qquad\qquad\qquad\qquad\qquad
-	\\
-	\quad\text{where}\quad
-	\mathrm{J}[i,j]=
-	\sum_{r=1}^R
-	\sigma[r]
-\bigg(H(\psi[i])-H(\psi[i]-g[i,r])\bigg)
-	\Gamma[j,r]
-		\prod_{s=1}^S{\psi[s] \choose g[s,r]}
-	\\
-	H(x)=\int_0^1\frac{1-t^x}{1-t}\mathrm{d}t\quad
-	\text{are generalised Harmonic Numbers}\qquad
-	\label{eq:linearstability}
-\end{align}
-For reactions involving one or two distinguishable particles as
-in ... the nullclines become hyperplanes and the Jacobian
-simplifies. We can see that both the reaction topology given by stoichiometric
-coefficients $\Gamma[i,j]$ and the reaction rates $\sigma[r]$ contribute to
-rotating and shifting the hyperplanes and determining the location and stability
-of their intersections.
-\begin{align}
-	\mathrm{J}[i,j]=
-	\sum_{r=1}^R
-		\sigma[r]|\Gamma[i,r]|\Gamma[j,r]
-		\prod_{\,s\neq i}
-		\psi[s]^{g[i,r]}
-		\qquad g[i,r]\in\{0,1\} \quad\forall i,r
-	\label{eq:simplifiedjacobian}
-\end{align}
-The sign of eigenvalues $\lambda$ of Jacobian $\mathbf{J}$ determine whether a fixed point
-is stable $\lambda<0$ or unstable $\lambda>0$. 
-
-Signal response curves
-
-Varying the continuos parameters $\sigma[r]$ moves the nullclines and may result in
-the creation or annihilation of fixed points of different classes. While an individual
-fixed point may change location and local phase space flow, it cannot change class
-without involving another fixed point.
-
-These are called bifurcations and also fall into various categories.
-Figure \ref{fig:bifurcations} illustrates some of the possible one parameter
-supercritical bifurcations; subcritical cases are obtained by permuting
-stabilities of fixed points. Note the hysteresis loop in the saddle-node
-bifurcation.
-\begin{Figure}
-\includegraphics[scale=0.35]{figures/saddlenode}
-\includegraphics[scale=0.35]{figures/transcritical}
-\includegraphics[scale=0.35]{figures/pitchfork}
-\caption{Saddle-node, Transcritical and Pitchfork bifurcation diagram showing
-\textcolor{Green}{stable} and \\\textcolor{orange}{unstable} fixed points $\psi^*$
-as a function of parameter $\sigma[r]$. Insets show nullcline intersections.}
-\label{fig:bifurcations}
-\end{Figure}
-
-Another category of bifurcations involves limit cycles, which emerge from fixed
-points where the linearised Jacobian eigenvalues have no real part. Limit cycles
-have circulating field flow as shown in Figure \ref{fig:stability} along the
-$\mathrm{Tr}[\mathbf{J}]=0$, $|\mathbf{J}|>0$ axis.
-
-Note how oscillations emerge at small amplitudes in the Hopf bifurcation,
-whereas the large amplitude oscillations may instantly emerge in an infinite-period
-or cyclic-fold bifurcation. In Figure \ref{fig:limitcycles} the shaded regions
-represent the peaks and troughs of the oscillations.
-\begin{Figure}
-\includegraphics[scale=0.35]{figures/limitcycles}
-\caption{Hopf, Cyclic-fold and Infinite-Period bifurcation diagram showing
-\textcolor{Green}{stable} and \textcolor{orange}{unstable}\\ fixed points
-and limit cycles as a function of parameter $\sigma[r]$.
-Insets show nullclines [tbc]}
-\label{fig:limitcycles}
-\end{Figure}
 
 
 \subsection{Self-organised Patterns \& Development}
