@@ -11,7 +11,7 @@
 \restylefloat{figure}
 \graphicspath{{figures/}}
 
-\usepackage{amsmath}
+\usepackage{amsmath,amssymb,amsfonts,bbold}
 \usepackage{booktabs} % pretty tables
 
 \usepackage{gensymb}
@@ -28,19 +28,14 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 
-\usepackage{mathpazo}
+\let\altmathbb\mathbb
+\usepackage[sc]{mathpazo}
+\AtBeginDocument{\let\mathbb\altmathbb}
+
 \usepackage{epigraph} %quotes
 \usepackage{musixtex}
 
 \setlength\epigraphwidth{.8\textwidth}
-
-\usepackage{siunitx}
-\sisetup{
-  input-ignore={,},
-  input-decimal-markers={.},
-  group-separator={,},
-  group-minimum-digits=4,
-}
 
 \usepackage{todonotes}
 \usepackage{notoccite}% PREVENTS CITES IN CAPTIONS FROM MISNUMBERING YOUR REFERENCES 

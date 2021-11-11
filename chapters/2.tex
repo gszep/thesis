@@ -43,7 +43,7 @@ In the biological context, we can consider changes in $\theta$ as changes in the
 \label{fig:waddington}
 \end{Figure}
 
-In order to enumerate the phenotype distribution in the the high-dimensional parameter space $\theta$ for a given organism we must construct a model. By parameterising such a model $\rates(u,p)$ by $\theta$, we can relate the states of the organism $u$ to experimentally controlled conditions $p$. Ideally a subset of $u$ can be observed experimentally so that we may observe bifurcations in the data, as demonstrated in the right-hand panel of Figure \ref{fig:bulb}. In the following section we shall go through a class of models that can leverage bifurcation theory.  
+In order to enumerate the phenotype distribution in the the high-dimensional parameter space $\theta$ for a given organism we must construct a model. By parametrising such a model $\rates(u,p)$ by $\theta$, we can relate the states of the organism $u$ to experimentally controlled conditions $p$. Ideally a subset of $u$ can be observed experimentally so that we may observe bifurcations in the data, as demonstrated in the right-hand panel of Figure \ref{fig:bulb}. In the following section we shall go through a class of models that can leverage bifurcation theory.  
 
 % The problem is that the space of decisions that change $\theta$ is intractably large. Furthermore there is no guarantee that any two phenotypes would be connected via experimentally accessible changes in $\theta$. We will see in the incorporated publication in Chapter \ref{chapter:double-exclusive} how differential equation modelling and machine learning can be used to guide experiments and the genetic engineering of \emph{E. coli} towards a phenotype referred to as the \emph{double exclusive reporter}. 
 
@@ -55,10 +55,10 @@ In order to enumerate the phenotype distribution in the the high-dimensional par
 
 % This could be, for example, a phenotype of antimicrobial resistant bacteria \cite{Baym2016SpatiotemporalLandscapes}. We can break down this observation as follows: a cell can be in the qualitative state of \emph{resistant} or \emph{not resistant} at a certain concentration $p$ of antibiotic. Another example could be that of action potentials in neurons \cite{}. A neuron can either be \emph{firing} or \emph{not firing} in response to a given electro-chemical potential $p$. Whole organism phenotypes, such as pigment patterns \emph{Zebrafish} \cite{}, can also be described this way. In this case the phenotype emerges as the organism develops and therefore we look for emergence of \emph{patterns} or \emph{no patterns} over time $p=t$.
 
+% In practice we can only observe a subset of the states, for example by incorporating fluorescent proteins downstream of the coding sequences of the proteins that participate in the antimicrobial resistance. Incorporating any fluorescent proteins into the host genome contributes to cell burdon and at worst can disrupt the mechanism under study. Therefore incorporation sites much be chosen sparsely such that the qualitative behaviour is still observable in the data.
+
 \clearpage
 \subsection{Differential Equation Models}
-
-% In practice we can only observe a subset of the states, for example by incorporating fluorescent proteins downstream of the coding sequences of the proteins that participate in the antimicrobial resistance. Incorporating any fluorescent proteins into the host genome contributes to cell burdon and at worst can disrupt the mechanism under study. Therefore incorporation sites much be chosen sparsely such that the qualitative behaviour is still observable in the data.
 
 For the purposes of this thesis we will assume that the behaviour of the organism under study can be cast in terms of differential equations in a $N$ states $u$, $M$ parameters $\theta$ and $P$ control conditions $p$. For now we shall state the general class of models and follow up with concrete biological examples as we explore different types of bifurcations. Throughout the thesis we will consider models of the form
 
@@ -84,14 +84,82 @@ In principle once equations \eqref{eq:differential-equations} have been written 
 Here the integral reveals that in order to determine where the state is at time $t$ we need to sum all the contributions of the function $\rates$ from the initial time $t'$ all the way up to final time $t$. The function $\rates$ depends on the state $u$ and must be updated with the integration variable $s$. This calculation can be interpreted, as shown in Figure \ref{fig:fields}, as choosing an initial point $u'=u(t')$ in a vector field $\rates$ and following the field lines until time $t$ at which the final point $u=u(t)$ has been reached.
 
 \begin{Figure}
-\includegraphics[scale=0.72]{fields}
+\includegraphics[scale=0.9]{fields}
 \caption{Illustration of a trajectory between $u=u(t)$ and $u'=u(t')$ over finite time $t-t'$ following the field lines of $\rates$. In this example field lines either point towards steady state $\steady$ or a limit cycle $\cycle(t)$. There are two unstable fixed points marked by crosses: a saddle point separating the basins of attraction and an unstable focus enclosed by the limit cycle.}
 \label{fig:fields}
 \end{Figure}
 
-By considering the geometry of the field $\rates$ in state space we can determine the fate of sets of trajectories, which are ultimately pulled towards \emph{dynamical attractors}. Such attractors can be static steady states $\steady$ or dynamic like the limit cycle $\cycle(t)$ illustrated in Figure \ref{fig:fields}. Dynamic attractors create basins of attraction defined as regions of state space in which trajectories are pulled towards the same stable structure. These basins must be separated by unstable structures, such as the saddle point marked by a cross in Figure \ref{fig:fields}, which define a boundary between the basins called the separatrix. Note that the direction of the field $\rates$ and not its magnitude $|\rates|$ determines the fate of a trajectories.
+By considering the geometry of the field $\rates$ in state space we can determine the fate of sets of trajectories, which are ultimately pulled towards \emph{dynamical attractors}. Such attractors can be static steady states $\steady$ or dynamic like the limit cycle $\cycle(t)$ illustrated in Figure \ref{fig:fields}. \emph{Dynamical attractors} create basins of attraction defined as regions of state space in which trajectories are pulled towards the same stable structure. These basins must be separated by unstable structures, such as the saddle point marked by a cross in Figure \ref{fig:fields}, which define a boundary between the basins called the separatrix. Note that the direction of the field $\rates$ and not its magnitude $|\rates|$ determines the fate of a trajectories.
 
 When equations \eqref{eq:differential-equations} describe the behaviours of an organism, the attractors determine the set of qualitative behaviours available to the organism of genotype $\theta$, whilst experiencing experimental conditions $p$. If changes to the genotype $\theta$ change the number, type or stability of the attractors then we will observe new qualitative behaviours and hence a new phenotype. If changes to conditions $p$ lead to changes in the state space geometry, this is interpreted as a different behavioural state available to the same phenotype. We can see therefore how casting a biomedical problem into the language of differential equations, allows us to characterise phenotypic traits with the geometry of attractors in state space. 
+
+\subsubsection{The Jacobian Matrix}
+
+In order to quantify the geometry of a local patch of state space $u$ we can imagine $\rates$ as a velocity field of water and place a tiny blob of ink surrounding the location $u$. The so called Jacobian matrix $\jacobian$ of partial derivatives at the location $u$ transforms the basis vectors $\hat u(t)$ defining the blob over a short period of time $\Delta t$ as depicted in Figure \ref{fig:jacobian}. The transformation is
+\begin{equation}
+	\hat{u}(t+\Delta t)=\left (\mathbb{1}+\jacobian\Delta t \right)\hat{u}(t)
+	\quad\mathrm{where}\quad
+	\hat{u}\in\Reals^N\quad
+	\jacobian\in\Reals^{N\times N}
+	\label{eq:jacobian-transformation}
+\end{equation}
+
+\begin{Figure}
+\includegraphics[scale=1.2]{jacobian}
+\caption{Illustration how the Jacobian matrix $\jacobian$ transforms the basis vectors $\hat u(t)$ defining a small patch of initial conditions for a short period of time $\Delta t$. The eigenvalues $\lambda$ and eigenvectors $\eigenvector$ define the deformation of the patch}
+\label{fig:jacobian}
+\end{Figure}
+\noindent where $\mathbb{1}$ is the identity matrix. The eigenvalues $\lambda$ and eigenvectors $\eigenvector$ of the Jacobian reveal to us the magnitudes and directions of the stretching or squeezing of the blob. We can diagonalise the Jacobian to obtain the eigenvalues and eigenvectors at any state space location $u$ to quantify the local geometry of the field. The eigenvalue equation is written as
+
+\begin{equation}
+	\lambda \eigenvector = \jacobian\eigenvector
+	\quad\mathrm{where}\quad
+	\eigenvector\in\Reals^N : |\eigenvector|=1
+	\label{eq:jacobian-eigenproblem}
+\end{equation}
+where the eigenvectors are normalised to have unit magnitude. We can take the limit $\Delta t\rightarrow 0$ of equation \eqref{eq:jacobian-transformation} to obtain a first order matrix differential equation for the evolution of basis vectors $\hat u(t)$ in any patch $u$
+\begin{equation}
+	\frac{d\hat{u}}{dt}=\jacobian\hat{u}
+	\label{eq:jacobian-odes}
+\end{equation}
+The coefficients given by the Jacobian matrix are time-independent and therefore the general solution can be written as a matrix exponential
+\begin{equation}
+	\hat{u}(t)=\e^{\jacobian(t-t')}\hat{u}(t')
+	\label{eq:basis-vector-evolution}
+\end{equation}
+where $\hat{u}(t')$ are the basis vectors that define the initial shape of the blob centred on location $u$. If we let the basis for the initial blob have axes parallel to the eigenvectors $\eigenvector$ of the Jacobian, then the evolution any vector $\sigma(t)$ within the blob expressed in its basis becomes
+\begin{equation}
+	\sigma(t)= \sum_{\lambda}\eigenvector
+	\sigma_{\lambda}(t') \e^{\lambda(t-t')}
+	\label{eq:eigenbasis-vector-evolution}
+\end{equation}
+where $\sigma_{\lambda}(t')$ are the initial components of the vector in the basis of the blob. This equation reveals explicitly how the sign of real parts to eigenvalues $\Re\mathrm{e}\lambda$ determine the exponential growth or shrinkage of the blob in the direction $\eigenvector$. The imaginary parts $\Im\mathrm{m}\lambda$ determine the magnitude of rotations of the blob. Note that since the Jacobian matrix is real and eigenvalues and eigenvectors appear in conjugate pairs and therefore the overall evolution \eqref{eq:eigenbasis-vector-evolution} yields real transformations of blob vectors $\sigma(t)$.
+
+A field $\rates$ is called \emph{degenerate} in regions of state space $u$ where adjacent field lines do not change and hence do not cause shape changes to the blob in one or more directions. This means that one or more of the eigenvalues of the Jacobian vanish and have associated eigenvectors $\hat\tangent$ that obey
+\begin{equation}
+	\jacobian \hat\tangent(u) = 0
+	\label{eq:tangent-equation}
+\end{equation}
+This equation constructs vectors $\hat\tangent(u)$ that span the degenerate subspace at field location $u$. Note that a degenerate subspace may not always exist. In linear algebra We will see that this equation is useful not  for constructing tangent spaces,
+
+Equations \eqref{eq:fixed-point-perturbations} suggest that small perturbations away from stable steady states $\steady$ decay exponentially with respect to time. However if the state space flow $\rates$ at the steady state $\steady$ is degenerate, then at least one of the eigenvalues of the Jacobian $\lambda$ vanish. Expanding the exponentials for a subset of $\lambda$ that are close to zero yields
+
+% Suppose we have a vanishing eigenvalue $\lambda(s)$ that we parametrise with $s\in\Reals$ such that $\lambda(s^\star)=0$. This will allow us to explore the dynamics in the vicinity of the degenerate point.
+
+\begin{equation}
+	\delta\steady(t)  \approx \sum_{\lambda\approx 0}
+	\alpha_{\lambda}\eigenvector(1+\lambda(t-t')+\mathcal{O}(\lambda^2))
+	+\sum_{\lambda'\ne\lambda}
+	\alpha_{\lambda'}v_{\lambda'}\e^{\lambda'(t-t')}
+\end{equation}
+
+This gives rise to relaxation dynamics that are polynomial in the vicinity of the degenerate point along the degenerate directions defined by eigenvectors $\eigenvector$. Perturbations along $v_{\lambda'}$ still decay exponentially and will vanish before the polynomial terms. By considering changes in the magnitude of perturbations $|\delta\steady(t)|-|\delta\steady(t')|$ and dropping higher order terms $\mathcal{O}(\lambda^2)$, and substituting an expression for the eigenvalues we arrive at
+
+\begin{equation}
+	\frac{|\delta\steady(t)|-|\delta\steady(t')|}{t-t'}\sim \sum_{\lambda\approx 0}\eigenvector\cdot\left.\jacobian\right|_{\rates(u,p)=0}\!\!\!\!\! \cdot \eigenvector
+	\quad\mathrm{where}\quad
+	\jacobian \cdot \hat{T}_\theta = 0
+\end{equation}
 
 \subsubsection{Lyapunov Spectrum Analysis}
 
@@ -105,33 +173,33 @@ After Taylor expanding the field $\rates$ and recognising that equations \eqref{
 	\left.\jacobian\right|_{u=u(t)}\!\!\delta u + \mathcal{O}(\delta u^2)
 	\label{eq:linearised-differential-equations}
 \end{equation}
-where $\jacobian$ is the Jacobian of the field and additional terms $\mathcal{O}(\delta u^2)$ involve taking higher order derivatives of the field $\rates$. Choosing a perturbation sufficiently small such that we can ignore higher order terms yields a first order homogenous ordinary matrix differential equation of the form $\dot{\delta u}(t)\approx J(t)\delta u(t)$ where $J(t)$ is a time-varying Jacobian. These equations can be solved formally with time-ordered matrix exponentiation \cite{}
+where $\jacobian$ is the Jacobian of the field and additional terms $\mathcal{O}(\delta u^2)$ involve taking higher order derivatives of the field $\rates$. Choosing a perturbation sufficiently small such that we can ignore higher order terms yields a first order homogenous ordinary matrix differential equation of the form $\dot{\delta u}(t)\approx J(t)\delta u(t)$ where $J(t)$ is a time-varying Jacobian. These equations can be solved formally with time-ordered matrix exponentiation \cite{} 
 
 \begin{Figure}
 \includegraphics[scale=1.5]{lyapunov}
-\caption{Illustration how the time ordering operator $\mathcal{T}\left\{e^{\int_{t'}^t J(s) \mathrm{d}s}\right\}$ propagates the separation $\delta u(t)$ between adjacent trajectories $u$ and $u+\delta u$ by repeated application of the exponentiated Jacobian $e^{J(t)\Delta t}$ evaluated along unperturbed trajectory $u(t)$}
+\caption{Illustration how the time ordering operator $\mathcal{T}\left\{\e^{\int_{t'}^t J(s) \mathrm{d}s}\right\}$ propagates the separation $\delta u(t)$ between adjacent trajectories $u$ and $u+\delta u$ by repeated application of the exponentiated Jacobian $\e^{J(t)\Delta t}$ evaluated along unperturbed trajectory $u(t)$}
 \label{fig:lyapunov}
 \end{Figure}
 \begin{equation}
 	\delta u(t) \approx
-	\mathcal{T}\left\{e^{\int_{t'}^t J(s) \mathrm{d}s}\right\}\delta u(t')
+	\mathcal{T}\left\{\e^{\int_{t'}^t J(s) \mathrm{d}s}\right\}\delta u(t')
 	\quad\mathrm{where}\quad
 	J(t) := \left.\jacobian\right|_{u=u(t)}
 	\label{eq:matrix-exponential}
 \end{equation}
 The time-ordering defines an ordered product of matrix exponentials
 \begin{equation}
-	\mathcal{T}\left\{ e^{\int_{t'}^t J(s) \mathrm{d}s} \right \}:=
+	\mathcal{T}\left\{ \e^{\int_{t'}^t J(s) \mathrm{d}s} \right \}:=
 	\lim_{\Delta t\rightarrow 0}\left(
-		e^{J(t)\Delta t}e^{J(t-\Delta t)\Delta t}\,\dots\,
-		e^{J(t'+\Delta t)\Delta t}e^{J(t')\Delta t}
+		\e^{J(t)\Delta t}\e^{J(t-\Delta t)\Delta t}\,\dots\,
+		\e^{J(t'+\Delta t)\Delta t}\e^{J(t')\Delta t}
 	\right)
 	\label{eq:time-ordering-operator}
 \end{equation}
-which can be calculated by repeated exponentiation of the Jacobian $e^{J(t)\Delta t}$ evaluated at different times along the unperturbed trajectory $u(t)$. Although this expression may look complicated it is just another matrix whos eigenvalues reveal whether the trajectories diverge $|\delta u(t\rightarrow\infty)|\rightarrow\infty$ or converge $|\delta u(t\rightarrow\infty)|\rightarrow0$. The rates of convergence or divergence are known as Lyapunov exponents, and can be defined in a local patch of state space as the eigenvalues of
+which can be calculated by repeated exponentiation of the Jacobian $\e^{J(t)\Delta t}$ evaluated at different times along the unperturbed trajectory $u(t)$. Although this expression may look complicated it is just another matrix whos eigenvalues reveal whether the trajectories diverge $|\delta u(t\rightarrow\infty)|\rightarrow\infty$ or converge $|\delta u(t\rightarrow\infty)|\rightarrow0$. The rates of convergence or divergence are known as Lyapunov exponents, and can be defined in a local patch of state space $t$ and finite time $\Delta t$ as the eigenvalues of
 \begin{equation}
-	\Lambda(u) := \frac{1}{\Delta t}\log\left(
-		\mathcal{T}\left\{ e^{\int_{t}^{t+\Delta t} J(s) \mathrm{d}s} \right \}
+	\Lambda(u,\Delta t) := \frac{1}{\Delta t}\log\left(
+		\mathcal{T}\left\{ \e^{\int_{t}^{t+\Delta t} J(s) \mathrm{d}s} \right \}
 	\right)
 	\label{eq:lyapunov-spectrum}
 \end{equation}
@@ -147,14 +215,14 @@ Thusfar we dealt with stability in arbitrary patches of state space $u$ and aske
 In this case, since there is no time-dependence in the equation \eqref{eq:matrix-exponential}, the time-ordered integral simplifies yielding a matrix exponential equation for perturbations from fixed points $\delta\steady(t)$
 \begin{equation}
 	\delta\steady(t) \approx
-	e^{(t-t')\left.\jacobian\right|_{u=\steady}}\delta\steady(t')
+	\e^{(t-t')\left.\jacobian\right|_{u=\steady}}\delta\steady(t')
 	\label{eq:fixed-point-perturbations}
 \end{equation}
-The Jacobian evaluated at fixed points $\left.\jacobian\right|_{u=\steady}$ can be expressed in terms of its eigenvectors $v_\lambda$ and eigenvalues $\lambda$ and therefore 
+The Jacobian evaluated at fixed points $\left.\jacobian\right|_{u=\steady}$ can be expressed in terms of its eigenvectors $\eigenvector$ and eigenvalues $\lambda$ and therefore 
 \begin{equation}
 	\delta\steady(t)  \approx \sum_{\lambda}
-	\alpha_{\lambda}v_{\lambda}e^{\lambda(t-t')}\quad\mathrm{where}\quad
-	\lambda v_{\lambda} = \lambda\left.\jacobian\right|_{u=\steady} v\in\Reals^N
+	\alpha_{\lambda}\eigenvector \e^{\lambda(t-t')}\quad\mathrm{where}\quad
+	\lambda \eigenvector = \eigenvector\cdot\left.\jacobian\right|_{u=\steady} \eigenvector\in\mathbb{S}^{N-1}
 \end{equation}
 \begin{equation*}
 	\mathrm{with}\,\alpha_{\lambda}\,
@@ -162,7 +230,7 @@ The Jacobian evaluated at fixed points $\left.\jacobian\right|_{u=\steady}$ can 
 	\,\delta\steady(t')
 	\label{eq:fixed-point-perturbations-diagonal}
 \end{equation*}
-We can see that the sign of the real parts to eigenvalues $\Re\mathrm{e}\lambda$ determine the exponential growth or shrinkage of fixed point perturbations $\delta\steady(t)$ in the direction parallel to the corresponding eigenvector $v_{\lambda}$. The imaginary parts $\Im\mathrm{m}\lambda$ determine the frequency of oscillations around the fixed point. If at least one of the eigenvalues has a positive real part $\Re\mathrm{e}\lambda$ the field pushes trajectories away from the fixed point in direction $v_{\lambda}$ which means the fixed point is unstable.
+We can see that the sign of the real parts to eigenvalues $\Re\mathrm{e}\lambda$ determine the exponential growth or shrinkage of fixed point perturbations $\delta\steady(t)$ in the direction parallel to the corresponding eigenvector $\eigenvector$. The imaginary parts $\Im\mathrm{m}\lambda$ determine the frequency of oscillations around the fixed point. If at least one of the eigenvalues has a positive real part $\Re\mathrm{e}\lambda$ the field pushes trajectories away from the fixed point in direction $\eigenvector$ which means the fixed point is unstable.
 
 \begin{Figure}
 \includegraphics[scale=0.35]{figures/stability}
@@ -172,9 +240,11 @@ determinant $|J|$}
 \label{fig:stability}
 \end{Figure}
 
-For a two dimensional system we can express the two eigenvalues of the $2\times 2$ Jacobian in terms of its trace $\mathrm{Tr}[J]$ and determinant $|J|$. Figure \ref{fig:stability} reveals the regions of stability and field flows for an arbitrary two dimensional system in terms of the Jacobian trace and determinant. We can see now how changing the model can lead to changes in sign in one of the eigenvalues of the Jacobian. This leads to a change in stability of a fixed point which is in fact type of bifurcation. This diagram gives us an intuition for the types of fixed points that are possible, but not all of them can be characterised in this way. Degenerate fixed points may lead to vanishing of the Jacobian and hence require investigation of higher-order derivates of the field $\rates$ which were dropped in the approximation \eqref{eq:matrix-exponential}. In contrast to what is shown in Figure \ref{fig:stability} it is not possible to know whether a limit cycle is present by looking at the eigenvalues of its corresponding fixed point alone.
+For a two dimensional system we can express the two eigenvalues of the $2\times 2$ Jacobian in terms of its trace $\mathrm{Tr}[J]$ and determinant $|J|$. Figure \ref{fig:stability} reveals the regions of stability and field flows for an arbitrary two dimensional system in terms of the Jacobian trace and determinant. We can see now how changing the model can lead to changes in sign in one of the eigenvalues of the Jacobian. This leads to a change in stability of a fixed point which is in fact type of bifurcation. This diagram gives us an intuition for the types of fixed points that are possible, but not all of them can be characterised in this way.
 
-In the vicinity of non-degenerate fixed points $\steady$ the Lyapunov spectrum \eqref{eq:lyapunov-spectrum} is is simply given by the Jacobian eigenvalues. Another scenario in which this simplication occurs is for small time intervals $\Delta t\rightarrow 0$ when evaluating the spectrum. Therefore
+Degenerate fixed points may lead to vanishing of the Jacobian and hence require investigation of higher-order derivates of the field $\rates$ which were dropped in the approximation \eqref{eq:matrix-exponential}. In contrast to what is shown in Figure \ref{fig:stability} it is not possible to know whether a limit cycle is present by looking at the eigenvalues of its corresponding fixed point alone.
+
+In the vicinity of non-degenerate fixed points $\steady$ the Lyapunov spectrum \eqref{eq:lyapunov-spectrum} is is simply given by the Jacobian eigenvalues. Another scenario in which this simplification occurs is for small time intervals $\Delta t\rightarrow 0$ when evaluating the spectrum. Therefore
 \begin{equation}
 	\lim_{\Delta t\rightarrow 0}\Lambda(u) = \Lambda(\steady) =  \jacobian
 	\label{eq:jacobian-spectrum}
@@ -188,6 +258,17 @@ While the rest of this thesis does not deal with chaotic systems, we would like 
 \subsection{Bifurcation Analysis}
 \label{section:bifurcation-analysis}
 
+\subsubsection{Dynamics near Bifurcations}
+
+
+revealing that the speed of perturbation decay to stable steady states $u^*$  scales as the eigenvalues do when the degenerate point is approached. 
+
+
+in a certain part of the state space. the relaxation dynamics become polynomial with respect 
+
+
+from equations One of the indicators for the onset of a bifurcation is the 
+
 \subsubsection{Static Non-degenerate Bifurcations}
 
 Varying the continuos parameters $\sigma[r]$ moves the nullclines and may result in
@@ -200,13 +281,11 @@ Figure \ref{fig:bifurcations} illustrates some of the possible one parameter
 supercritical bifurcations; subcritical cases are obtained by permuting
 stabilities of fixed points. Note the hysteresis loop in the saddle-node
 bifurcation.
+
 \begin{Figure}
-\includegraphics[scale=0.35]{figures/saddlenode}
-\includegraphics[scale=0.35]{figures/transcritical}
-\includegraphics[scale=0.35]{figures/pitchfork}
-\caption{Saddle-node, Transcritical and Pitchfork bifurcation diagram showing
-\textcolor{Green}{stable} and \\\textcolor{orange}{unstable} fixed points $\psi^*$
-as a function of parameter $\sigma[r]$. Insets show nullcline intersections.}
+\includegraphics[scale=0.7]{saddle-node} 
+\includegraphics[scale=0.7]{hopf}
+\caption{All bifurcations}
 \label{fig:bifurcations}
 \end{Figure}
 
@@ -375,7 +454,7 @@ The second step is called \textit{matching} where the estimated field $\hat{f}$ 
 
 In our setting we would like to match the geometry of the field but not its magnitude; in this sense we are focusing on the qualitative aspects of the dynamics of a set of differential equations, rather than the quantitative dynamics or kinetics. This could be achieved with the following objective function
 \begin{equation}
-    \mathcal{L}(\theta|\mathcal{D}) := e^{-\frac{\hat{f}\cdot\rates}
+    \mathcal{L}(\theta|\mathcal{D}) := \e^{-\frac{\hat{f}\cdot\rates}
     {|\hat{f}||\rates|}}
 \end{equation}
 \noindent where the cost is minimal when the data derivative $\hat{f}$ and the parametrised model $\rates$ point in the same direction and maximal when they point in opposing directions.
