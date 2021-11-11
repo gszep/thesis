@@ -23,7 +23,11 @@ The problem of inferring phenotypes from data is defined in Section \ref{section
 \section{Describing Phenotypes with Bifurcations}
 \label{section:phenotypes-with-bifurcations}
 
-A phenotype is a qualitative state or behaviour of an organism that can be described by several quantitative features. Before considering the additional complexity that comes with biology, let us first consider a simple everyday metaphor: light bulbs. Light bulbs come in various combinations of quantitative features $\theta$ which could be its shape, colour, materials and circuit design. The purpose of a light bulb is to fulfil a single function: increase in brightness as a function of voltage $p$, pushing the qualitative state of the bulb from \emph{off} to \emph{on}. Changes to bulb shape affect neither its function nor its states. Changes in color affect the quality of the \emph{on} state but not the \emph{off} state. Changes to circuit design and materials may change or even break the bulb's function. Fluorescent bulbs, for example, only have two possible brightness states in response to changes in voltage $p$, while incandescent bulbs have a continuous brightness response.
+%Bringing in the definition here is too early. Too abrupt.
+A phenotype is a qualitative state or behaviour of an organism that can be described by several quantitative features.
+%Historical context of how the word emerged and how it is used in biological contexts
+
+Before considering the additional complexity that comes with biology, let us first consider a simple everyday metaphor: light bulbs. Light bulbs come in various combinations of quantitative features $\theta$ which could be its shape, colour, materials and circuit design. The purpose of a light bulb is to fulfil a single function: increase in brightness as a function of voltage $p$, pushing the qualitative state of the bulb from \emph{off} to \emph{on}. Changes to bulb shape affect neither its function nor its states. Changes in color affect the quality of the \emph{on} state but not the \emph{off} state. Changes to circuit design and materials may change or even break the bulb's function. Fluorescent bulbs, for example, only have two possible brightness states in response to changes in voltage $p$, while incandescent bulbs have a continuous brightness response.
 \\
 \begin{Figure}
 \includegraphics[scale=0.7]{bulb}
@@ -271,7 +275,7 @@ from equations One of the indicators for the onset of a bifurcation is the
 
 \subsubsection{Static Non-degenerate Bifurcations}
 
-Varying the continuos parameters $\sigma[r]$ moves the nullclines and may result in
+Varying the continuous parameters $\sigma[r]$ moves the nullclines and may result in
 the creation or annihilation of fixed points of different classes. While an individual
 fixed point may change location and local phase space flow, it cannot change class
 without involving another fixed point.
@@ -312,11 +316,11 @@ Insets show nullclines [tbc]}
 
 \subsection{Spatially Extended Systems}
 
-If $\rates$ contains spatial derivates, additional conditions on $u$ with respect to spatial variables $x\in\Reals^D$, where $D$ is the dimension of the space considered, must be supplied to give a unique solution $u(x,t)$.
+If $\rates$ contains spatial derivatives, additional conditions on $u$ with respect to spatial variables $x\in\Reals^D$, where $D$ is the dimension of the space considered, must be supplied to give a unique solution $u(x,t)$.
 
 
 
-\subsubsection{Partial Differential Equations}
+\subsubsection{Turing Bifurcations}
 When studying spatio-temporal dynamics of organisms, a popular choice is to incorporate a diffusive term that models the exchange of matter between spatial locations
 \begin{align}
 	\partial_t
@@ -342,7 +346,7 @@ These equations can originate from mean-field approximations of the chemical mas
 \subsection{Populations of Neurons}
 
 \subsubsection{Neural Differential Equations \& Gaussian Processes}
-While principled derivation from microscopic rules exist, often the the number of variables $N$ participating in the mechanism under study becomes intractable. When the desire for predictive performance out-weighs the desire for mechanistic explanations, the states $u$ are chosen to be the observable subset for which we have data, and the right-hand side $\rates$ can be a machine learning model such as a neural network or gaussian process \cite{}. In this case the number of parameters becomes much larger than the number of states $M\gg N$. A recent breakthrough in back-propagation through differential equation solvers \cite{} has made these models tractable in optimisation routines, and popularised them in literature \cite{}.
+While principled derivation from microscopic rules exist, often the the number of variables $N$ participating in the mechanism under study becomes intractable. When the desire for predictive performance out-weighs the desire for mechanistic explanations, the states $u$ are chosen to be the observable subset for which we have data, and the right-hand side $\rates$ can be a machine learning model such as a neural network or Gaussian process \cite{}. In this case the number of parameters becomes much larger than the number of states $M\gg N$. A recent breakthrough in back-propagation through differential equation solvers \cite{} has made these models tractable in optimisation routines, and popularised them in literature \cite{}.
 
 
 \subsubsection{Stochastic Differential Equations}
