@@ -71,8 +71,8 @@ for i ∈ 1:length(first(us))
 	plot!(ps, map( (u,p) -> imag(λ(u,p))[i], us,ps), subplot=2, linestyle=:dot, linewidth=2, color=:red )
 end
 
-plot!([NaN],[NaN], subplot=2, color=:gray, linewidth=2, label=L"\Re\mathrm{e}" )
-plot!([NaN],[NaN], subplot=2, color=:gray, linestyle=:dot, linewidth=2, label=L"\Im\mathrm{m}" )
+plot!([NaN],[NaN], subplot=2, color=:gray, linewidth=2, label=L"\Real" )
+plot!([NaN],[NaN], subplot=2, color=:gray, linestyle=:dot, linewidth=2, label=L"\Imag" )
 
 yticks!([0,1],subplot=1)
 yticks!([-2,-1,0],subplot=2)
