@@ -131,40 +131,65 @@ The coefficients given by the Jacobian matrix are time-independent and therefore
 	\hat{u}(t)=\e^{\jacobian(t-t')}\hat{u}(t')
 	\label{eq:basis-vector-evolution}
 \end{equation}
-where $\hat{u}(t')$ are the basis vectors that define the initial shape of the blob centred on location $u$. If we let the basis for the initial blob have axes parallel to the eigenvectors $\eigenvector$ of the Jacobian, then the evolution any vector $\sigma(t)$ within the blob expressed in its basis becomes
+where $\hat{u}(t')$ are the basis vectors that define the initial shape of the blob centred on location $u$. If we let the basis for the initial blob be parallel to the eigenvectors $\eigenvector$ of the Jacobian, then the evolution any vector $\sigma(t)$ within the blob expressed in its basis becomes
 \begin{equation}
 	\sigma(t)= \sum_{\lambda}\eigenvector
 	\sigma_{\lambda}(t') \e^{\lambda(t-t')}
 	\label{eq:eigenbasis-vector-evolution}
 \end{equation}
-where $\sigma_{\lambda}(t')$ are the initial components of the vector in the basis of the blob. This equation reveals explicitly how the sign of real parts to eigenvalues $\Re\mathrm{e}\lambda$ determine the exponential growth or shrinkage of the blob in the direction $\eigenvector$. The imaginary parts $\Im\mathrm{m}\lambda$ determine the magnitude of rotations of the blob. Note that since the Jacobian matrix is real and eigenvalues and eigenvectors appear in conjugate pairs and therefore the overall evolution \eqref{eq:eigenbasis-vector-evolution} yields real transformations of blob vectors $\sigma(t)$.
+where $\sigma_{\lambda}(t')$ are the initial components of the vector in the basis of the blob. This equation reveals explicitly how the sign of real parts to eigenvalues $\Real\lambda$ determine the exponential growth or shrinkage of the blob in the direction $\eigenvector$. The imaginary parts $\Imag\lambda$ determine the magnitude of rotations of the blob. Note that since the Jacobian matrix is real and eigenvalues and eigenvectors appear in conjugate pairs and therefore the overall evolution \eqref{eq:eigenbasis-vector-evolution} yields real transformations of blob vectors $\sigma(t)$. When we initialise the blob over a stable steady state $\steady$ we expect the real parts of eigenvalues to be negative $\Real\lambda <0$ and the blob to converge exponentially from all sides. A stable steady state is an example of a \emph{fixed point}; let us explore the field geometry around such points in following section.
+\subsubsection{Fixed Points}
 
-A field $\rates$ is called \emph{degenerate} in regions of state space $u$ where adjacent field lines do not change and hence do not cause shape changes to the blob in one or more directions. This means that one or more of the eigenvalues of the Jacobian vanish and have associated eigenvectors $\hat\tangent$ that obey
+Thusfar we explored the field geometry in arbitrary patches of state space $u$ and asked questions about local flows. It is usually not possible to set up experimental conditions to get an organism to trace out all of its available states without killing it or distorting the mechanism under study. An organisms prefers to operate within a finite set of states and would want to return to them when perturbed. This is a hallmark of a stable steady state $\steady$ which belongs to a wider class of points called \emph{fixed points}. In the context of differential equation models, a \emph{fixed point} is the solution of
 \begin{equation}
-	\jacobian \hat\tangent(u) = 0
-	\label{eq:tangent-equation}
-\end{equation}
-This equation constructs vectors $\hat\tangent(u)$ that span the degenerate subspace at field location $u$. Note that a degenerate subspace may not always exist. In linear algebra We will see that this equation is useful not  for constructing tangent spaces,
-
-Equations \eqref{eq:fixed-point-perturbations} suggest that small perturbations away from stable steady states $\steady$ decay exponentially with respect to time. However if the state space flow $\rates$ at the steady state $\steady$ is degenerate, then at least one of the eigenvalues of the Jacobian $\lambda$ vanish. Expanding the exponentials for a subset of $\lambda$ that are close to zero yields
-
-% Suppose we have a vanishing eigenvalue $\lambda(s)$ that we parametrise with $s\in\Reals$ such that $\lambda(s^\star)=0$. This will allow us to explore the dynamics in the vicinity of the degenerate point.
-
-\begin{equation}
-	\delta\steady(t)  \approx \sum_{\lambda\approx 0}
-	\alpha_{\lambda}\eigenvector(1+\lambda(t-t')+\mathcal{O}(\lambda^2))
-	+\sum_{\lambda'\ne\lambda}
-	\alpha_{\lambda'}v_{\lambda'}\e^{\lambda'(t-t')}
+	\left.\frac{du}{dt}\right|_{u=\steady}=\rates(\steady,p) = 0
+	\label{eq:fixed-point-equation}
 \end{equation}
 
-This gives rise to relaxation dynamics that are polynomial in the vicinity of the degenerate point along the degenerate directions defined by eigenvectors $\eigenvector$. Perturbations along $v_{\lambda'}$ still decay exponentially and will vanish before the polynomial terms. By considering changes in the magnitude of perturbations $|\delta\steady(t)|-|\delta\steady(t')|$ and dropping higher order terms $\mathcal{O}(\lambda^2)$, and substituting an expression for the eigenvalues we arrive at
+By looking at the eigenvalues of the Jacobian, which determine local flows according to equations \eqref{eq:eigenbasis-vector-evolution}, we can classify the fixed point $\steady$. The sign of real parts $\Real\lambda$ determine whether small perturbations away from the fixed point will diverge. This defines whether the point is \emph{stable}, \emph{unstable} or a \emph{saddle}. Non-zero imaginary parts $\Imag\lambda \ne 0$ give rise to damped oscillation around the point; these points are called \emph{foci}. Without real parts the flow becomes purely rotational and give rise to \emph{cycles}.
 
+\begin{Figure}
+\includegraphics[scale=0.35]{stability}
+\caption{Classification of stable and unstable fixed points for a general two dimensional systems in terms of trace $\mathrm{Tr}[\jacobian]$ and determinant $|\jacobian|$ of its Jacobian}
+\label{fig:stability}
+\end{Figure}
+
+For a two dimensional system we can express the two eigenvalues of the $2\times 2$ Jacobian in terms of its trace $\mathrm{Tr}[\jacobian]$ and determinant $|\jacobian|$ which allows us to conveniently reveal all the possible fixed points types, as in Figure \ref{fig:stability}. If at least one real part of the eigenvalues vanishes the fixed point becomes \emph{degenerate}. We shall see that \emph{degenerate} field flows lead to critical slowing down in dynamics, reveal bifurcations and are useful for constructing tangent fields to implicitly defined surfaces.
+
+\subsubsection{Field Degeneracy}
+A field $\rates$ can be called \emph{degenerate} where it is locally constant and hence does not cause shape changes to a blob of initial conditions in one or more directions. This means that one or more of the eigenvalues of the Jacobian vanish $\Real\lambda = 0$ and have associated eigenvectors $\hat T_\lambda$ tangent to the direction where the field is locally constant. Suppose the field is \emph{degenerate} at point $\degenerate$, then the vanishing eigenvalues lead to a zero determinant $\left|\jacobian\right|=0$ and the eigenvectors must be orthogonal to all the gradients
 \begin{equation}
-	\frac{|\delta\steady(t)|-|\delta\steady(t')|}{t-t'}\sim \sum_{\lambda\approx 0}\eigenvector\cdot\left.\jacobian\right|_{\rates(u,p)=0}\!\!\!\!\! \cdot \eigenvector
+	\left|\jacobian\right|_{u=\degenerate} \!\!\! = 0
+	\qquad\left.\jacobian\right|_{u=\degenerate}\!\!\!\hat T_\lambda = 0
 	\quad\mathrm{where}\quad
-	\jacobian \cdot \hat{T}_\theta = 0
+	\hat T_\lambda\in\Reals^N : |\hat T_\lambda|=1
+	\label{eq:degeneracy-conditions}
 \end{equation}
+The eigenvector equation yields $\hat T_\lambda$ that span the degenerate subspace at field location $\degenerate$. The number of vectors and hence the size of the subspace is given to us by the number of vanishing eigenvalues $\lambda=0$. In linear algebra this would be referred to as the \emph{nullspace} or \emph{kernel} of the Jacobian matrix. Furthermore, a zero determinant means that the Jacobian is not invertible. We will refer to equations \eqref{eq:degeneracy-conditions} as the \emph{degeneracy} conditions.
 
+Let us consider the dynamics along the degenerate subspace, which is often referred to as the \emph{slow} manifold. Suppose we create a blob that only exists in the slow manifold and parametrise its location $\sigma(t,s)$ with a scalar $s\in\Reals$ such that at $s^{-}$ the eigenvalues vanish $\lambda(s^{-})=0$. We can write
+\begin{equation}
+	\sigma(t,s)= \sum_{\lambda}\hat T_\lambda
+	\sigma_{\lambda}(t',s) \e^{\lambda(s)(t-t')}
+\end{equation}
+Suppose we are only interested in the magnitude of deformations and remembering that we can always construct an orthonormal basis for the degenerate subspace $\hat T_\lambda\cdot\hat T_{\lambda'}=\delta_{\lambda\lambda'}$ we arrive at
+\begin{equation}
+	|\sigma(t,s)|^2= \sum_{\lambda}
+	|\sigma_{\lambda}(t',s)|^2 \e^{2\Real[\lambda(s)](t-t')}
+\end{equation}
+Expanding around the degenerate point $s=s^{-}$ yields
+\begin{equation}
+	|\sigma(t,s)|^2= \sum_{\lambda}
+	|\sigma_{\lambda}(t',s)|^2 \left(
+		1+2\left.\frac{d}{ds}\Real[\lambda(s)]\right|_{s=s^{-}}
+		\!\!\!\!\!\!\!\!\left(t-t'\right)\left(s-s^{-}\right)
+		\right)	+\mathcal{O}\left(s-s^{-}\right)^2
+\end{equation}
+This gives rise to dynamics that are polynomial rather than exponential along the slow manifold. By considering changes in the magnitude of deformations $|\sigma^{-}(t)|-|\sigma^{-}(t')|$ and dropping higher order terms $\mathcal{O}(\lambda^2)$ we arrive at
+\begin{equation}
+	t-t'\sim\frac{|\sigma^{-}(t)|-|\sigma^{-}(t')|}{\sum_{\lambda\approx 0}\lambda}
+\end{equation}
+This equation allows 
 \subsubsection{Lyapunov Spectrum Analysis}
 
 We can determine the stability of attractors by looking at the geometry of field lines in its vicinity. Do they converge or diverge? Does the field rotate? We could answer these questions tracking the evolution of small perturbations $\delta u$ between adjacent trajectories. Let us begin by substituting the perturbed trajectory $u+\delta u$ into equations \eqref{eq:differential-equations}
@@ -210,43 +235,6 @@ which can be calculated by repeated exponentiation of the Jacobian $\e^{J(t)\Del
 Note that to calculate this matrix we need to choose an initial point in state space $u=u(t)$, obtain the trajectory up to $u(t+\Delta t)$ and evaluate the Jacobian along the trajectory in the time ordered integral.
 
 \subsubsection{Linear Stability Analysis}
-
-Thusfar we dealt with stability in arbitrary patches of state space $u$ and asked questions about local flows. What happens when we look at flows in the vicinity of fixed points $\steady$ that satisfy the equation
-\begin{equation}
-	\left.\frac{du}{dt}\right|_{u=\steady}=\rates(\steady,p) = 0
-	\label{eq:fixed-point-equation}
-\end{equation}
-In this case, since there is no time-dependence in the equation \eqref{eq:matrix-exponential}, the time-ordered integral simplifies yielding a matrix exponential equation for perturbations from fixed points $\delta\steady(t)$
-\begin{equation}
-	\delta\steady(t) \approx
-	\e^{(t-t')\left.\jacobian\right|_{u=\steady}}\delta\steady(t')
-	\label{eq:fixed-point-perturbations}
-\end{equation}
-The Jacobian evaluated at fixed points $\left.\jacobian\right|_{u=\steady}$ can be expressed in terms of its eigenvectors $\eigenvector$ and eigenvalues $\lambda$ and therefore 
-\begin{equation}
-	\delta\steady(t)  \approx \sum_{\lambda}
-	\alpha_{\lambda}\eigenvector \e^{\lambda(t-t')}\quad\mathrm{where}\quad
-	\lambda \eigenvector = \eigenvector\cdot\left.\jacobian\right|_{u=\steady} \eigenvector\in\mathbb{S}^{N-1}
-\end{equation}
-\begin{equation*}
-	\mathrm{with}\,\alpha_{\lambda}\,
-	\mathrm{given\,\,by\,\,initial\,\,condition}
-	\,\delta\steady(t')
-	\label{eq:fixed-point-perturbations-diagonal}
-\end{equation*}
-We can see that the sign of the real parts to eigenvalues $\Re\mathrm{e}\lambda$ determine the exponential growth or shrinkage of fixed point perturbations $\delta\steady(t)$ in the direction parallel to the corresponding eigenvector $\eigenvector$. The imaginary parts $\Im\mathrm{m}\lambda$ determine the frequency of oscillations around the fixed point. If at least one of the eigenvalues has a positive real part $\Re\mathrm{e}\lambda$ the field pushes trajectories away from the fixed point in direction $\eigenvector$ which means the fixed point is unstable.
-
-\begin{Figure}
-\includegraphics[scale=0.35]{figures/stability}
-\caption{Classification of \textcolor{Green}{stable} and \textcolor{orange}{unstable}
-fixed points for a general \\two dimensional Jacobian in terms of trace $\mathrm{Tr}[J]$ and
-determinant $|J|$}
-\label{fig:stability}
-\end{Figure}
-
-For a two dimensional system we can express the two eigenvalues of the $2\times 2$ Jacobian in terms of its trace $\mathrm{Tr}[J]$ and determinant $|J|$. Figure \ref{fig:stability} reveals the regions of stability and field flows for an arbitrary two dimensional system in terms of the Jacobian trace and determinant. We can see now how changing the model can lead to changes in sign in one of the eigenvalues of the Jacobian. This leads to a change in stability of a fixed point which is in fact type of bifurcation. This diagram gives us an intuition for the types of fixed points that are possible, but not all of them can be characterised in this way.
-
-Degenerate fixed points may lead to vanishing of the Jacobian and hence require investigation of higher-order derivates of the field $\rates$ which were dropped in the approximation \eqref{eq:matrix-exponential}. In contrast to what is shown in Figure \ref{fig:stability} it is not possible to know whether a limit cycle is present by looking at the eigenvalues of its corresponding fixed point alone.
 
 In the vicinity of non-degenerate fixed points $\steady$ the Lyapunov spectrum \eqref{eq:lyapunov-spectrum} is is simply given by the Jacobian eigenvalues. Another scenario in which this simplification occurs is for small time intervals $\Delta t\rightarrow 0$ when evaluating the spectrum. Therefore
 \begin{equation}
