@@ -24,10 +24,8 @@ The problem of inferring phenotypes from data is defined in Section \ref{section
 \label{section:phenotypes-with-bifurcations}
 
 %Bringing in the definition here is too early. Too abrupt.
-A phenotype is a qualitative state or behaviour of an organism that can be described by several quantitative features.
 %Historical context of how the word emerged and how it is used in biological contexts
-
-Before considering the additional complexity that comes with biology, let us first consider a simple everyday metaphor: light bulbs. Light bulbs come in various combinations of quantitative features $\theta$ which could be its shape, colour, materials and circuit design. The purpose of a light bulb is to fulfil a single function: increase in brightness as a function of voltage $p$, pushing the qualitative state of the bulb from \emph{off} to \emph{on}. Changes to bulb shape affect neither its function nor its states. Changes in color affect the quality of the \emph{on} state but not the \emph{off} state. Changes to circuit design and materials may change or even break the bulb's function. Fluorescent bulbs, for example, only have two possible brightness states in response to changes in voltage $p$, while incandescent bulbs have a continuous brightness response.
+A phenotype is a qualitative state or behaviour of an organism that can be described by several quantitative features. Before considering the additional complexity that comes with biology, let us first consider a simple everyday metaphor: light bulbs. Light bulbs come in various combinations of quantitative features $\theta$ which could be its shape, colour, materials and circuit design. The purpose of a light bulb is to fulfil a single function: increase in brightness as a function of voltage $p$, pushing the qualitative state of the bulb from \emph{off} to \emph{on}. Changes to bulb shape affect neither its function nor its states. Changes in color affect the quality of the \emph{on} state but not the \emph{off} state. Changes to circuit design and materials may change or even break the bulb's function. Fluorescent bulbs, for example, only have two possible brightness states in response to changes in voltage $p$, while incandescent bulbs have a continuous brightness response.
 \\
 \begin{Figure}
 \includegraphics[scale=0.7]{bulb}
@@ -179,11 +177,10 @@ Suppose we are only interested in the magnitude of deformations and remembering 
 \end{equation}
 Expanding around the degenerate point $s=s^{-}$ yields
 \begin{equation}
-	|\sigma(t,s)|^2= \sum_{\lambda}
+	|\sigma(t,s)|^2 \approx \sum_{\lambda}
 	|\sigma_{\lambda}(t',s)|^2 \left(
-		1+2\left.\frac{d}{ds}\Real[\lambda(s)]\right|_{s=s^{-}}
-		\!\!\!\!\!\!\!\!\left(t-t'\right)\left(s-s^{-}\right)
-		\right)	+\mathcal{O}\left(s-s^{-}\right)^2
+		1+2\left(t-t'\right)\left(s-s^{-}\right)\left.\frac{d}{ds}\Real[\lambda(s)]\right|_{s=s^{-}}
+		\right)
 \end{equation}
 This gives rise to dynamics that are polynomial rather than exponential along the slow manifold. By considering changes in the magnitude of deformations $|\sigma^{-}(t)|-|\sigma^{-}(t')|$ and dropping higher order terms $\mathcal{O}(\lambda^2)$ we arrive at
 \begin{equation}
