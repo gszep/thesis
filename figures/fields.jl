@@ -51,7 +51,6 @@ streamplot!( ax, x-> limit_cycle(x,r->norm(r+[2,-2])-1) + 5*fixed_point(x,[1,-1]
 scatter!( ax, [1/15], [1.2], markersize=8, color=:lightblue)
 scatter!( ax, [1], [-1], markersize=8, color=:darkblue)
 figure
-save("figures/trajectory-1.pdf",figure)
 
 using GLMakie
 using DataStructures: CircularBuffer

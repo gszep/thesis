@@ -139,5 +139,3 @@ Label(figure[3,1], L"p \gg {p \prime}",
 	height=200, width=-50
 )
 figure
-
-save("figures/hysteresis.pdf",figure)
