@@ -43,10 +43,10 @@ ax = Axis3(figure[1,1],
 )
 
 play = Button(figure[2,1]; label="Play", tellwidth=false)
-field = x-> attractor(x,x->norm(x),ω=x->[1,0,0] )
+field = x-> attractor(x,x->norm(x)-2,ω=x->[1,1,0] )
 field = x-> attractor(x,x->(sqrt(x[1]^2+x[2]^2)-2)^2+x[3]^2-1,ω=x->[0,0,sqrt(x[1]^2+x[2]^2)>2 ? 1 : -1] )
 field = x-> attractor(x,x->(sqrt(x[1]^2+x[2]^2)-2)^2+x[3]^2-1,ω=x->[-x[2],x[1],0] )
-field = x-> attractor(x,x->(sqrt(x[1]^2+x[2]^2)-2)^2+x[3]^2-1.9^2,ω=x->[-x[2],x[1],sqrt(x[1]^2+x[2]^2)>2 ? 2 : -2] )
+field = x-> attractor(x,x->(sqrt(x[1]^2+x[2]^2)-2)^2+x[3]^2-1^2,ω=x->[-x[2],x[1],sqrt(x[1]^2+x[2]^2)>2 ? 2 : -2] )
 
 tail, ensembleSize = 200, 200
 ensemble = Vector{Observable{CircularBuffer{Point3{Float32}}}}(undef,ensembleSize)

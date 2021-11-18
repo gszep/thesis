@@ -197,7 +197,7 @@ where $\left\langle\cdots\right\rangle_{\sigma(t)}$ is a shorthand for a weighte
 
 \subsubsection{Fixed Points}
 
-Thusfar we explored the field geometry in arbitrary patches of state space $u$ and asked questions about local flows. It is usually not possible to set up experimental conditions to get an organism to trace out all of its available states without killing it or distorting the mechanism under study. An organisms prefers to operate within a finite set of states and would want to return to them when perturbed. This is a hallmark of a stable steady state $\steady$ which belongs to a wider class of points called \emph{fixed points}. In the context of differential equation models, a \emph{fixed point} is the solution of
+Thus far we explored the field geometry in arbitrary patches of state space $u$ and asked questions about local flows. It is usually not possible to set up experimental conditions to get an organism to trace out all of its available states without killing it or distorting the mechanism under study. An organisms prefers to operate within a finite set of states and would want to return to them when perturbed. This is a hallmark of a stable steady state $\steady$ which belongs to a wider class of points called \emph{fixed points}. In the context of differential equation models, a \emph{fixed point} is the solution of
 \begin{equation}
 	\left.\frac{du}{dt}\right|_{u=\steady}=\rates(\steady,p) = 0
 	\label{eq:fixed-point-equation}
@@ -255,11 +255,11 @@ This equation reveals two timescales for blob deformations in the vicinity of a 
 This critical slowing can be observed in data when \emph{fixed points} become \emph{degenerate}. Degenerate fixed points are also called \emph{critical points}. The transition between these two timescales in data is a signal that a \emph{critical point} is nearby. We will see that \emph{critical points} may lead to bifurcations and bifurcations are always accompanied by degeneracies in the field.
 
 \subsubsection{Limit Cycle Analysis}
-Thusfar we dealt with static state space structures like \emph{fixed points}. We found that the eigenvalues of the Jacobian are sufficient for their characterisation, unless the field is  \emph{degenerate}, in which case higher order derivatives of the field must be investigated.
+Thus far we dealt with static state space structures like \emph{fixed points}. We found that the eigenvalues of the Jacobian are sufficient for their characterisation, unless the field is  \emph{degenerate}, in which case higher order derivatives of the field must be investigated.
 
 If fields lines point towards a region of state space but the region \emph{does not} contain any fixed points, then the only other option is for the field lines to converge onto a \emph{limit cycle}. This is actually a rough statement of the Poincar\'e-Bendixson theorem  which allows us to define trapping regions where trajectories do not escape from and make statements about the existence or non-existence of limit cycles. A limit cycle must also enclose a finite number of \emph{unstable foci} that push trajectories away from its center.
 
-Netwon-type methods can easily be applied to find \emph{fixed points} because they are local structures in fields. Limit cycles are much more tricky because it is not possible to know whether a local state part of a limit cycle or not before we have seen a trajectory visit that state twice: once at $u(t)$ and then again $u(t+T)$ after some time $T$. This forms the basis of some optimisation methods for computing limit cycles \cite{}.
+Newton-type methods can easily be applied to find \emph{fixed points} because they are local structures in fields. Limit cycles are much more tricky because it is not possible to know whether a local state part of a limit cycle or not before we have seen a trajectory visit that state twice: once at $u(t)$ and then again $u(t+T)$ after some time $T$. This forms the basis of some optimisation methods for computing limit cycles \cite{}.
 
 \begin{itemize}
 	\item Trapezoid method
@@ -305,43 +305,69 @@ Bifurcations are defined as qualitative changes to system behaviour in response 
 
 \begin{Figure}
 	\includegraphics[scale=0.6]{homoclinic}
-	\caption{Global Bifurcations}
-	\label{fig:global-bifurcations}
+	\caption{Homoclinic Bifurcation}
+	\label{fig:homoclinic}
 \end{Figure}
 
 \subsubsection{Higher Co-dimension}
+\begin{itemize}
+	\item cusp and Bogdanov-Takens
+	\item centre manifold theory
+\end{itemize}
 
-\subsubsection{Parameter Continuation}
+\subsubsection{Numerical Methods}
+
+In this thesis we extensively use the library \texttt{DifferentialEquations.jl} \cite{Rackauckas2017Differentialequations.jlJulia} for numerically solving differential equations and \texttt{BifurcationKit.jl} \cite{Veltz2020BifurcationKit.jl} for calculating bifurcation diagrams. 
+
+\begin{itemize}
+	\item Parameter Continuation
+	\item Marching cubes
+\end{itemize}
 
 \subsection{Spatially Extended Systems}
 
-If $\rates$ contains spatial derivatives, additional conditions on $u$ with respect to spatial variables $x\in\Reals^D$, where $D$ is the dimension of the space considered, must be supplied to give a unique solution $u(x,t)$.
-
-
+If $\rates$ contains spatial derivatives, additional conditions on $u$ with respect to spatial variables $x\in\Reals^D$, where $D$ is the dimension of the space considered, must be supplied to give a unique solution $u(x,t)$. When studying spatio-temporal dynamics of organisms, a popular choice is to incorporate a diffusive term that models the exchange of matter between spatial locations
 
 \subsubsection{Turing Bifurcations}
-When studying spatio-temporal dynamics of organisms, a popular choice is to incorporate a diffusive term that models the exchange of matter between spatial locations
-\begin{align}
-	\partial_t
-	\psi &=
-	\mathbf{\Gamma}\omega(\psi|\mathbf{\Gamma})
-	\label{eq:reaction}
-\end{align}
 
-
-A bifurcation diagram tracks changes in attractors such as fixed points $\steady$ and limit cycles $\cycle(t)$ in response to changes in control conditions $p$.  In the next section we will see how fixed points and limit cycles are characterised with linear stability analysis
-
-this can be done using 
-In this thesis we extensively use the library \texttt{DifferentialEquations.jl} \cite{Rackauckas2017Differentialequations.jlJulia} for numerically solving differential equations and \texttt{BifurcationKit.jl} \cite{Veltz2020BifurcationKit.jl} for calculating bifurcation diagrams. 
-
-Partial observation can be modelled explicitly with latent variables \cite{} or the explicit modelling of system and measurement device as is done in control theory \cite{}. For the scope of this thesis we will let the modeller have complete freedom on how to choose relevant state variables $u\in\Reals^N$ and write down their own set of differential equations, with unknown parameters $\theta\in\Reals^M$ of the form
-
+\clearpage
 \section{Applications in Cell Biology}
 \label{section:applications-cell-biology}
 
-\subsection{Genetic Switches \& Phenotype Boundaries}
-These equations can originate from mean-field approximations of the chemical master equation \cite{} representing biochemical reaction networks \cite{}. This typically yields models with a large number of parameters $M$ and states $N$. The equations could have also undergone a series of quasi-steady state approximations \cite{} yielding hill-functions. Various other model reduction methods exist \cite{} in an attempt to reduce the number of state variables $N$ and parameters $M$.
+In this section we apply the dynamical systems theory outlined in Section \ref{section:phenotypes-with-bifurcations} to concrete biochemical systems and provide the reader with sufficient background to understand the goals of the incorporated publication in Chapter \ref{chapter:double-exclusive}.
 
+\subsection{Genetic Switches \& Phenotype Boundaries}
+Every cell belonging an organism has exactly the same genetic information inside it. In spite of this, a wide variety of cell populations such as neurons, muscle cells, immune cells and tissue specific cells interact in a highly regulated fashion. As an organism develops, how do cells which used to be identical differentiate into functionally distinct populations? How are boundaries between these populations maintained? Can these boundaries be controlled with genetic engineering? 
+
+In order to address these questions the paradigm of the \emph{genetic switch} emerged. Genes are either expressed into proteins or not. The relative concentration of proteins within a cell and on its membrane determine its function and communication abilities with other cells. The genes that are turned \emph{on} or \emph{off} when a cell is exposed to different environments determine the cell phenotype. Genes switching between \emph{on} and \emph{off} in response to other genes or proteins is called \emph{gene regulation}.
+
+The first gene regulatory network that was discovered is the \emph{lac operon} \cite{Jacob1961GeneticProteins} in the bacterium \emph{Escherichia coli}. In this network, enzymes that metabolise lactose are expressed only in the presence of lactose and absence of glucose. This regulation evolved because metabolising lactose is energetically more expensive and having the \emph{lac} genes always turned \emph{on} would be a waste of resources. An outline of how this network works is shown with in Figure \ref{fig:lac-operon}. The main proteins involved in this mechanism are the \emph{Lac Repressor} and $\beta$-\emph{Galactosidase} which are transcribed and translated from the \emph{LacI} and \emph{LacZ} genes respectively. The repressor binds to the operator which sits between the promoter and coding region \emph{LacZ}. When the transcription machinery binds to promoter region, it is blocked from transcribing \emph{LacZ}. When lactose is present, binding to the repressor causes a conformational change which leads to unbinding of the complex from the DNA. Thus in the presence of lactose, \emph{LacZ} is turned \emph{on} and $\beta$-\emph{Galactosidase} is produced by the cell. $\beta$-\emph{Galactosidase} breaks down lactose into glucose and galactose which decreases the overall concentration of lactose available to bind to the repressor. Eventually all the lactose is is broken down and the repressors turn \emph{off} the \emph{LacZ} gene.
+
+\begin{Figure}
+	\includegraphics[scale=0.9]{lac-operon}
+	\caption{Overview of the \emph{lac operon} }
+	\label{fig:lac-operon}
+\end{Figure}
+
+We can summarise the biochemical reactions that take place
+\begin{equation}
+	a
+\end{equation}
+
+% Let us write down a system of differential equations that describes this regulatory network. We begin by writing down two equations that describe the changes to mRNA concentrations $r\in\Reals^N$ and protein concentrations $u\in\Reals^N$ in a typical transcription-translation process
+% \begin{equation}
+% 	\frac{dr}{dt}=H(u) - \mu r
+% 	\qquad
+% 	\frac{du}{dt}=F(r,u) - \gamma u
+% \end{equation}
+% where the vector function $H(u)$ quantifies the rate of transcription of DNA into mRNA in the presence of proteins $u$. The function $H(u)$ would encapsulate how proteins activate or inhibit the transcription of genes via mechanisms such as changes to chromatin conformation, interaction with transcription factors and binding regions of DNA. The function $F(r,u)$ quantifies the rate of translation of mRNA into proteins by ribosomes. Biological processes that modulate mRNA stability, RNA interference and other post-transcriptional regulatory mechanisms are encoded by this function.
+
+% If we assume that mRNA dynamics equilibrate much faster than proteins, we can focus exclusively on protein concentrations $u$ but solving for the equilibrium concentrations of mRNA $r^*$
+% \begin{equation}
+% 	\frac{du}{dt}=F(r^*,u) - \gamma u
+% 	\where r^* = \frac{H(u)}\mu
+% \end{equation}
+% Note that an important condition that allows us to move forward is the knowledge that transcription rates $H$ do not depend on mRNA concentrations $r$.
 \subsection{Populations of Neurons}
 
 \subsubsection{Neural Differential Equations \& Gaussian Processes}
@@ -359,7 +385,7 @@ the relation to Landau-Ginzberg approaches is required.
 Maybe also periodic orbit theory? Depends how useful it is.
 \subsubsection{Reaction-Diffusion}
 Here we first introduce diffusion macroscopically by simply adding the laplacian
-to mean field equation $\eqref{eq:reaction}$. We introduce the turning bifurcation and
+to mean field equation. We introduce the turning bifurcation and
 show how linear stability analysis is insufficient to capture pattern formation
 and rich inhomogeneous steady states. A promising approach may be geometrisation
 of the moving local equilibria \cite{Halatek2018}.
@@ -396,7 +422,8 @@ of the moving local equilibria \cite{Halatek2018}.
 
 In sections \ref{inference:abstract} -- \ref{inference:impact} we assume that the bifurcation data $\targets$ with respect to the experimental control condition $p\in\Reals$ is known or already extracted from raw data. We can break down the extraction process into steps: steady state inference, field inference and fixed-point inference; each discussed separately in its own subsection. These steps are sequenced together into two possible routes towards bifurcation data $\targets$ as depicted in Figure \ref{fig:inferring-bifurcations}.
 
-At best we could have state trajectory data like single cell trajectories extracted via segmentation and tracking in fluorescence microscopy movies (for example the data acquired using the CellASIC platform in Figure \ref{fig:double-exclusive:bistability}c). Having the the state as a function of time $u(t)$, sampled at sufficiently broad initial conditions $u(0)$, enables the \emph{non-parametric} estimation of field geometry $F(u)$. We can then extract important state-space structures, such as stable and unstable fixed points, their eigenvalues $\lambda$, from the field geometry $F(u)$ at different values of the control condition $p$, and hence identify possible bifurcations.
+At best we could have state trajectory data like single cell trajectories extracted via segmentation and tracking in fluorescence microscopy movies (for example the data acquired using the CellASIC ONIX
+Microfluidic Platform in Figure \ref{fig:double-exclusive:bistability}c). Having the the state as a function of time $u(t)$, sampled at sufficiently broad initial conditions $u(0)$, enables the \emph{non-parametric} estimation of field geometry $F(u)$. We can then extract important state-space structures, such as stable and unstable fixed points, their eigenvalues $\lambda$, from the field geometry $F(u)$ at different values of the control condition $p$, and hence identify possible bifurcations.
 
 \begin{Figure}
     \includegraphics[width=14cm]{inferring-bifurcations}
@@ -426,7 +453,7 @@ This approach may break down if multi-modal distributions exist in the data. Thi
 This approach would not work for extracting dynamic bifurcations such as \emph{Hopf} since only steady state information is available. Furthermore, the accuracy of this method is subject to noise amplitude. This method works well for cases where changes in the number of stable steady states can be resolved in the measured steady state distributions.
 
 \begin{itemize}
-    \item \todo[inline]{quantify efficiency of switching?}
+    \item quantify efficiency of switching?
 \end{itemize}
 
 
@@ -472,15 +499,13 @@ In our setting we would like to match the geometry of the field but not its magn
 Although we are getting close to focusing on qualitative features of a model, this objective function is still sensitive to the locations and shapes of fixed point and limit cycles. What if we cared about even higher-level features such as the number of fixed points? Or perhaps whether a system oscillates or not? This is where the language of bifurcation theory described in Chapter \ref{chapter:background} is optimally suited for this task, but fist we need to discuss how to set up experiments to detect bifurcations from flow cytometry data.
 
 \begin{itemize}
-    \item \todo[inline]{Vector field estimates too noisy to get bifurcation points?}
-    \item \todo[inline]{Divergence and the stability of fixed points}
-    \item \todo[inline]{Curl and limit cycles. How does this relate to hopf example \ref{fig:inferred-cycles}}
-    \item \todo[inline]{Do we need a bistable example?}
+    \item Vector field estimates too noisy to get bifurcation points?
+    \item Divergence and the stability of fixed points
+    \item curl and limit cycles. How does this relate to hopf example \ref{fig:inferred-cycles}
+    \item Do we need a bistable example?
 \end{itemize}
 
 The accuracy of the cell trajectories is limited by cell segmentation and tracking algorithms. Initial investigations into this approach also suggested that trajectories need to be of sufficient temporal resolution and sampled from a wide variety of initial conditions. Such data is not widely available and ultimately we decided to focus on a method that could be used with a well-known workhorse in biomedical research: flow cytometry.
 
 \subsubsection{Fixed Point Inference}
 \label{section:fixed-point-inference}
-
-\subsection{Multiomics Integration}
