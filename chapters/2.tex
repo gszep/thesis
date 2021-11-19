@@ -339,9 +339,9 @@ In this section we apply the dynamical systems theory outlined in Section \ref{s
 \subsection{Genetic Switches \& Phenotype Boundaries}
 Every cell belonging an organism has exactly the same genetic information inside it. In spite of this, a wide variety of cell populations such as neurons, muscle cells, immune cells and tissue specific cells interact in a highly regulated fashion. As an organism develops, how do cells which used to be identical differentiate into functionally distinct populations? How are boundaries between these populations maintained? Can these boundaries be controlled with genetic engineering? 
 
-In order to address these questions the paradigm of the \emph{genetic switch} emerged. Genes are either expressed into proteins or not. The relative concentration of proteins within a cell and on its membrane determine its function and communication abilities with other cells. The genes that are turned \emph{on} or \emph{off} when a cell is exposed to different environments determine the cell phenotype. Genes switching between \emph{on} and \emph{off} in response to other genes or proteins is called \emph{gene regulation}.
+In order to address these questions the paradigm of the \emph{genetic switch} emerged. Genes are either expressed into proteins or not. The concentration of proteins within a cell and on its membrane determine its function and communication abilities with other cells. The genes that are turned \emph{on} or \emph{off} when a cell is exposed to different environments determine the cell phenotype. Genes switching between \emph{on} and \emph{off} in response to other genes or proteins is called \emph{gene regulation}.
 
-The first gene regulatory network that was discovered is the \emph{lac operon} \cite{Jacob1961GeneticProteins} in the bacterium \emph{Escherichia coli}. In this network, enzymes that metabolise lactose are expressed only in the presence of lactose and absence of glucose. This regulation evolved because metabolising lactose is energetically more expensive and having the \emph{lac} genes always turned \emph{on} would be a waste of resources. An outline of how this network works is shown with in Figure \ref{fig:lac-operon}. The main proteins involved in this mechanism are the \emph{Lac Repressor} and $\beta$-\emph{Galactosidase} which are transcribed and translated from the \emph{LacI} and \emph{LacZ} genes respectively. The repressor binds to the operator which sits between the promoter and coding region \emph{LacZ}. When the transcription machinery binds to promoter region, it is blocked from transcribing \emph{LacZ}. When lactose is present, binding to the repressor causes a conformational change which leads to unbinding of the complex from the DNA. Thus in the presence of lactose, \emph{LacZ} is turned \emph{on} and $\beta$-\emph{Galactosidase} is produced by the cell. $\beta$-\emph{Galactosidase} breaks down lactose into glucose and galactose which decreases the overall concentration of lactose available to bind to the repressor. Eventually all the lactose is is broken down and the repressors turn \emph{off} the \emph{LacZ} gene.
+The first gene regulatory network that was discovered is the \emph{lac operon} in the bacterium \emph{Escherichia coli} \cite{Jacob1961GeneticProteins}. In this network, enzymes that metabolise lactose are expressed only in the presence of lactose and absence of glucose. This regulation evolved because metabolising lactose is energetically more expensive and having the \emph{lac} genes always turned \emph{on} would be a waste of resources. An outline of how this network works is shown with in Figure \ref{fig:lac-operon}. The main proteins involved in this mechanism are the \emph{Lac Repressor} and $\beta$-\emph{Galactosidase} which are transcribed and translated from the \emph{LacI} and \emph{LacZ} genes respectively. The repressor binds to the operator which sits between the promoter and coding region \emph{LacZ}. When the transcription machinery binds to promoter region, it is blocked from transcribing \emph{LacZ}. When lactose is present, binding to the repressor causes a conformational change which leads to unbinding of the complex from the DNA. Thus in the presence of lactose, \emph{LacZ} is turned \emph{on} and $\beta$-\emph{Galactosidase} is produced by the cell. In this setting lactose is referred to as the \emph{effector}. We note that the effector of \emph{LacZ} is actually \emph{allolactose} which arises from the transglycosylation of lactose by $\beta$-\emph{Galactosidase} but for the purposes of introducing the genetic switch we need not focus in this detail. $\beta$-\emph{Galactosidase} hydrolyses lactose, breaking it down into glucose and galactose which decreases the overall concentration of lactose available to bind to the repressor. Eventually all the lactose is is broken down and the repressors turn \emph{off} the \emph{LacZ} gene.
 
 \begin{Figure}
 	\includegraphics[scale=0.9]{lac-operon}
@@ -349,10 +349,41 @@ The first gene regulatory network that was discovered is the \emph{lac operon} \
 	\label{fig:lac-operon}
 \end{Figure}
 
-We can summarise the biochemical reactions that take place
-\begin{equation}
-	a
-\end{equation}
+We assume rates $\alpha,\alpha^\prime$ of transcription and translation of \emph{LacI} into \emph{LacR} and \emph{LacZ} into $\beta$-Gal are constant. \emph{LacZ} is not transcribed when the operator region is blocked by \emph{LacR}, which we mark by an asterisk. The repressor can also be inactivated by the binding of two (allo)lactose molecules $\ce{C12H22O11}$.
+
+\begin{align*}
+	\ce{\bond{~}LacI\bond{~} &->[$\alpha$] \bond{~}LacI\bond{~} + LacR \\
+	\bond{~}Operator\bond{~}LacZ\bond{~} &->[$\alpha^\prime$]
+	\bond{~}Operator\bond{~}LacZ\bond{~} + $\beta$-Gal \\
+	C12H22O11 &->[$\beta$-Gal][+H2O] C6H12O6 + C6H12O6 \\
+	\bond{~}Operator\bond{~}LacZ\bond{~} + LacR &<=>[k] \bond{~}Operator^*\bond{~}LacZ\bond{~} \\
+	LacR + 2C12H22O11 &<=>[k^\prime] LacR^*}
+\end{align*}
+Since all proteins degrade over some finite half-life $\mu$ we also have
+\begin{align*}
+	\ce{$\beta$-Gal &->[$\mu$] \emptyset \\
+	LacR ->[$\mu$] \emptyset \quad&\quad LacR^* ->[$\mu$] \emptyset}
+\end{align*}
+
+The equilibrium dissociation constants $k,k'$ define the binding affinity if \emph{LacR} to the operator and its effector respectively. Let rate $\beta$ be the rate of hydrolysis of lactose by $\beta$-Gal. These rates are determined by molecular details, some of which can be modulated with genetic engineering. Changing the promoter sequences, for example, can modulate the rates $\alpha,\alpha'$. Thus it makes sense to collect these rates into our model parameter $\theta=(\alpha,\alpha',\beta,k,k')$. Let the concentration of the effector be the experimentally controlled condition $p=[\ce{C12H22O11}]$ and the remaining concentrations be collected in state vector $u$.
+
+From this set of reactions it is possible to write down a \emph{chemical master equation} \cite{Gillespie1992,Gillespie2007} whose \emph{mean field approximation} yields a set of ordinary differential equations of the form \eqref{eq:differential-equations} which are commonly referred to as \emph{reaction rate equations}. This procedure is equivalent to the mass-action assumption used in chemistry. We note that the two major assumptions here are: a thermodynamic limit where the number of molecules is sufficiently large such that correlations due to discreteness can be ignored and a sufficiently \emph{well mixed} cytoplasm so that we do not have to model space.
+
+The \emph{reaction rate equations} for the Lac operon become
+\begin{align}
+\frac{d}{dt}\mathrm{LacR} =  \mathrm{LacR}^*- \frac{p^2}{2} k^{\prime} \mathrm{LacR} &+  \mathrm{LacZ}^*  - k \mathrm{LacR}\,\mathrm{LacZ} + \alpha -\mu\mathrm{LacR}\nonumber\\
+\frac{d}{dt}\mathrm{LacR}^* =  -  &\mathrm{LacR}^* + \frac{p^{2}}{2} k^{\prime} \mathrm{LacR}-\mu\mathrm{LacR}^* \\\nonumber\\
+\frac{d}{dt}\mathrm{LacZ} = & \mathrm{LacZ}^* - k \mathrm{LacR}\,\mathrm{LacZ}\nonumber\\
+\frac{d}{dt}\mathrm{LacZ}^* =  - & \mathrm{LacZ}^* + k \mathrm{LacR}\,\mathrm{LacZ} \\\nonumber\\
+\frac{d}{dt} \mathrm{Gal}= &\alpha^\prime \mathrm{LacZ} - \mu\mathrm{Gal} \nonumber\\
+\frac{dp}{dt} = 2 \mathrm{LacR}^* &-p^{2} k^{\prime} \mathrm{LacR} - \beta p\,\mathrm{Gal} 
+\end{align}
+Since we are experimentally controlling the lactose concentration we can set $\frac{dp}{dt}=0$ and rearrange for the equilibrated concentration of deactivated repressor $\mathrm{LacR}^*$. Furthermore the total concentration of the $\mathrm{LacZ}$ gene is conserved which allows us to normalise by it
+\begin{align}
+	\mathrm{LacR}^* &= p \frac{ \beta \,\mathrm{Gal}+p k^{\prime} \mathrm{LacR}}{2}\\
+	\mathrm{LacZ}^* &=1-\mathrm{LacZ}
+\end{align}
+This allows us to focus of equations for $\mathrm{LacR}$, $\mathrm{LacZ}$ and $\mathrm{Gal}$ because we can derive the other concentrations from them.
 
 % Let us write down a system of differential equations that describes this regulatory network. We begin by writing down two equations that describe the changes to mRNA concentrations $r\in\Reals^N$ and protein concentrations $u\in\Reals^N$ in a typical transcription-translation process
 % \begin{equation}
