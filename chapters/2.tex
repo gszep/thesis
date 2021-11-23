@@ -288,10 +288,8 @@ Bifurcations are defined as qualitative changes to system behaviour in response 
 \end{Figure}
 \subsubsection{Fragile Bifurcations}
 \begin{Figure}
-	\begin{center}
 	\includegraphics[scale=0.6]{pitchfork}
 	\includegraphics[scale=0.6]{transcritical}
-	\end{center}
 	\caption{Fragile bifurcations}
 	\label{fig:fragile-bifurcations}
 \end{Figure}
@@ -330,6 +328,12 @@ If $\rates$ contains spatial derivatives, additional conditions on $u$ with resp
 
 \subsubsection{Turing Bifurcations}
 
+Here we first introduce diffusion macroscopically by simply adding the laplacian
+to mean field equation. We introduce the turning bifurcation and
+show how linear stability analysis is insufficient to capture pattern formation
+and rich inhomogeneous steady states. A promising approach may be geometrisation
+of the moving local equilibria \cite{Halatek2018}.
+
 \clearpage
 \section{Applications in Cell Biology}
 \label{section:applications-cell-biology}
@@ -349,83 +353,118 @@ The first gene regulatory network that was discovered is the \emph{lac operon} i
 	\label{fig:lac-operon}
 \end{Figure}
 
-Let us first consider what happens within a single cell of constant volume. We assume rates $\alpha,\alpha^\prime$ of transcription and translation of \emph{LacI} into \emph{LacR} and \emph{LacZ} into $\beta$-Gal are constant. \emph{LacZ} is not transcribed when the operator region is blocked by \emph{LacR}, which we mark by an asterisk. The repressor can also be inactivated by the binding of two (allo)lactose molecules $\ce{C12H22O11}$.
+Let us first consider what happens within a single cell of constant volume. We assume the rate $\alpha$ of transcription and translation of \emph{LacZ} into $\beta$-Gal is constant unless the operator region is blocked by \emph{LacR}. The repressor is inactivated by the binding of two (allo)lactose molecules $\ce{C12H22O11}$.
 
 \begin{align*}
-	\ce{\bond{~}LacI\bond{~} &->[$\alpha$] \bond{~}LacI\bond{~} + LacR \\
-	\bond{~}Operator\bond{~}LacZ\bond{~} &->[$\alpha^\prime$]
+	\ce{
+	\bond{~}Operator\bond{~}LacZ\bond{~} &->[$\alpha$]
 	\bond{~}Operator\bond{~}LacZ\bond{~} + $\beta$-Gal \\
 	C12H22O11 &->[$\beta$-Gal][+H2O] C6H12O6 + C6H12O6 \\
-	\bond{~}Operator\bond{~}LacZ\bond{~} + LacR &<=>[k] \bond{~}Operator^*\bond{~}LacZ\bond{~} \\
-	LacR + 2C12H22O11 &<=>[k^\prime] LacR^*}
+	\bond{~}Operator\bond{~}LacZ\bond{~} + LacR &<=>[k] \bond{~}Operator^\prime\bond{~}LacZ\bond{~} \\
+	LacR + 2C12H22O11 &<=>[k^\prime] LacR^\prime}
 \end{align*}
-Since all proteins degrade over some finite half-life $\mu$ we also have
+Proteins degrade over some finite half-life $\mu$ we also have
 \begin{align*}
-	\ce{$\beta$-Gal &->[$\mu$] \emptyset \\
-	LacR ->[$\mu$] \emptyset \quad&\quad LacR^* ->[$\mu$] \emptyset}
+	\ce{$\beta$-Gal ->[$\mu$] \emptyset}
 \end{align*}
 
-The equilibrium dissociation constants $k,k'$ define the binding affinity if \emph{LacR} to the operator and its effector respectively. Let rate $\beta$ be the rate of hydrolysis of lactose by $\beta$-Gal. These rates are determined by molecular details, some of which can be modulated with genetic engineering. Changing the promoter sequences, for example, can modulate the rates $\alpha,\alpha'$. Thus it makes sense to collect these rates into our model parameter $\theta=(\alpha,\alpha',\beta,k,k')$. Let the concentration of the effector be the experimentally controlled condition $p=[\ce{C12H22O11}]$ and the remaining concentrations be collected in state vector $u$.
+The equilibrium dissociation constants $k,k'$ define the binding affinity if \emph{LacR} to the operator and its effector respectively. Let rate $\beta$ be the rate of hydrolysis of lactose by $\beta$-Gal. These rates are determined by molecular details, some of which can be modulated with genetic engineering. Changing the promoter sequences, for example, can modulate the rate $\alpha$. Thus it makes sense to collect these rates into our model parameter $\theta=(\alpha,\beta,k,k')$. Let the concentration of the effector be the experimentally controlled condition $p=[\ce{C12H22O11}]$ and the remaining concentrations be collected in state vector $u=(\mathrm{LacZ},\mathrm{LacR},\mathrm{Gal})$.
 
 From this set of reactions it is possible to write down a \emph{chemical master equation} \cite{Gillespie1992,Gillespie2007} whose \emph{mean field approximation} yields a set of ordinary differential equations of the form \eqref{eq:differential-equations} which are commonly referred to as \emph{reaction rate equations}. This procedure is equivalent to the mass-action assumption used in chemistry. We note that the two major assumptions here are: a thermodynamic limit where the number of molecules is sufficiently large such that correlations due to discreteness can be ignored and a sufficiently \emph{well mixed} cytoplasm so that we do not have to model space.
 
 The \emph{reaction rate equations} for the Lac operon become
 \begin{align}
-\frac{d}{dt}\mathrm{LacR} =  \mathrm{LacR}^*- \frac{p^2}{2} k^{\prime} \mathrm{LacR} &+  \mathrm{LacZ}^*  - k \mathrm{LacR}\,\mathrm{LacZ} + \alpha -\mu\mathrm{LacR}\nonumber\\
-\frac{d}{dt}\mathrm{LacR}^* =  -  &\mathrm{LacR}^* + \frac{p^{2}}{2} k^{\prime} \mathrm{LacR}-\mu\mathrm{LacR}^* \\\nonumber\\
-\frac{d}{dt}\mathrm{LacZ} = & \mathrm{LacZ}^* - k \mathrm{LacR}\,\mathrm{LacZ}\nonumber\\
-\frac{d}{dt}\mathrm{LacZ}^* =  - & \mathrm{LacZ}^* + k \mathrm{LacR}\,\mathrm{LacZ} \\\nonumber\\
-\frac{d}{dt} \mathrm{Gal}= &\alpha^\prime \mathrm{LacZ} - \mu\mathrm{Gal} \nonumber\\
-\frac{dp}{dt} = 2 \mathrm{LacR}^* &-p^{2} k^{\prime} \mathrm{LacR} - \beta p\,\mathrm{Gal} 
+\frac{d}{dt}\mathrm{LacR} =  \mathrm{LacR}^\prime-& \frac{p^2}{2} k^{\prime} \mathrm{LacR} +  \mathrm{LacZ}^\prime  - k \mathrm{LacR}\,\mathrm{LacZ} \label{eq:lacR}\\\nonumber
+\frac{d}{dt}\mathrm{LacR}^\prime =  -  &\mathrm{LacR}^\prime + \frac{p^{2}}{2} k^{\prime} \mathrm{LacR} \\\nonumber\\
+\frac{d}{dt}\mathrm{LacZ} = & \mathrm{LacZ}^\prime - k \mathrm{LacR}\,\mathrm{LacZ}
+\label{eq:lacZ}\\\nonumber
+\frac{d}{dt}\mathrm{LacZ}^\prime =  - & \mathrm{LacZ}^\prime + k \mathrm{LacR}\,\mathrm{LacZ} \\\nonumber\\
+\frac{d}{dt} \mathrm{Gal}= &\alpha \mathrm{LacZ} - \mu\mathrm{Gal}\label{eq:Gal} \\\nonumber
+\frac{dp}{dt} = 2 \mathrm{LacR}^\prime &-p^{2} k^{\prime} \mathrm{LacR} - \beta p\,\mathrm{Gal} 
 \end{align}
-Since we are experimentally controlling the lactose concentration we can set $\frac{dp}{dt}=0$ and rearrange for the equilibrated concentration of deactivated repressor $\mathrm{LacR}^*$. Furthermore the total concentration of the $\mathrm{LacZ}$ gene is conserved which allows us to normalise by it
+We can see two mass conservations: the total concentration of the $\mathrm{LacZ}$ gene and total concentration of $\mathrm{LacR}$. We can write down the conservation laws normalised such that the total concentrations add up to one
 \begin{align}
-	\mathrm{LacR}^* &= p \frac{ \beta \,\mathrm{Gal}+p k^{\prime} \mathrm{LacR}}{2}\\
-	\mathrm{LacZ}^* &=1-\mathrm{LacZ}
+	\mathrm{LacR}+\mathrm{LacR}^\prime + \mathrm{LacZ}^\prime &=1
+	\label{eq:mass-conservation}\\\nonumber
+	\mathrm{LacZ}+\mathrm{LacZ}^\prime =1 &
 \end{align}
-This allows us to focus of equations for $\mathrm{LacR}$, $\mathrm{LacZ}$ and $\mathrm{Gal}$ because we can derive the other concentrations from them.
+Substituting conservation laws \eqref{eq:mass-conservation} into equations \eqref{eq:lacR} and \eqref{eq:lacZ} allows us to close them and solve for the fraction of unbound $\mathrm{LacZ}$ available for transcription
+\begin{align}
+	\mathrm{LacZ}(p) = \frac{1}{\frac{1}{2}+\sqrt{\frac{1}{4}+\frac{k}{1+\frac{1}{2}k^\prime p^2}}}
+	\label{eq:lac-unbound}
+\end{align}
+This is a \emph{hill}-type term that yields a basal level of transcription $\mathrm{LacZ}(p=0)\sim k^{-\frac{1}{2}}$ saturates at $\mathrm{LacZ}(p\rightarrow\infty)=1$ with $k^\prime$ controlling the slope of the curve. We can now plot a vector field for equations \eqref{eq:Gal} (Figure \ref{fig:switch}) revealing the dynamics between (allo)lactose and $\beta$-Gal. We can see that for any initial concentration $p$ and basal concentration $\mathrm{Gal}^*$ the presence of $p$ stimulates more production of $\mathrm{Gal}$ which in turn decreases the concentration of $p\rightarrow 0$ at which point the basal expression $\mathrm{Gal}^*$ is reached again. This is the simplest example of \emph{gene regulation} in response to environmental conditions but there is nothing \emph{switch}-like about it. The dynamics always converges to a single fixed point $(p^*,\mathrm{Gal}^*)$ defined by
+\begin{align}
+	\left.\frac{d}{dt}\mathrm{Gal}\right|_{p^*,\mathrm{Gal}^*} &= \alpha\mathrm{LacZ}(p^*) - \mu\mathrm{Gal}^* = 0
+	\label{eq:gal-steady} \\
+	\left.\frac{dp}{dt}\right|_{p^*,\mathrm{Gal}^*} &= -\beta p^*\mathrm{Gal}^* =0
+	\label{eq:lactose-steady}
+\end{align}
 
-% Let us write down a system of differential equations that describes this regulatory network. We begin by writing down two equations that describe the changes to mRNA concentrations $r\in\Reals^N$ and protein concentrations $u\in\Reals^N$ in a typical transcription-translation process
-% \begin{equation}
-% 	\frac{dr}{dt}=H(u) - \mu r
-% 	\qquad
-% 	\frac{du}{dt}=F(r,u) - \gamma u
-% \end{equation}
-% where the vector function $H(u)$ quantifies the rate of transcription of DNA into mRNA in the presence of proteins $u$. The function $H(u)$ would encapsulate how proteins activate or inhibit the transcription of genes via mechanisms such as changes to chromatin conformation, interaction with transcription factors and binding regions of DNA. The function $F(r,u)$ quantifies the rate of translation of mRNA into proteins by ribosomes. Biological processes that modulate mRNA stability, RNA interference and other post-transcriptional regulatory mechanisms are encoded by this function.
+\begin{Figure}
+	\includegraphics[scale=0.6]{switch}
+	\caption{Monostable and bistable behaviour in the lac operon}
+	\label{fig:switch}
+\end{Figure}
 
-% If we assume that mRNA dynamics equilibrate much faster than proteins, we can focus exclusively on protein concentrations $u$ but solving for the equilibrium concentrations of mRNA $r^*$
-% \begin{equation}
-% 	\frac{du}{dt}=F(r^*,u) - \gamma u
-% 	\where r^* = \frac{H(u)}\mu
-% \end{equation}
-% Note that an important condition that allows us to move forward is the knowledge that transcription rates $H$ do not depend on mRNA concentrations $r$.
-\subsection{Populations of Neurons}
+In order to trigger the \emph{switch}-like behaviour we must engineer the dynamics defining the lactose \eqref{eq:lactose-steady} such that it defines a curve intersecting the \emph{hill}-type function three times (Figure \ref{fig:switch}). Mathematically we suppose there exists some $f(p,\mathrm{Gal})$ such that
+\begin{align}
+	\frac{dp}{dt} = -\beta p\mathrm{Gal} + f(p,\mathrm{Gal})
+	\label{eq:lactose-control}
+\end{align}
+yields three intersections with equation \eqref{eq:gal-steady}. In practice $f$ can come from additional chemical reactions introduced by genetic engineering. We shall see how this was done with non-hydrolysable synthetic analogues of the \emph{lac operon} in Chapter \ref{chapter:double-exclusive}. The main take-away from this analysis is that whenever biochemical reactions yield \emph{hill}-type functions with inflection points, they tend to manifest on steady-state manifolds. This means that with  there is a good chance there exist chemical reactions that use it for its switching behaviour. In fact when the transglycosylation of lactose into \emph{allolactose} is taken into account, bistable behaviour is observed \cite{}.
 
-\subsubsection{Neural Differential Equations \& Gaussian Processes}
-While principled derivation from microscopic rules exist, often the the number of variables $N$ participating in the mechanism under study becomes intractable. When the desire for predictive performance out-weighs the desire for mechanistic explanations, the states $u$ are chosen to be the observable subset for which we have data, and the right-hand side $\rates$ can be a machine learning model such as a neural network or Gaussian process \cite{}. In this case the number of parameters becomes much larger than the number of states $M\gg N$. A recent breakthrough in back-propagation through differential equation solvers \cite{} has made these models tractable in optimisation routines, and popularised them in literature \cite{}.
+Now that we've understood how genetic switches can manifest within a single cell, we can begin asking questions about populations of cells. We will do this again in the \emph{mean field approximation}, where a large population of cells can be described as a continuum of spatially extended concentrations $u(x,t)$. Some of molecules can be exchanges between cells, which gives rise to non-zero \emph{diffusion coefficients}, while others are confined within cells. As we shall see in Chapter \ref{chapter:double-exclusive}, a bistable region gives rise to sharp boundaries in gene expression. Such boundaries, their velocity and stability have been studied in the context of \emph{travelling wave solutions} of the \emph{Kolmogorov-Petrovsky-Piskunov equation} \cite{}.
 
-
-\subsubsection{Stochastic Differential Equations}
-
+% \subsection{Populations of Neurons \emph{maybe remove}}
 
 \subsection{Self-organised Patterns \& Development}
+During the development of any organism a hierarchy of self-organisation takes place that leads to the breaking of symmetry from a spherical cluster of undifferentiated cells to the formation of organ segments and limbs. This process is known as morphogenesis. Figure \ref{fig:morph}, taken from \cite{}, shows an example in which \textit{Hox} gene expression patterns in the body segments of Drosophila can drastically affect its development.
 
-In this section we would explore the geometrisation of phase space, lyapunov
-exponents and universality. Perhaps a discussion on phase transitions and
-the relation to Landau-Ginzberg approaches is required.
-Maybe also periodic orbit theory? Depends how useful it is.
-\subsubsection{Reaction-Diffusion}
-Here we first introduce diffusion macroscopically by simply adding the laplacian
-to mean field equation. We introduce the turning bifurcation and
-show how linear stability analysis is insufficient to capture pattern formation
-and rich inhomogeneous steady states. A promising approach may be geometrisation
-of the moving local equilibria \cite{Halatek2018}.
+\begin{Figure}
+\includegraphics[width=90mm]{figures/morph1.png}\\
+\includegraphics[width=90mm]{figures/morph2.png}
+\caption{Top: \textit{Hox} gene expression patterns in body segments of drosophila Bottom: Mutation where legs grow in-place of antenna \cite{}}
+\label{fig:morph}
+\end{Figure}
+\subsubsection{Morphogen-driven Patterns}
+One of the central questions in developmental biology is how positional information is sensed by a population of cells and how sharp gene expression boundaries between populations are maintained for robust organ and body segment development. The French Flag model \cite{Wolpert1969PositionalDifferentiation.} proposes that cells have a threshold response to external signalling molecules -- henceforth referred to as morphogens -- which pre-pattern the organism from anterior to posterior and laterally. Some examples of morphogens include Wingless, Decapentaplegic and Sonic Hedgehog. Figure \ref{fig:gap} show the \textit{Gap} expression patterns that partition the Drosophila embryo into segments which are later differentiated by \textit{Hox} genes.
 
+\begin{Figure}
+\includegraphics[width=90mm]{figures/gap.jpg}
+\caption{Expression patterns of pair-rule \textit{Gap} genes in Drosophila embryo \cite{}}
+\label{fig:gap}
+\end{Figure}
+
+\subsubsection{Self-organised Patterns}
+How are morphogen gradients set up and maintained? How can they be robust against changes in size and geometry? A canonical example of self-organisation in bacteria is the quorum sensing system \cite{Miller2002QuorumBacteria}. Each cell secretes a signalling molecule resulting in the total concentration being proportional to the population density. This signal induces adaptive responses in metabolic and mobility in the whole colony. A long standing mathematical hypothesis that Turing patterns underlie self-organisation in cell populations. Recent literature suggests both morphogen-driven and Turing patterning mechanisms play a role in development \cite{Green2015PositionalCombine}
+
+\begin{Figure}
+\includegraphics[width=70mm]{figures/turing.png}
+\caption{Pigment patterns hypothesised to be generated by Turing mechanism}
+\label{fig:turing}
+\end{Figure}
+
+\clearpage
 \section{Phenotype Inference with Machine Learning}
 \label{section:phenotype-inference}
-\begin{itemize}
-    \item Preface on SciML community and gray-box modelling
-\end{itemize}
+
+Thus far we have outlined how applying bifurcation analysis to a model $\rates(u,p)$ relating the organism state $u$ to environmental conditions $p$ and genotype $\theta$ can be used to distinguish its phenotypes. What do we do in circumstances where the model is partially or completely unknown? In this case, rather than deriving the functional forms relating states $u$ from reasonable biochemical assumptions and mass-action laws, we rely on \emph{universal function approximators} \cite{}.
+\begin{Figure}
+    \includegraphics[width=14cm]{inferring-bifurcations}
+    \caption{Bifurcation point extraction along the condition $p$ via two possible routes: steady state inference (a,d$\rightarrow$c) and fixed point inference (a,d$\rightarrow$b,e$\rightarrow$c). The fixed point inference route requires the geometry of the field $F(u)$ at different values of the condition $p$ and yields additional unstable fixed points.}
+    \label{fig:inferring-bifurcations}
+\end{Figure}
+When a model $\rates(u,p)$ is absent it becomes difficult to know which observations to collect. In the era of high-throughput biology, the solution to this is to simply collect as many observations as possible and search the high-dimensional data for mechanisms that elucidate what the organism model could be. Such data may include flow cytometry, proteomics (MS/MS), transcriptomics (scRNA-seq) metabolomics (MS) and a wide variety of next-generation sequencing data \cite{}. Thus the problem of differentiating phenotypes becomes a matter of extracting bifurcations from high dimensional \emph{universal function approximators}.
+
+Bifurcations along conditions $p$ can be extracted from data $u$ via two possible routes as depicted in Figure \ref{fig:inferring-bifurcations}: via a \emph{universal function approximator} $F(u)$ which enables the location of all fixed points, including unstable ones, or via direct inference from steady state data $u(t\rightarrow\infty)$. At best we could have state trajectory data $u(t)$ like single cell trajectories extracted via segmentation and tracking in fluorescence microscopy movies (for example the data acquired using the CellASIC ONIX
+Microfluidic Platform in Figure \ref{fig:double-exclusive:bistability}c). Having the the state as a function of time $u(t)$, sampled at sufficiently broad initial conditions $u(0)$, enables the estimation of field geometry $F(u)$ via \emph{universal function approximators} such as neural networks \cite{Chen2018NeuralEquations} and Gaussian processes \cite{Seeger2004GaussianLearning.}. Note that we've dropped $\theta$ and $p$ from the \emph{universal function approximator}. We reserve $\theta$ to be a vector of biophysically meaningful parameters that make up an organism genotype. While \emph{universal function approximators} typically have a lot of parameters, they tend not to reveal the mechanism under study and hence cannot be used to deduce which genetic design interventions can be made.
+
+% We can then extract important state-space structures, such as stable and unstable fixed points, their eigenvalues $\lambda$, from the field geometry $F(u)$ at different values of the control condition $p$, and hence identify possible bifurcations.
+
+
+% Data on steady states $u(t\rightarrow\infty)$ are more abundant and typically found in flow cytometry measurements. It is possible to infer the steady state manifold directly from such data (Figure \ref{fig:inferring-bifurcations} a,d$\rightarrow$c) but we would not be able to extract information on unstable fixed points or eigenvalues $\lambda$ of state-space structures. Since the criteria for bifurcations are not directly accessible, indirect measures (such as the population separation that can be seen in Figure \ref{fig:double-exclusive:flow-hysteresis}) must be used to extract bifurcations.
+
 
 \subsection{Classification and Regression}
 \begin{itemize}
@@ -450,18 +489,6 @@ of the moving local equilibria \cite{Halatek2018}.
 
 
 \subsection{Inferring Bifurcations from Data}
-
-In sections \ref{inference:abstract} -- \ref{inference:impact} we assume that the bifurcation data $\targets$ with respect to the experimental control condition $p\in\Reals$ is known or already extracted from raw data. We can break down the extraction process into steps: steady state inference, field inference and fixed-point inference; each discussed separately in its own subsection. These steps are sequenced together into two possible routes towards bifurcation data $\targets$ as depicted in Figure \ref{fig:inferring-bifurcations}.
-
-At best we could have state trajectory data like single cell trajectories extracted via segmentation and tracking in fluorescence microscopy movies (for example the data acquired using the CellASIC ONIX
-Microfluidic Platform in Figure \ref{fig:double-exclusive:bistability}c). Having the the state as a function of time $u(t)$, sampled at sufficiently broad initial conditions $u(0)$, enables the \emph{non-parametric} estimation of field geometry $F(u)$. We can then extract important state-space structures, such as stable and unstable fixed points, their eigenvalues $\lambda$, from the field geometry $F(u)$ at different values of the control condition $p$, and hence identify possible bifurcations.
-
-\begin{Figure}
-    \includegraphics[width=14cm]{inferring-bifurcations}
-    \caption{Bifurcation point extraction along the condition $p$ via two possible routes: steady state inference (a,d$\rightarrow$c) and fixed point inference (a,d$\rightarrow$b,e$\rightarrow$c). The fixed point inference route requires the geometry of the field $F(u)$ at different values of the condition $p$ and yields additional information about unstable fixed points.}
-    \label{fig:inferring-bifurcations}
-\end{Figure}
-Data on steady states $u(t\rightarrow\infty)$ are more abundant and typically found in flow cytometry measurements. It is possible to infer the steady state manifold directly from such data (Figure \ref{fig:inferring-bifurcations} a,d$\rightarrow$c) but we would not be able to extract information on unstable fixed points or eigenvalues $\lambda$ of state-space structures. Since the criteria for bifurcations are not directly accessible, indirect measures (such as the population separation that can be seen in Figure \ref{fig:double-exclusive:flow-hysteresis}) must be used to extract bifurcations.
 
 \subsubsection{Bifurcations via Steady State Inference}
 \label{section:steady-state-inference}

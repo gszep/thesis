@@ -1,51 +1,50 @@
-using DifferentialEquations, Catalyst
-using Markdown,Latexify,Plots
+using DifferentialEquations
+using ForwardDiff,LinearAlgebra
+using CairoMakie,Colors,InvertedIndices
 
-LacReactions = @reaction_network begin
+CairoMakie.activate!()
 
-    # transcription
-    α, LacI → LacI + LacR
-    α, LacZ → LacZ + βGal
+set_theme!(Theme(
+    Axis = (
+        xgridvisible  = false,
+		ygridvisible  = false,
+        # xticksvisible  = false,
+		# yticksvisible  = false,
+        # xticklabelsvisible  = false,
+        # yticklabelsvisible  = false,
+    )
+))
 
-    # degredation
-    μ, LacR → ∅
-    μ, LacR⁻ → ∅
-    μ, βGal → ∅
-
-    # hydrolysis
-    β*βGal, p → ∅
-
-    # repressor binding
-    (z,1), LacZ + LacR ↔ LacZ⁻
-    (r,1), LacR + 2p   ↔ LacR⁻
-
-end α β z r μ
-
-rates,rates! = build_function(oderatelaw.(reactions(LacReactions)),
-    states(LacReactions), parameters(LacReactions),
-    independent_variable(LacReactions), expression=Val{false}
+figure = Figure(resolution = 72 .* (12,6) )
+ax = Axis(figure[1,1],
+    ylabel = L"$\beta$-galactosidase, Gal",
+    xlabel = L"(allo)lactose, $p$"
 )
 
-LacReactions
+streamplot!( ax, x-> Point2( -x[1]*x[2], asinh(3x[1]-6)+3-x[2] ),
+    -0.1..4, -0.1..6, density=0.5, linewidth=1, colormap=[:gray], stepsize=0.1,
+    arrow_size=12)
 
-function F(u,p,θ)
-    Z,R,G = u
-    α,β,z,r,μ = θ
+lines!( ax, -0.1..4, x->asinh(3x-6)+3, linewidth=3, color=:darkblue)
+vlines!( ax, [0], linewidth=3, color=:darkblue)
+scatter!( ax, [0], [1/2], markersize=10, color=:darkblue)
 
-    return rates([1,R,Z,G,p*(β*G+p*r*R)/2,p,1-Z],[α,β,z,r,μ],0)
-end
 
-F(randn(3),randn(),randn(5))
+ax = Axis(figure[1,2],
+    ylabel = "",
+    xlabel = L"(allo)lactose, $p$"
+)
 
-LacSystem = convert(ODESystem,LacReactions)
-calculate_tgrad(LacSystem)
+streamplot!( ax, x-> Point2( (-1/2-1.3x[1]+x[2]), asinh(3x[1]-6)+3-x[2] ),
+    -0.1..4, -0.1..6, density=0.5, linewidth=1, colormap=[:gray], stepsize=0.1,
+    arrow_size=12)
 
-p = (0.00166,0.0001,0.1)   # [c1,c2,c3]
-tspan = (0., 100.)
-u0 = [301., 100., 0., 0.]  # [S,E,SE,P]
+lines!( ax, -0.1..4, x->asinh(3x-6)+3, linewidth=3, color=:darkblue)
+lines!( ax, -0.1..4, x->1/2+1.3x, linewidth=3, color=:darkblue)
 
-# solve JumpProblem
-dprob = DiscreteProblem(rs, species(rs) .=> u0, tspan, parameters(rs) .=> p)
-jprob = JumpProblem(rs, dprob, Direct())
-jsol = solve(jprob, SSAStepper())
-plot(jsol,lw=2,title="Gillespie: Michaelis-Menten Enzyme Kinetics")
+scatter!( ax, [0], [1/2], markersize=10, color=:darkblue)
+scatter!( ax, [2.05], [3.15], markersize=10, color=:lightblue)
+scatter!( ax, [3.7], [5.3], markersize=10, color=:darkblue)
+
+figure
+save("figures/switch.pdf",figure)
