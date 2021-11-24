@@ -89,20 +89,20 @@ for condition ∈ Iterators.product(range(-1/2,2,length=N),range(-1/2,2,length=N
 		strokewidth = all(condition .≈ [-1/2,2]) ? 5 : all(condition .≈ [2,-1/2]) ? 5 : 1)
 end
 
-N = 12
+N = 24
 U = Matrix{Float64}(undef,N,N)
 for (j,condition) ∈ enumerate(Iterators.product(range(-1/2,2,length=N),range(-1/2,2,length=N)))
 
-	u = Vector{Vector{Float64}}(undef,2)
+	u = Vector{Float64}(undef,2)
 	for (i,(prime,color)) ∈ enumerate([([2,-1/2],RGBA(1.0,0.753,0.0,0.1)), ([-1/2,2],RGBA(0.0,0.69,0.941,0.1))])
 		ensemble = solve( EnsembleProblem(
 				SDEProblem(f,σ,randn(2),(0.0,10.0),(t=prime,t′=condition,τ=5)),
 			prob_func = (x,_,_) -> remake(x,u0=randn(length(x.u0)))),
 			SRIW1(), EnsembleDistributed(),trajectories=200
 		)
-		u[i] = map(i->StatsBase.median(map(x->-x.u[end][i],ensemble)),1:2)
+		u[i] = norm(StatsBase.cov(map(x->-x.u[end],ensemble)))
 	end
-	U[j] = norm(u[1]-u[2])
+	U[j] = max(u[1],u[2])
 end
 
 ax = Axis(figure[1:3,3],

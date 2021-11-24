@@ -185,7 +185,7 @@ where $\left\langle\cdots\right\rangle_{\sigma(t)}$ is a shorthand for a weighte
 
 \subsubsection{Fixed Points}
 
-Thus far we explored the field geometry in arbitrary patches of state space $u$ and asked questions about local flows. It is usually not possible to set up experimental conditions to get an organism to trace out all of its available states without killing it or distorting the mechanism under study. An organisms prefers to operate within a finite set of states and would want to return to them when perturbed. This is a hallmark of a stable steady state $\steady$ which belongs to a wider class of points called \emph{fixed points}. In the context of differential equation models, a \emph{fixed point} is the solution of
+Thus far we explored the field geometry in arbitrary patches of state space $u$ and asked questions about local flows. It is usually not possible to set up experimental conditions to get an organism to trace out all of its available states without killing it or distorting the mechanism under study. An organisms prefers to operate within a finite set of states and would want to return to them when perturbed. In biology this is known as \emph{homeostasis} and in the context of dynamical systems this is a stable steady state $\steady$ which belongs to a wider class of points called \emph{fixed points}. In the context of differential equation models, a \emph{fixed point} is the solution of
 \begin{equation}
 	\left.\frac{du}{dt}\right|_{u=\steady}=\rates(\steady,p) = 0
 	\label{eq:fixed-point-equation}
@@ -241,6 +241,36 @@ Here we kept the first-order derivative because we would still like to see how t
 This equation reveals two timescales for blob deformations in the vicinity of a field degeneracy: the familiar exponential timescale $\e^{t-t'}$ and a new polynomial timescale $(t-t')^{\frac{1}{1-n}}$. The emergence of a polynomial timescale that dominates over the exponential is called \emph{critical slowing down} and is a marker of degeneracy. We can see once the dynamics is confined to the degenerate subspace the eigenvalues of the Jacobian are insufficient for determining the timescales. The curvature of the field around the degenerate subspace drives the polynomial dynamics, and therefore higher-order derivatives are needed to reveal this.
 
 This critical slowing can be observed in data when \emph{fixed points} become \emph{degenerate}. Degenerate fixed points are also called \emph{critical points}. The transition between these two timescales in data is a signal that a \emph{critical point} is nearby. We will see that \emph{critical points} may lead to bifurcations and bifurcations are always accompanied by degeneracies in the field.
+
+\subsubsection{Fluctuations}
+
+Biological processes can be intrinsically noisey and the measurement apparatus can also introduce errors. Fortunately we can model such non-deterministic aspects by extending equations \eqref{eq:differential-equations} to a Langevin equation
+\begin{align}
+	\frac{du}{dt} = \rates(u,p) + \eta(t)
+	\where \eta(t) \sim \mathcal{N}(\mu=0,\mathbf{\Sigma}=\mathbb{1}D)
+	\label{eq:langevin}
+\end{align}
+The stochastic process $\eta(t)$ is a zero-mean white noise with equal variance $D$ along all $N$ dimensions resultant from a large number of independent processes such as Brownian motion and Poisson shot noise. We can apply the Kramers-Moyal expansion \cite{} to transform this equation into an equivalent Fokker-Planck equation for the probability distribution $P_{\theta}$
+\begin{align}
+	\frac{dP_{\theta}}{dt} + \frac{\partial}{\partial u}\cdot J_\theta = 0
+	\where J_\theta := \left(\rates(u,p)-\frac{D}{2}
+	 \frac{\partial}{\partial u} \right)P_{\theta}
+	\label{eq:fokker-planck}
+\end{align}
+Here we cast the Fokker-Planck equation as a continuity equation with the divergence of probability current $J_\theta$ balancing the total change in probability $\frac{dP_{\theta}}{dt}$. In the scenario where at steady state $\frac{dP_{\theta}}{dt}=0$ there are also no circulating probability currents $J_\theta=0$ then we can solve for the distribution
+\begin{align}
+	P_{\theta}(u,p) = \frac{1}{Z} \mathbb{e}\,^{\frac{2}{D}\int^{u}\!\!\!\rates(u',p)\cdot\mathrm{d}u'}
+	\where Z:= \int_{\Reals^N} \mathbb{e}\,^{\frac{2}{D}\int^{u}\!\!\!\rates(u',p)\cdot\mathrm{d}u'} \mathrm{d}u
+	\label{eq:steady-state-distribution}
+\end{align}
+Expanding the distribution in the vicinity of a stable fixed point gives rise to a multivariate Gaussian distribution whose covariance matrix $\mathbf{\Sigma}$ is the inverse of the Jacobian evaluated at the fixed point
+\begin{align}
+	P_{\theta}(u,p) \sim \mathbb{e}\,^{-\frac{1}{2}
+	(u-\steady)^\top\mathbf{\Sigma}^{-1}(u-\steady)
+	}\where \mathbf{\Sigma}^{-1}=-\frac{2}{D}\left.\jacobian\right|_{\steady}
+	\label{eq:steady-state-distribution-near-fixed-point}
+\end{align}
+We learn that accompanying the \emph{critical slowing down} \eqref{eq:critical-slowing} we also have the divergence of variance along the degenerate direction. These are the two main observations that accompany bifurcations and have a deep relationship to the theory of phase transitions \cite{}.
 
 \subsubsection{Limit Cycle Analysis}
 Thus far we dealt with static state space structures like \emph{fixed points}. We found that the eigenvalues of the Jacobian are sufficient for their characterisation, unless the field is  \emph{degenerate}, in which case higher order derivatives of the field must be investigated.
@@ -381,7 +411,7 @@ Substituting conservation laws \eqref{eq:mass-conservation} into equations \eqre
 	\mathrm{LacZ}(p) = \frac{1}{\frac{1}{2}+\sqrt{\frac{1}{4}+\frac{k}{1+\frac{1}{2}k^\prime p^2}}}
 	\label{eq:lac-unbound}
 \end{align}
-This is a \emph{hill}-type term that yields a basal level of transcription $\mathrm{LacZ}(p=0)\sim k^{-\frac{1}{2}}$ saturates at $\mathrm{LacZ}(p\rightarrow\infty)=1$ with $k^\prime$ controlling the slope of the curve. We can now plot a vector field for equations \eqref{eq:Gal} (Figure \ref{fig:switch}) revealing the dynamics between (allo)lactose and $\beta$-Gal. We can see that for any initial concentration $p$ and basal concentration $\mathrm{Gal}^*$ the presence of $p$ stimulates more production of $\mathrm{Gal}$ which in turn decreases the concentration of $p\rightarrow 0$ at which point the basal expression $\mathrm{Gal}^*$ is reached again. This is the simplest example of \emph{gene regulation} in response to environmental conditions but there is nothing \emph{switch}-like about it. The dynamics always converges to a single fixed point $(p^*,\mathrm{Gal}^*)$ defined by
+This is a \emph{hill}-type term that yields a basal level of transcription $\mathrm{LacZ}(p=0)\sim k^{-\frac{1}{2}}$ saturates at $\mathrm{LacZ}(p\rightarrow\infty)=1$ with $k^\prime$ controlling the slope of the curve. We can now plot a vector field for equations \eqref{eq:Gal} (Figure \ref{fig:switch}) revealing the dynamics between (allo)lactose and $\beta$-Gal. We can see that for any initial concentration $p$ and basal concentration $\mathrm{Gal}^*$ the presence of $p$ stimulates more production of $\mathrm{Gal}$ which in turn decreases the concentration of $p\rightarrow 0$ at which point the basal expression $\mathrm{Gal}^*$ is reached again. This is the simplest example of \emph{gene regulation} in response to environmental conditions but there is nothing \emph{switch}-like about it. The \emph{lac operon} maintains a single point of homeostasis $(p^*,\mathrm{Gal}^*)$ defined by
 \begin{align}
 	\left.\frac{d}{dt}\mathrm{Gal}\right|_{p^*,\mathrm{Gal}^*} &= \alpha\mathrm{LacZ}(p^*) - \mu\mathrm{Gal}^* = 0
 	\label{eq:gal-steady} \\
@@ -440,47 +470,27 @@ How are morphogen gradients set up and maintained? How can they be robust agains
 Thus far we have outlined how applying bifurcation analysis to a model $\rates(u,p)$ relating the organism state $u$ to environmental conditions $p$ and genotype $\theta$ can be used to distinguish its phenotypes. What do we do in circumstances where the model is partially or completely unknown? In this case, rather than deriving the functional forms relating states $u$ from reasonable biochemical assumptions and mass-action laws, we rely on \emph{universal function approximators} \cite{}.
 \begin{Figure}
     \includegraphics[width=14cm]{inferring-bifurcations}
-    \caption{Bifurcation point extraction along the condition $p$ via two possible routes: steady state inference (a,d$\rightarrow$c) and fixed point inference (a,d$\rightarrow$b,e$\rightarrow$c). The fixed point inference route requires the geometry of the field $F(u)$ at different values of the condition $p$ and yields additional unstable fixed points.}
+    \caption{Bifurcation point extraction along the condition $p$ via two possible routes: steady state inference (a,d$\rightarrow$c) and fixed point inference (a,d$\rightarrow$b,e$\rightarrow$c). The fixed point inference route requires \emph{universal function approximator} $F(u)$ at different values of the condition $p$ and yields additional unstable fixed points.}
     \label{fig:inferring-bifurcations}
 \end{Figure}
 When a model $\rates(u,p)$ is absent it becomes difficult to know which observations to collect. In the era of high-throughput biology, the solution to this is to simply collect as many observations as possible and search the high-dimensional data for mechanisms that elucidate what the organism model could be. Such data may include flow cytometry, proteomics (MS/MS), transcriptomics (scRNA-seq) metabolomics (MS) and a wide variety of next-generation sequencing data \cite{}. Thus the problem of differentiating phenotypes becomes a matter of extracting bifurcations from high dimensional \emph{universal function approximators}.
 
-Bifurcations along conditions $p$ can be extracted from data $u$ via two possible routes as depicted in Figure \ref{fig:inferring-bifurcations}: via a \emph{universal function approximator} $F(u)$ which enables the location of all fixed points, including unstable ones, or via direct inference from steady state data $u(t\rightarrow\infty)$. At best we could have state trajectory data $u(t)$ like single cell trajectories extracted via segmentation and tracking in fluorescence microscopy movies (for example the data acquired using the CellASIC ONIX
-Microfluidic Platform in Figure \ref{fig:double-exclusive:bistability}c). Having the the state as a function of time $u(t)$, sampled at sufficiently broad initial conditions $u(0)$, enables the estimation of field geometry $F(u)$ via \emph{universal function approximators} such as neural networks \cite{Chen2018NeuralEquations} and Gaussian processes \cite{Seeger2004GaussianLearning.}. Note that we've dropped $\theta$ and $p$ from the \emph{universal function approximator}. We reserve $\theta$ to be a vector of biophysically meaningful parameters that make up an organism genotype. While \emph{universal function approximators} typically have a lot of parameters, they tend not to reveal the mechanism under study and hence cannot be used to deduce which genetic design interventions can be made.
+Bifurcations along conditions $p$ can be extracted from data via two possible routes as depicted in Figure \ref{fig:inferring-bifurcations}: via a \emph{universal function approximator} $F(u)$ which enables the location of all fixed points, including unstable ones, or via direct inference from steady state data $u(t\rightarrow\infty)$. At best we could have state trajectory data $u(t)$ like single cell trajectories extracted via segmentation and tracking in fluorescence microscopy movies (for example the data acquired using the CellASIC ONIX Microfluidic Platform in Figure \ref{fig:double-exclusive:bistability}c). The majority of biomedical data is sparsely sampled with respect to time (for example the flow cytometry measurements in Figure \ref{fig:double-exclusive:flow-hysteresis} which were only collected at experiment end-points) and in such settings expecting to capture dynamical transients which would reveal the locations of unstable fixed points would be unreasonable. If we assume that the data was collected at a time where the organism is in homeostasis, then we can infer the steady states $u(t\rightarrow\infty)$ and any possible bifurcations directly from statistical measures of the data without needing a \emph{universal function approximator} $F(u)$. The emergent picture suggests a model of the state space $F(u)$ is desirable because it fully characterises the phenotype, but requires data or prior knowledge about dynamical transients of the organism. Fortunately, as we will see, statistics on the organism in homeostasis reveal stable steady states and static bifurcations.
 
-% We can then extract important state-space structures, such as stable and unstable fixed points, their eigenvalues $\lambda$, from the field geometry $F(u)$ at different values of the control condition $p$, and hence identify possible bifurcations.
-
-
-% Data on steady states $u(t\rightarrow\infty)$ are more abundant and typically found in flow cytometry measurements. It is possible to infer the steady state manifold directly from such data (Figure \ref{fig:inferring-bifurcations} a,d$\rightarrow$c) but we would not be able to extract information on unstable fixed points or eigenvalues $\lambda$ of state-space structures. Since the criteria for bifurcations are not directly accessible, indirect measures (such as the population separation that can be seen in Figure \ref{fig:double-exclusive:flow-hysteresis}) must be used to extract bifurcations.
-
-
-\subsection{Classification and Regression}
-\begin{itemize}
-    \item Logistic regression
-    \item Nearest neighbour methods
-    \item Mixture Models
-\end{itemize}
-
-\subsection{Dimensionality Reduction Methods}
-\begin{itemize}
-    \item UMAP and Tsne
-    \item Sloppy parameters and identify-ability
-\end{itemize}
-
-\subsection{Clustering Methods}
-
-\section{Applications in Flow Cytometry}
-\label{section:applications-flow-cytometry}
-
-
-\subsection{Immunophenotyping Panels}
-
-
-\subsection{Inferring Bifurcations from Data}
-
-\subsubsection{Bifurcations via Steady State Inference}
+\clearpage
+\subsection{Phenotypes from Statistics in Homeostasis}
 \label{section:steady-state-inference}
-
+Suppose we collected an $N$-dimensional $K$ cell omics dataset $\mathbf{U}\in\Reals^{N\times K}$ from an organism of genotype $\theta$ in various conditions $p$. We would like to know how many cell phenotypes there are in our dataset and how they may change in response to changes in environment $p$ or genetic manipulation $\theta$. Formally the dataset is an $N\times K$ matrix with $K$ samples $U\in\Reals^N$ along columns. We suppose there exists a steady state probability density $P_{\theta}(u,p)$ for a particular genotype $\theta$ and condition $p$ from which the samples $U$ are generated from.
+\begin{equation}
+	\mathbf{U} := \begin{pmatrix}
+		\mid&\mid &        & \mid\\
+		U_1 & U_2 & \cdots & U_K\\
+		\mid&\mid &        & \mid
+	\end{pmatrix}
+	\where 
+	U \sim P_{\theta}(u,p)
+\end{equation}
+Dimensionality reduction in tandem with 
 Suppose we would like to detect a cusp bifurcation and limit points in a cell population with respect to two experimental control conditions $p,p\prime\in\Reals$. We can set up a serial dilution along the columns for $p$ and along the rows for $p\prime$ in two 96-well plates. Cells allowed to grow in exponential phase in a finite concentration of either $p\ll p\prime$ or $p\gg p\prime$. Let us call this the \emph{priming} stage of the protocol as shown in Figure \ref{fig:cusp-sampling}a, resulting in two cell populations: $p$-primed cells and $p\prime$-primed cells. The priming concentrations must be chosen sufficiently high so that the resultant population states lie either side of the cusp. The two populations are transferred into separate 96-well plates containing the dilutions of $p,p'$; we call this the \emph{conditioning} stage in Figure \ref{fig:cusp-sampling}a.
 
 \begin{Figure}
@@ -501,6 +511,36 @@ This approach would not work for extracting dynamic bifurcations such as \emph{H
 \begin{itemize}
     \item quantify efficiency of switching?
 \end{itemize}
+
+Having the the state as a function of time $u(t)$, sampled at sufficiently broad initial conditions $u(0)$, enables the estimation of field geometry $F(u)$ via \emph{universal function approximators} such as neural networks \cite{Chen2018NeuralEquations} and Gaussian processes \cite{Seeger2004GaussianLearning.}. We refer the reader to a modern review of the most successful machine learning approaches for designing \emph{universal function approximators} \cite{Bronstein2021GeometricGauges} where emphasis is made on understanding how group equivariant and group invariant transformations are stacked together. Note that we've dropped $\theta$ and $p$ from the \emph{universal function approximator}. We reserve $\theta$ to be a vector of biophysically meaningful parameters that make up an organism genotype. While \emph{universal function approximators} typically have a lot of parameters, they tend not to reveal the mechanism under study and hence cannot be used to deduce which genetic design interventions can be made.
+
+% We can then extract important state-space structures, such as stable and unstable fixed points, their eigenvalues $\lambda$, from the field geometry $F(u)$ at different values of the control condition $p$, and hence identify possible bifurcations.
+
+
+% Data on steady states $u(t\rightarrow\infty)$ are more abundant and typically found in flow cytometry measurements. It is possible to infer the steady state manifold directly from such data (Figure \ref{fig:inferring-bifurcations} a,d$\rightarrow$c) but we would not be able to extract information on unstable fixed points or eigenvalues $\lambda$ of state-space structures. Since the criteria for bifurcations are not directly accessible, indirect measures (such as the population separation that can be seen in Figure \ref{fig:double-exclusive:flow-hysteresis}) must be used to extract bifurcations.
+
+
+% \subsection{Classification and Regression}
+% \begin{itemize}
+%     \item Logistic regression
+%     \item Nearest neighbour methods
+%     \item Mixture Models
+% \end{itemize}
+
+% \subsection{Dimensionality Reduction Methods}
+% \begin{itemize}
+%     \item UMAP and Tsne
+%     \item Sloppy parameters and identify-ability
+% \end{itemize}
+
+% \subsection{Clustering Methods}
+
+\section{Applications in Flow Cytometry}
+\label{section:applications-flow-cytometry}
+
+
+\subsection{Immunophenotyping Panels}
+
 
 
 \subsubsection{Non-parameteric Vector Field Inference}
