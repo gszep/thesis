@@ -4,8 +4,9 @@
 \usepackage{emptypage}
 
 \usepackage[rgb,dvipsnames]{xcolor}
-\usepackage[format=hang,font=small,labelfont=bf,hypcap=false]{caption}
-\usepackage{graphicx,tikz,listings,color,float,caption}
+\usepackage[format=hang,font=small,labelfont=bf,hypcap=false]{caption,subcaption}
+\usepackage{graphicx,tikz,listings,color,float}
+\renewcommand\thesubfigure{\Alph{subfigure}}
 
 \usetikzlibrary{shapes.geometric,arrows}
 \restylefloat{figure}

@@ -244,7 +244,7 @@ This critical slowing can be observed in data when \emph{fixed points} become \e
 
 \subsubsection{Fluctuations}
 
-Biological processes can be intrinsically noisey and the measurement apparatus can also introduce errors. Fortunately we can model such non-deterministic aspects by extending equations \eqref{eq:differential-equations} to a Langevin equation
+Biological processes can be intrinsically noisy and the measurement apparatus can also introduce errors. Fortunately we can model such non-deterministic aspects by extending equations \eqref{eq:differential-equations} to a Langevin equation
 \begin{align}
 	\frac{du}{dt} = \rates(u,p) + \eta(t)
 	\where \eta(t) \sim \mathcal{N}(\mu=0,\mathbf{\Sigma}=\mathbb{1}D)
@@ -489,8 +489,24 @@ Suppose we collected a high dimensional single cell omics dataset $\dataset$ fro
 Since we can't possibly know the distribution $P_\theta$ because that would require knowing microscopic details and deriving a reasonable model $\rates$, we resort to dimensionality reduction in tandem with clustering methods to detect the phenotypes. To detect bifurcations look for regions of the data where the variance appears to diverge and we can use scaling laws from equation \eqref{eq:steady-state-distribution-near-fixed-point} to determine the type of bifurcation that is occurring and its corresponding degenerate direction.
 
 \subsubsection{Impute, Reduce \& Cluster}
+While the details of particular algorithms may vary, a popular pipeline for processing high dimensional biomedical data emerged: imputation of missing values followed by a combination of clustering and dimensionality reduction \cite{}. Imputation using \emph{nearest-neighbour methods} \cite{}, \emph{interpolation}  \cite{} or \emph{density sampling} \cite{} allow merging of datasets obtained from different experimental designs. Dimensionality reduction methods such as \emph{tSNE} \cite{} and \emph{UMAP} \cite{} are used to produce two dimensional overviews of datasets and are typically the first methods leveraged to get a feel for the global geometry of the high-dimensional point clouds. These methods also identify the highly variable feature combinations \cite{} as well noisy features that provide any information in distinguishing cell populations \cite{}. For a suitable choice of hyperparameters these maps reveal clusters and hence the number of distinct cell sub-populations. Clustering can then be used, either in the original high-dimensional space or the reduced space to segment the clouds \cite{}. Once the dataset is clustered, in principle we've identified the modes of the steady state distribution \eqref{eq:steady-state-distribution} and differential analysis \cite{} can be applied, together with domain knowledge, to distinguish whether any two clusters represent \emph{different phenotypes} or \emph{behavioural states} of the same phenotype.
 
-Suppose we would like to detect a cusp bifurcation and limit points in a cell population with respect to two experimental control conditions $p,p\prime\in\Reals$. We can set up a serial dilution along the columns for $p$ and along the rows for $p\prime$ in two 96-well plates. Cells allowed to grow in exponential phase in a finite concentration of either $p\ll p\prime$ or $p\gg p\prime$. Let us call this the \emph{priming} stage of the protocol as shown in Figure \ref{fig:cusp-sampling}a, resulting in two cell populations: $p$-primed cells and $p\prime$-primed cells. The priming concentrations must be chosen sufficiently high so that the resultant population states lie either side of the cusp. The two populations are transferred into separate 96-well plates containing the dilutions of $p,p'$; we call this the \emph{conditioning} stage in Figure \ref{fig:cusp-sampling}a.
+\begin{Figure}
+	{\phantomsubcaption\label{fig:impute}}
+	{\phantomsubcaption\label{fig:reduce}}
+	{\phantomsubcaption\label{fig:cluster}}
+    \includegraphics[width=14cm]{impute-reduce-cluster}
+\begin{picture}(0,0)\put(-7,4.5){\subref{fig:impute}} \end{picture}
+\begin{picture}(0,0)\put(-2.5,4.5){\subref{fig:reduce}} \end{picture}
+\begin{picture}(0,0)\put(2.5,4.5){\subref{fig:cluster}} \end{picture}
+
+    \caption{Overview of the impute, reduce \& cluster methods. \subref{fig:impute}. Heatmap of $N\times |\mathcal{U}|$ data matrix revealing regions of missing data that are imputed. \subref{fig:reduce}. Dimensionality reduction yielding an embedding which can be coloured by any feature $u_k$ to reveal differentials between regions. \subref{fig:cluster}. Clustering methods yield a segmentation of the dataset into populations that share features $u$}
+    \label{fig:impute-reduce-cluster}
+\end{Figure}
+
+By looking at the variance within each cluster as we change $p$ we can also tell how close a population is to a bifurcation. This manifests as cluster splitting or merging with maximal variance at the splitting point. Unfortunately it would not be possible to distinguish whether a population is in a limit cycle or merely static, distributed across the states that make up the limit set. Therefore it is not possible to detect Hopf bifurcations from statistics in homeostasis.
+
+Suppose we would like to detect saddle-node bifurcations within a bacterial cell population with respect to two experimental control conditions $p,p\prime\in\Reals$. We can set up a serial dilution along the columns for $p$ and along the rows for $p\prime$ in two 96-well plates. Cells allowed to grow in exponential phase in a finite concentration of either $p\ll p\prime$ or $p\gg p\prime$. Let us call this the \emph{priming} stage of the protocol as shown in Figure \ref{fig:cusp-sampling}a, resulting in two cell populations: $p$-primed cells and $p\prime$-primed cells. The priming concentrations must be chosen sufficiently high so that the resultant population states lie either side of a hypothesised cusp bifurcation. The two populations are transferred into separate 96-well plates containing the dilutions of $p,p'$; we call this the \emph{conditioning} stage in Figure \ref{fig:cusp-sampling}a.
 
 \begin{Figure}
     \includegraphics[width=14cm]{hysteresis}
@@ -507,55 +523,41 @@ This approach may break down if multi-modal distributions exist in the data. Thi
 
 This approach would not work for extracting dynamic bifurcations such as \emph{Hopf} since only steady state information is available. Furthermore, the accuracy of this method is subject to noise amplitude. This method works well for cases where changes in the number of stable steady states can be resolved in the measured steady state distributions.
 
-\begin{itemize}
-    \item quantify efficiency of switching?
-\end{itemize}
-
-\subsubsection{Iterations towards Bifurcations}
-
-
 \subsection{Phenotypes from Machine Learning Models}
 
-Having the the state as a function of time $u(t)$, sampled at sufficiently broad initial conditions $u(0)$, enables the estimation of field geometry $F(u)$ via \emph{universal function approximators} such as neural networks \cite{Chen2018NeuralEquations} and Gaussian processes \cite{Seeger2004GaussianLearning.}. We refer the reader to a modern review of the most successful machine learning approaches for designing \emph{universal function approximators} \cite{Bronstein2021GeometricGauges} where emphasis is made on understanding how group equivariant and group invariant transformations are stacked together. Note that we've dropped $\theta$ and $p$ from the \emph{universal function approximator}. We reserve $\theta$ to be a vector of biophysically meaningful parameters that make up an organism genotype. While \emph{universal function approximators} typically have a lot of parameters, they tend not to reveal the mechanism under study and hence cannot be used to deduce which genetic design interventions can be made.
+Suppose we have the state as a function of time $u(t)$, sampled at sufficiently broad initial conditions $u(0)$. This would enable the estimation of field geometry $F(u)$ via \emph{universal function approximators} such as neural networks \cite{Chen2018NeuralEquations} and Gaussian processes \cite{Seeger2004GaussianLearning.}. We refer the reader to a modern review of the most successful machine learning approaches for designing \emph{universal function approximators} \cite{Bronstein2021GeometricGauges} where emphasis is made on understanding how group equivariant and group invariant transformations are stacked together. Note that we've dropped $\theta$ and $p$ from the \emph{universal function approximator}. We reserve $\theta$ to be a vector of biophysically meaningful parameters that make up an organism genotype. While \emph{universal function approximators} typically have a lot of parameters, they tend not to reveal the mechanism under study and hence cannot be used to deduce which genetic design interventions can be made.
 
-
+In applications where the mechanism is partially known it is possible to combine the principled microscopic derivations of reaction rate model $\rates$ together with some \emph{universal function approximator} $F$. This is known as \emph{gray-box modelling} \cite{}.   
 \subsubsection{Basis Functions for State Space}
+Suppose that rather than getting the state space geometry from trajectory data would would rather specify it with high-level constraints ourselves. This may be useful in settings where we know what qualitative behaviours the model of our phenotype has but do not care about microscopic details. In this section we outline a novel basis function method for specifying state space structures, inspired by the mathematics of electromagnetism.
+
+Suppose we would like to define a differential equation model whose trajectories approach a given limit set $\partial\Omega$, which are typically either limit cycles or fixed points. We can define a norm from any point $u$ to the set
+\begin{equation}
+	|u-\partial\Omega| := \min_{u'\in\partial\Omega}|u-u'| 
+	\label{eq:distance-function}
+\end{equation}
+which can be used as a scalar potential that generates a vector field $F(u)$ that drives the dynamics towards $\partial\Omega$. Additionally we would like the field to vanish on limit set $F(u\in\partial\Omega)=0$ as well as far away from the limit set
+\begin{equation}
+	F(u) = -|u-\partial\Omega|\mathbb{e}^{-|u-\partial\Omega|}\frac{\partial}{\partial u}|u-\partial\Omega|
+	\label{eq:scalar-potential}
+\end{equation}
+If the limit set $\partial\Omega$ is a connected surface we can additionally specify an angular momentum field $\omega(u)$ that gives rise dynamics tangent to the limit set, giving rise to limit cycles. We want the field to be tangent to the limit set $\left.\frac{\partial}{\partial u}|u-\partial\Omega|\cdot F(u)\right|_{u\in\partial\Omega}=0$ and still vanish far away from the set. The field can be written in terms of tangential and normal field components to the limit set
+\begin{equation}
+	F(u) = \mathbb{e}^{-|u-\partial\Omega|}\left(\omega(u)\times\frac{\partial}{\partial u}-|u-\partial\Omega|\frac{\partial}{\partial u}\right)|u-\partial\Omega|
+	\label{eq:basis-functions}
+\end{equation}
+We also have an additional property that the tangential components $\omega(u)\times\frac{\partial}{\partial u}$ vanish faster than the normal components as $|u-\partial\Omega|\rightarrow\infty$. This makes any limit set $\partial\Omega$ look like a stable fixed point from a sufficient distance. We note that the cross product is only defined for three dimensions $N=3$; the higher dimensional analogues of this operation is the wedge product $\wedge$ defined in the language of exterior algebra \cite{}.
+
+Forcing the fields to vanish sufficiently far from their limit sets allows us to construct the field for multiple limit sets $\partial\Omega_k$ with their associated angular momenta $\omega_k(u)$ as a superposition
+\begin{equation}
+	F(u) = \sum_{k}\alpha_{k}\mathbb{e}^{-|u-\partial\Omega_{k}|}\left(\omega_{k}(u)\times\frac{\partial}{\partial u}-|u-\partial\Omega_{k}|\frac{\partial}{\partial u}\right)|u-\partial\Omega_{k}|
+	\label{eq:basis-function-field}
+\end{equation}
+where the amplitudes $\alpha_{k}$ determine the relative sizes of the basins of attraction for each limit set. In addition we can let $\alpha_{k}<0$ to specify unstable structures.
 
 \subsubsection{Comparing Fields and Models}
 % Non-parametric ___ using Gaussian Process regression
 \label{section:field-inference}
-
-
-
-% We can then extract important state-space structures, such as stable and unstable fixed points, their eigenvalues $\lambda$, from the field geometry $F(u)$ at different values of the control condition $p$, and hence identify possible bifurcations.
-
-
-% Data on steady states $u(t\rightarrow\infty)$ are more abundant and typically found in flow cytometry measurements. It is possible to infer the steady state manifold directly from such data (Figure \ref{fig:inferring-bifurcations} a,d$\rightarrow$c) but we would not be able to extract information on unstable fixed points or eigenvalues $\lambda$ of state-space structures. Since the criteria for bifurcations are not directly accessible, indirect measures (such as the population separation that can be seen in Figure \ref{fig:double-exclusive:flow-hysteresis}) must be used to extract bifurcations.
-
-
-% \subsection{Classification and Regression}
-% \begin{itemize}
-%     \item Logistic regression
-%     \item Nearest neighbour methods
-%     \item Mixture Models
-% \end{itemize}
-
-% \subsection{Dimensionality Reduction Methods}
-% \begin{itemize}
-%     \item UMAP and Tsne
-%     \item Sloppy parameters and identify-ability
-% \end{itemize}
-
-% \subsection{Clustering Methods}
-
-\section{Applications in Flow Cytometry}
-\label{section:applications-flow-cytometry}
-
-
-\subsection{Immunophenotyping Panels}
-
-
-
 
 In this early days of this thesis, we investigated whether it was possible to transform the time-domain data into state-space. This approach, and related works, are discussed in this section and can in principle be used with the microfluidic fluorescence microscopy data for parameter inference.
 
@@ -603,5 +605,31 @@ Although we are getting close to focusing on qualitative features of a model, th
 
 The accuracy of the cell trajectories is limited by cell segmentation and tracking algorithms. Initial investigations into this approach also suggested that trajectories need to be of sufficient temporal resolution and sampled from a wide variety of initial conditions. Such data is not widely available and ultimately we decided to focus on a method that could be used with a well-known workhorse in biomedical research: flow cytometry.
 
-\subsubsection{Fixed Point Inference}
-\label{section:fixed-point-inference}
+
+
+
+% We can then extract important state-space structures, such as stable and unstable fixed points, their eigenvalues $\lambda$, from the field geometry $F(u)$ at different values of the control condition $p$, and hence identify possible bifurcations.
+
+
+% Data on steady states $u(t\rightarrow\infty)$ are more abundant and typically found in flow cytometry measurements. It is possible to infer the steady state manifold directly from such data (Figure \ref{fig:inferring-bifurcations} a,d$\rightarrow$c) but we would not be able to extract information on unstable fixed points or eigenvalues $\lambda$ of state-space structures. Since the criteria for bifurcations are not directly accessible, indirect measures (such as the population separation that can be seen in Figure \ref{fig:double-exclusive:flow-hysteresis}) must be used to extract bifurcations.
+
+
+% \subsection{Classification and Regression}
+% \begin{itemize}
+%     \item Logistic regression
+%     \item Nearest neighbour methods
+%     \item Mixture Models
+% \end{itemize}
+
+% \subsection{Dimensionality Reduction Methods}
+% \begin{itemize}
+%     \item UMAP and Tsne
+%     \item Sloppy parameters and identify-ability
+% \end{itemize}
+
+% \subsection{Clustering Methods}
+
+\section{Applications in Flow Cytometry}
+\label{section:applications-flow-cytometry}
+
+\subsection{Immunophenotyping Panels}
