@@ -352,6 +352,33 @@ show how linear stability analysis is insufficient to capture pattern formation
 and rich inhomogeneous steady states. A promising approach may be geometrisation
 of the moving local equilibria \cite{Halatek2018}.
 
+\subsection{Basis Functions for State Space}
+Suppose that we want to specify a differential equation model \eqref{eq:differential-equations} with high-level constraints without caring too much about the specific mathematical forms or derivations that lead to the model. In this setting the model will not interpretable parameters $\theta$ to manipulate, and hence we will denote such models without a subscript $F$. This may be useful in settings where we know what qualitative behaviours the model of our phenotype has, but do not care about microscopic details. In this section we outline a novel basis function method for specifying state space structures, inspired by the mathematics of electromagnetism. These basis functions were used to generate vector fields for figures throughout the thesis.
+
+Suppose we would like to define a differential equation model whose trajectories approach a given limit set $\partial\Omega$, which are typically either limit cycles or fixed points. We can define a norm from any point $u$ to the set
+\begin{equation}
+	|u-\partial\Omega| := \min_{u'\in\partial\Omega}|u-u'| 
+	\label{eq:distance-function}
+\end{equation}
+which can be used as a scalar potential that generates a vector field $F(u)$ that drives the dynamics towards $\partial\Omega$. Additionally we would like the field to vanish on limit set $F(u\in\partial\Omega)=0$ as well as far away from the limit set
+\begin{equation}
+	F(u) = -|u-\partial\Omega|\mathbb{e}^{-|u-\partial\Omega|}\frac{\partial}{\partial u}|u-\partial\Omega|
+	\label{eq:scalar-potential}
+\end{equation}
+If the limit set $\partial\Omega$ is a connected surface we can additionally specify an angular momentum field $\omega(u)$ that gives rise dynamics tangent to the limit set, giving rise to limit cycles. We want the field to be tangent to the limit set $\left.\frac{\partial}{\partial u}|u-\partial\Omega|\cdot F(u)\right|_{u\in\partial\Omega}=0$ and still vanish far away from the set. The field can be written in terms of tangential and normal field components to the limit set
+\begin{equation}
+	F(u) = \mathbb{e}^{-|u-\partial\Omega|}\left(\omega(u)\times\frac{\partial}{\partial u}-|u-\partial\Omega|\frac{\partial}{\partial u}\right)|u-\partial\Omega|
+	\label{eq:basis-functions}
+\end{equation}
+We also have an additional property that the tangential components $\omega(u)\times\frac{\partial}{\partial u}$ vanish faster than the normal components as $|u-\partial\Omega|\rightarrow\infty$. This makes any limit set $\partial\Omega$ look like a stable fixed point from a sufficient distance. We note that the cross product is only defined for three dimensions $N=3$; the higher dimensional analogues of this operation is the wedge product $\wedge$ defined in the language of exterior algebra \cite{}.
+
+Forcing the fields to vanish sufficiently far from their limit sets allows us to construct the field for multiple limit sets $\partial\Omega_k$ with their associated angular momenta $\omega_k(u)$ as a superposition
+\begin{equation}
+	F(u) = \sum_{k}\alpha_{k}\mathbb{e}^{-|u-\partial\Omega_{k}|}\left(\omega_{k}(u)\times\frac{\partial}{\partial u}-|u-\partial\Omega_{k}|\frac{\partial}{\partial u}\right)|u-\partial\Omega_{k}|
+	\label{eq:basis-function-field}
+\end{equation}
+where the amplitudes $\alpha_{k}$ determine the relative sizes of the basins of attraction for each limit set. In addition we can let $\alpha_{k}<0$ to specify unstable structures. 
+
 \clearpage
 \section{Applications in Cell Biology}
 \label{section:applications-cell-biology}
@@ -528,33 +555,6 @@ This approach would not work for extracting dynamic bifurcations such as \emph{H
 Suppose we have the state as a function of time $u(t)$, sampled at sufficiently broad initial conditions $u(0)$. This would enable the estimation of field geometry $F(u)$ via \emph{universal function approximators} such as neural networks \cite{Chen2018NeuralEquations} and Gaussian processes \cite{Seeger2004GaussianLearning.}. We refer the reader to a modern review of the most successful machine learning approaches for designing \emph{universal function approximators} \cite{Bronstein2021GeometricGauges} where emphasis is made on understanding how group equivariant and group invariant transformations are stacked together. Note that we've dropped $\theta$ and $p$ from the \emph{universal function approximator}. We reserve $\theta$ to be a vector of biophysically meaningful parameters that make up an organism genotype. While \emph{universal function approximators} typically have a lot of parameters, they tend not to reveal the mechanism under study and hence cannot be used to deduce which genetic design interventions can be made.
 
 In applications where the mechanism is partially known it is possible to combine the principled microscopic derivations of reaction rate model $\rates$ together with some \emph{universal function approximator} $F$. This is known as \emph{grey-box modelling} \cite{Meeds2019EfficientSystems}.
-
-\subsubsection{Basis Functions for State Space}
-Suppose that rather than getting the state space geometry from trajectory data would  rather specify it with high-level constraints ourselves. This may be useful in settings where we know what qualitative behaviours the model of our phenotype has but do not care about microscopic details. In this section we outline a novel basis function method for specifying state space structures, inspired by the mathematics of electromagnetism.
-
-Suppose we would like to define a differential equation model whose trajectories approach a given limit set $\partial\Omega$, which are typically either limit cycles or fixed points. We can define a norm from any point $u$ to the set
-\begin{equation}
-	|u-\partial\Omega| := \min_{u'\in\partial\Omega}|u-u'| 
-	\label{eq:distance-function}
-\end{equation}
-which can be used as a scalar potential that generates a vector field $F(u)$ that drives the dynamics towards $\partial\Omega$. Additionally we would like the field to vanish on limit set $F(u\in\partial\Omega)=0$ as well as far away from the limit set
-\begin{equation}
-	F(u) = -|u-\partial\Omega|\mathbb{e}^{-|u-\partial\Omega|}\frac{\partial}{\partial u}|u-\partial\Omega|
-	\label{eq:scalar-potential}
-\end{equation}
-If the limit set $\partial\Omega$ is a connected surface we can additionally specify an angular momentum field $\omega(u)$ that gives rise dynamics tangent to the limit set, giving rise to limit cycles. We want the field to be tangent to the limit set $\left.\frac{\partial}{\partial u}|u-\partial\Omega|\cdot F(u)\right|_{u\in\partial\Omega}=0$ and still vanish far away from the set. The field can be written in terms of tangential and normal field components to the limit set
-\begin{equation}
-	F(u) = \mathbb{e}^{-|u-\partial\Omega|}\left(\omega(u)\times\frac{\partial}{\partial u}-|u-\partial\Omega|\frac{\partial}{\partial u}\right)|u-\partial\Omega|
-	\label{eq:basis-functions}
-\end{equation}
-We also have an additional property that the tangential components $\omega(u)\times\frac{\partial}{\partial u}$ vanish faster than the normal components as $|u-\partial\Omega|\rightarrow\infty$. This makes any limit set $\partial\Omega$ look like a stable fixed point from a sufficient distance. We note that the cross product is only defined for three dimensions $N=3$; the higher dimensional analogues of this operation is the wedge product $\wedge$ defined in the language of exterior algebra \cite{}.
-
-Forcing the fields to vanish sufficiently far from their limit sets allows us to construct the field for multiple limit sets $\partial\Omega_k$ with their associated angular momenta $\omega_k(u)$ as a superposition
-\begin{equation}
-	F(u) = \sum_{k}\alpha_{k}\mathbb{e}^{-|u-\partial\Omega_{k}|}\left(\omega_{k}(u)\times\frac{\partial}{\partial u}-|u-\partial\Omega_{k}|\frac{\partial}{\partial u}\right)|u-\partial\Omega_{k}|
-	\label{eq:basis-function-field}
-\end{equation}
-where the amplitudes $\alpha_{k}$ determine the relative sizes of the basins of attraction for each limit set. In addition we can let $\alpha_{k}<0$ to specify unstable structures.
 
 \subsubsection{Comparing Fields and Models}
 % Non-parametric ___ using Gaussian Process regression
