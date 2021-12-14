@@ -244,6 +244,7 @@ This equation reveals two timescales for blob deformations in the vicinity of a 
 This critical slowing can be observed in data when \emph{fixed points} become \emph{degenerate}. Degenerate fixed points are also called \emph{critical points}. The transition between these two timescales in data is a signal that a \emph{critical point} is nearby. We will see that \emph{critical points} may lead to bifurcations and bifurcations are always accompanied by degeneracies in the field.
 
 \subsubsection{Fluctuations}
+\label{section:fluctuations}
 
 Biological processes can be intrinsically noisy and the measurement apparatus can also introduce errors. Fortunately we can model such non-deterministic aspects by extending equations \eqref{eq:differential-equations} to a Langevin equation
 \begin{align}
@@ -354,6 +355,8 @@ and rich inhomogeneous steady states. A promising approach may be geometrisation
 of the moving local equilibria \cite{Halatek2018}.
 
 \subsection{Basis Functions for State Space}
+\label{section:basis-function-methods}
+
 Suppose that we want to specify a differential equation model \eqref{eq:differential-equations} with high-level constraints without caring too much about the specific mathematical forms or derivations that lead to the model. In this setting the model will not interpretable parameters $\theta$ to manipulate, and hence we will denote such models without a subscript $F$. This may be useful in settings where we know what qualitative behaviours the model of our phenotype has, but do not care about microscopic details. In this section we outline a novel basis function method for specifying state space structures, inspired by the mathematics of electromagnetism. These basis functions were used to generate vector fields for figures throughout the thesis.
 
 Suppose we would like to define a differential equation model whose trajectories approach a given limit set $\partial\Omega$, which are typically either limit cycles or fixed points. We can define a norm from any point $u$ to the set
@@ -586,6 +589,7 @@ In our setting we would like to match the geometry of the field but not its magn
 \begin{equation}
     \mathcal{L}(\theta|\mathcal{D}) := \e^{-\frac{\hat{f}\cdot\rates}
     {|\hat{f}||\rates|}}
+	\label{eq:geometric-cost}
 \end{equation}
 \noindent where the cost is minimal when the data derivative $\hat{f}$ and the parametrised model $\rates$ point in the same direction and maximal when they point in opposing directions.
 
