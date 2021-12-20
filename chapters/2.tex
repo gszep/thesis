@@ -203,6 +203,7 @@ By looking at the eigenvalues of the Jacobian, which determine local flows accor
 For a two dimensional system we can express the two eigenvalues of the $2\times 2$ Jacobian in terms of its trace $\mathrm{Tr}[\jacobian]$ and determinant $|\jacobian|$ which allows us to conveniently reveal all the possible fixed points types, as in Figure \ref{fig:stability}. If at least one the eigenvalues vanishes the fixed point becomes \emph{degenerate}. We shall see that \emph{degenerate} field flows lead to critical slowing down in dynamics, reveal bifurcations and are useful for constructing tangent fields to implicitly defined surfaces.
 
 \subsubsection{Field Degeneracy}
+\label{section:field-degeneracy}
 A field $\rates$ can be called \emph{degenerate} where it is locally constant and hence does not cause shape changes to a blob of initial conditions in one or more directions. This means that one or more of the eigenvalues of the Jacobian vanish $\lambda = 0$ and have associated eigenvectors $\hat T_\lambda$ tangent to the direction where the field is locally constant. Suppose the field is \emph{degenerate} at point $\degenerate$, then the vanishing eigenvalues lead to a zero determinant $\left|\jacobian\right|=0$ and the eigenvectors must be orthogonal to all the gradients
 \begin{equation}
 	\left|\jacobian\right|_{u=\degenerate} \!\!\! = 0
@@ -277,65 +278,81 @@ We learn that accompanying the \emph{critical slowing down} \eqref{eq:critical-s
 \subsubsection{Limit Cycle Analysis}
 Thus far we dealt with static state space structures like \emph{fixed points}. We found that the eigenvalues of the Jacobian are sufficient for their characterisation, unless the field is  \emph{degenerate}, in which case higher order derivatives of the field must be investigated.
 
-If fields lines point towards a region of state space but the region \emph{does not} contain any fixed points, then the only other option is for the field lines to converge onto a \emph{limit cycle}. This is actually a rough statement of the Poincar\'e-Bendixson theorem  which allows us to define trapping regions where trajectories do not escape from and make statements about the existence or non-existence of limit cycles. A limit cycle must also enclose a finite number of \emph{unstable foci} that push trajectories away from its center.
-
-Newton-type methods can easily be applied to find \emph{fixed points} because they are local structures in fields. Limit cycles are much more tricky because it is not possible to know whether a local state part of a limit cycle or not before we have seen a trajectory visit that state twice: once at $u(t)$ and then again $u(t+T)$ after some time $T$. This forms the basis of some optimisation methods for computing limit cycles \cite{}.
-
-\begin{itemize}
-	\item Trapezoid method
-	\item Collocation method
-	\item Shooting method
-\end{itemize}
-
-% \begin{Figure}
-% \includegraphics[scale=0.35]{limit-cycle}
-% \caption{}
-% \label{fig:limit-cycle}
-% \end{Figure}
+If fields lines point towards a region of state space but the region \emph{does not} contain any fixed points, then the only other option is for the field lines to converge onto a \emph{limit cycle}. This is actually a rough statement of the Poincar\'e-Bendixson theorem \cite{}  which allows us to define trapping regions where trajectories do not escape from and make statements about the existence or non-existence of limit cycles. A limit cycle must also enclose a finite number of \emph{unstable foci} that push trajectories away from its center.
+\begin{Figure}
+	\includegraphics[scale=0.9]{limit-cycle}
+	\caption{Conditions of a limit cycle as determined by the Poincar\'e-Bendixson theorem. A region with no fixed points and all fields lines pointing inward/outward must contain a stable/unstable limit cycle.}
+	\label{fig:limit-cycle}
+\end{Figure}
+Newton-type methods can easily be applied to find \emph{fixed points} because they are local structures in fields. Limit cycles are much more tricky because it is not possible to know whether a local state part of a limit cycle or not before we have seen a trajectory visit that state twice: once at $u(t)$ and then again $u(t+T)$ after some time $T$. Limit cycles are inherently global structures in state space. Limit cycles can be computed by some form of discretisation or meshing of the recurrence condition, with methods such as trapezoid \cite{}, collocation \cite{} and shooting \cite{}.
 
 \clearpage
 \subsection{Bifurcation Analysis}
 \label{section:bifurcation-analysis}
 We have surveyed sufficiently many state space structures, the geometry of which determine the qualitative behaviour of the organism we are describing. An organism has many qualitative behaviours in response to conditions $p$ and many phenotypes emerging from changes in $\theta$.
 
-Bifurcations are defined as qualitative changes to system behaviour in response to smooth changes to some conditions. In our setting these conditions could be either $\theta$ or $p$, but we will focus on changes with respect to $p$ with the understanding that the analysis is equally valid for $\theta$. We are ready to present the two \emph{generic} and \emph{robust} one parameter bifurcations: the \emph{saddle-node} and \emph{Hopf} bifurcation. These bifurcations are generic in the sense that they happen in $N$ dimensional systems, but can be described as happening along one dimension. This is true because of centre manifold theory \cite{}. The bifurcations are \emph{robust} in the sense that small changes to system parameters do not destroy the bifurcation. This is not the case for \emph{pitchfork} and \emph{transcritical} bifurcations which we will present in a separate section.
+Bifurcations are defined as qualitative changes to system behaviour in response to smooth changes to some conditions. This means that as conditions change, state space structure will merge, split and change geometry. In our setting these conditions could be either $\theta$ or $p$, but we will focus on changes with respect to $p$ with the understanding that the analysis is equally valid for $\theta$. Changes to state space structures, and hence bifurcations can be \emph{local} or \emph{global}.
+
+\begin{Figure}
+	\includegraphics[scale=0.6]{local-bifurcations} 
+	\caption{\emph{Local} bifurcations can be detected by tracking the sign of the largest real part $\Real[\lambda]$ as a function of control condition $p$}
+	\label{fig:local-bifurcations}
+\end{Figure}
+
+We shall first focus on \emph{local} bifurcations that can be analysed by investigating the eigenvalues of the Jacobian at a specific point $(u^\star,p^\star)$. A \emph{local} bifurcation point $(u^\star,p^\star)$ is in fact a \emph{critical point} in the field $\rates$: a fixed point $\rates(u^\star,p^\star)=0$ where at least one Jacobian eigenvalue crosses the imaginary axis $\Real[\lambda]=0$ with a finite slope. The number of eigenvalues that cross the imaginary axis defines the dimensionality of the centre manifold along which the bifurcation occurs \cite{}. Furthermore, it is the eigenvalue with largest real part that determines the stability of a fixed point and thus it is sufficient to consider the behaviour a single eigenvalue. The number of parameters $p$ that need to be varied defines the \emph{co-dimension} of the bifurcation. Sometimes a bifurcation also \emph{degenerate} in which case eigenvalues cross the imaginary axis with vanishing slope. In this setting the Jacobian does not reveal enough information about the \emph{critical point} and higher-order derivatives in the field $\rates$ are needed.
+
+\emph{Global} bifurcations cannot be determined by local stability analysis at specific points $(u^\star,p^\star)$ alone. We shall see how additional \emph{global} constrains are needed that reveal the formation or changes in limit sets.
+
 \subsubsection{Generic Robust Bifurcations}
-\begin{Figure}
-\includegraphics[scale=0.6]{saddle-node} 
-\includegraphics[scale=0.6]{hopf}
-\caption{Generic and robust bifurcations. A. \emph{Saddle-node} bifurcations create or annihilate stable and unstable pairs of fixed points. B. In \emph{Hopf} bifurcations a stable fixed point becomes an unstable focus that pushes trajectories towards a limit cycle.}
 \label{fig:robust-local-bifurcations}
-\end{Figure}
+We are ready to present the two \emph{generic} and \emph{robust} co-dimension one bifurcations: the \emph{saddle-node} (Figure \ref{fig:saddle-node}) and \emph{Hopf} (Figure \ref{fig:hopf}) bifurcation. These bifurcations are generic in the sense that they happen in $N$ dimensional systems, but can be described as happening along one dimension. The bifurcations are \emph{robust} in the sense that small changes to system parameters do not destroy the bifurcation. This is not the case for \emph{pitchfork} and \emph{transcritical} bifurcations which we will present in a separate section.
 \subsubsection{Fragile Bifurcations}
-\begin{Figure}
-	\includegraphics[scale=0.6]{pitchfork}
-	\includegraphics[scale=0.6]{transcritical}
-	\caption{Fragile bifurcations}
-	\label{fig:fragile-bifurcations}
-\end{Figure}
+The \emph{pitchfork} (Figure \ref{fig:pitchfork}) and \emph{transcritical} (Figure \ref{fig:transcritical}) bifurcations are co-dimension one examples where small perturbations in condition $p$ split the bifurcations into \emph{saddle-nodes}.
 \subsubsection{Global Bifurcations}
 \label{section:global-bifurcations}
+While \emph{global} bifurcations still happen at a specific condition $p^\star$ there is no single location $u^\star$ at which it happens. Instead we need to track the behaviour of a whole set $\partial\Omega$ in state space. The \emph{cyclic fold} and \emph{homoclinic} bifurcations are co-dimension one examples where while the stability of fixed points does not change, a limit set $\partial\Omega$ is created or destroyed. The \emph{infinite period} bifurcation locally appears as a \emph{saddle-node}, but in fact controls the appearance of a limit cycle. The limit cycle becomes evident when trajectories that are pushed away by the saddle point return back to the saddle-point from its stable directions.
+
+\begin{Figure}
+	\includegraphics[scale=0.6]{saddle-node} 
+	\caption{The \emph{saddle-node} bifurcation creates or annihilates stable and unstable pairs of fixed points. A critical slow-down that scales like $t\sim\frac{1}{\sqrt{|p|}}$ can be used to detect its onset.}
+	\label{fig:saddle-node}
+\end{Figure}
+
+\begin{Figure}
+	\includegraphics[scale=0.6]{hopf}
+	\caption{In a \emph{Hopf} bifurcation a stable fixed point becomes an unstable focus that pushes trajectories towards a limit cycle, subject to conditions of the Poincar\'e-Bendixson theorem. The limit cycle amplitude grows as $\sqrt{p}$}
+	\label{fig:hopf}
+\end{Figure}
+
+\begin{Figure}
+	\includegraphics[scale=0.6]{pitchfork}
+	\caption{In \emph{Pitchfork} bifurcations a single stable fixed point splits into two stable fixed points separated by a saddle point. The distance between points grows as $\sqrt{p}$. Small perturbations in $p$ breaks the pitchfork into a \emph{saddle node} bifurcation and a stable branch of fixed points.}
+	\label{fig:pitchfork}
+\end{Figure}
+
+\begin{Figure}
+	\includegraphics[scale=0.6]{transcritical}
+	\caption{In \emph{transcritical} bifurcations a stable and unstable fixed point collide and exchange stability. The distance between points grows as $p$. Small perturbations in $p$ breaks the transcritical into two \emph{saddle-node} bifurcations.}
+	\label{fig:transcritical}
+\end{Figure}
+
 \begin{Figure}
 	\includegraphics[scale=0.6]{cyclic-fold}
 	\includegraphics[scale=0.6]{infinite-period}
 	\caption{Global Bifurcations}
 	\label{fig:global-bifurcations}
 \end{Figure}
-
 \begin{Figure}
 	\includegraphics[scale=0.6]{homoclinic}
 	\caption{Homoclinic Bifurcation}
 	\label{fig:homoclinic}
 \end{Figure}
-
 \subsubsection{Higher Co-dimension}
 \begin{itemize}
 	\item cusp and Bogdanov-Takens
-	\item centre manifold theory
 \end{itemize}
 
 \subsubsection{Numerical Methods}
-
 In this thesis we extensively use the library \texttt{DifferentialEquations.jl} \cite{Rackauckas2017Differentialequations.jlJulia} for numerically solving differential equations and \texttt{BifurcationKit.jl} \cite{Veltz2020BifurcationKit.jl} for calculating bifurcation diagrams. 
 
 \begin{itemize}
@@ -344,11 +361,9 @@ In this thesis we extensively use the library \texttt{DifferentialEquations.jl} 
 \end{itemize}
 
 \subsection{Spatially Extended Systems}
-
 If $\rates$ contains spatial derivatives, additional conditions on $u$ with respect to spatial variables $x\in\Reals^D$, where $D$ is the dimension of the space considered, must be supplied to give a unique solution $u(x,t)$. When studying spatio-temporal dynamics of organisms, a popular choice is to incorporate a diffusive term that models the exchange of matter between spatial locations
 
 \subsubsection{Turing Bifurcations}
-
 Here we first introduce diffusion macroscopically by simply adding the laplacian
 to mean field equation. We introduce the turning bifurcation and
 show how linear stability analysis is insufficient to capture pattern formation
