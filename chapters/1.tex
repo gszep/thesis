@@ -11,109 +11,34 @@
 \end{music}
 \epigraph{\textit{one thing that won't change with time is the memories of younger years}}{Minuet of Forest --- Ocarina of Time}
 
-The advent of the modern digital computer, as formalised by Alan Turing,\cite{Turing1937} ignited the field of computational physics, aided by pre-existing theoretical formulations of algorithms. Starting from the first experiments with Monte Carlo (MC) simulations in the 1930s by Fermi and the formulation of the Markov-Chain Monte Carlo (MCMC) technique by Ulam in the 1940s, von Neumann programmed the 18,000 vacuum-tube Electronic Numerical Integrator and Computer (ENIAC) computer to investigate neutron diffusion in fissionable materials.\cite{metropolis1987beginning} This success paved the way for the integration of Newton's equations of motion to compute the time evolution of a many-body system.\\
+We are living in the wake of milestones in biotechnology and computational biology that suggest reverse-engineering human biology is within our grasp. The coronavirus pandemic accelerated investment in biotechnology \cite{DeFrancesco2021Financing2020}. The fields of synthetic and systems biology are beginning resemble engineering disciplines; genetic engineering is becoming more precise, high-throughput single-cell experiments are performed by robots and measurements across all levels of the central dogma are possible: genomics, transcriptomics, proteomics and metabolomics \cite{Perkel2021Single-cellAge}. Advances in micro-fabrication \cite{Shafiee2017TissueMedicine} and in-vitro reconstitutive methods \cite{Gopfrich2018MasteringCells} have allowed biologists isolate pathways and mechanisms to a level of mathematical and computational tractability \cite{Sharpe2017ComputerTomorrow.}.
 
-Consider being Marian Adam Rejewski, a Polish mathematician and cryptologist in 1932, almost
-seven years before the beginning of World War II. It was known at the time that the Germans
-were using a machine called \textit{Enigma I} to send secret messages, but no one knew what
-the machine looked like nor how it worked. Based on a handful of intercepted encrypted
-messages and pictures of the operating instructions obtained by Polish intelligence,
-he derived a set of permutation equations that allowed him the reverse-engineer the machine
-\cite{Turing2018XBroken}. The cryptologic achievements of Rejewski and colleagues
-Jerzy R\'o\.zycki and Henryk Zygalski are considered the some of the greatest feats in
-reverse-engineering of the 20th century.
+The complexity barrier in biology poses a significant challenge. Systems and synthetic biology have historically made progress through a process of brute force trial and error. This usually involves the interaction of many custom-made parts that are iteratively optimised by human intervention. A trend first observed in the 1980s known as \textit{Eroom's law} revealed that discoveries in biotechnology are becoming slower and more expensive over time, despite improvements in technology \cite{Scannell2012DiagnosingEfficiency}. In 2018, a chimeric antigen receptor T-cell therapy --- \emph{tisagenlecleucel} \cite{Halford2021TisagenlecleucelConsiderations} --- for the treatment of adolescent and young adult acute lymphoblastic leukaemia became the most expensive cancer therapy ever at \$475,000. In effect, \textit{Eroom's law} threatens to widen inequalities. This problem is compounded by the ongoing reproducibility crisis \cite{Ioannidis2005WhyFalse.,Mullard2021HalfEffort}. It appears that much of the low-hanging fruit has been picked \cite{Earm2014IntegrativeDevelopment} with methodologies whose standards for transparency, reproducibility and accessability leave us with much to be desired.
 
-\begin{Figure}
-    \includegraphics[width=40mm]{figures/enigma.jpg}
-    \caption{\textit{Enigma I} reverse engineered by Marian Adam Rejewski}
-    \label{fig:enigma}
-\end{Figure}
-\noindent
+After a decade of engineering advances in data science and machine learning, epitomised by deep learning methods, theoretical foundations on high-dimensional learning tasks are beginning to condense \cite{Bronstein2021GeometricGauges}. Many tasks such as computer vision, playing Go, or protein folding are in fact feasible with appropriate computational scale. Remarkably, the essence of deep learning is built from two simple algorithmic principles: the notion of lower-dimensional \emph{representation}, whereby group equivariant and invariant transformations are composed to capture the appropriate notion of regularity for each task \cite{Bronstein2021GeometricGauges}, and second, learning by local gradient-descent type methods enabled by \emph{differentiable programming} \cite{Innes2019AComputing}.
 
-Today we are getting ever closer to reverse-engineering the cell.
-The fields of synthetic and systems biology are beginning resemble engineering disciplines;
-genetic engineering is becoming more precise, high-throughput in vitro experiments are performed
-by robots and measurements of many desired observables can be obtained with high spatio-temporal resolution.
-Advances in micro-fabrication \cite{Shafiee2017TissueMedicine} and in-vitro reconstitutive methods \cite{Gopfrich2018MasteringCells} have allowed biologists isolate pathways and mechanisms to a level of
-mathematical and computational tractability \cite{Sharpe2017ComputerTomorrow.}. This section
-outlines the scientific paradigms in these fields, their methods and limitations, and finally what this
-thesis will attempt to contribute.
+The emerging picture suggests that bringing together the advances in software and wetware in iterative hypothesis generation and discovery pipelines are key to overcoming the complexity barrier in biology \cite{Sharpe2017ComputerTomorrow.,Ringel2020BreakingLaw,AlQuraishi2021DifferentiableMechanisms}. The term \textit{in silico} has become popularised amongst biologists, which conceptualises a computational model, alongside \emph{in vitro} and \emph{in vivo}, as a method for investigating an organism \emph{in situ}. Researchers are going as far as conceptualising the \emph{digital twin} for personalize medicine \cite{Bjornsson2019DigitalMedicine}. Bringing together deep learning and biomedical reseatch has the potential of importing the notions of \emph{representation} and \emph{differentiability} into experimental protocols \cite{AlQuraishi2021DifferentiableMechanisms} and thereby reaping their benefits. \emph{Differentiability} within experimental pipelines has the same advantage over brute force trial and error as it does over sampling-based algorithms and thereby decrease the time and cost for biological reseasch. While not all equiptment, data and resources used to perform a study can be shared, \emph{representations} of a study in the form of computational models can increase transparency and reproducibility.
 
-\section{Bottom-up and Top-down Biology}
+In this thesis we focus on the benefits of \emph{representation} and \emph{differentiability} in the context of the genetic engineering of cell phenotypes in synthetic biology. In Chapter \ref{chapter:background} we introudce the reader a relevant background in differential equations and machine learning with applications in cell biology to set the stage for the publications in Chapters \ref{chapter:double-exclusive}--\ref{chapter:exploring}. We will see how a differential equation \emph{representation} of a cell or population of cells requires an exploration of the relationship between \emph{bifurcation theory} and the concept of a \emph{phenotype}. Chapter \ref{chapter:double-exclusive} exhibits the results of an interdisciplicary collaboration between in synthetic biology, during which an iterative \emph{design--learn} workflow was followed in an attempt to overcome the biological complexity barrier. During this collaboration, a disconnect between design goals and parameter inference methods was identified which lead to the novel \emph{bifurcation} inference method published in Chapter \ref{chapter:inference}. Chapter \ref{chapter:exploring} is an adaptation of a publication, in preparation at the time of writing this document, that explores the importance of interactive exploration of high-dimensional flow cytometry data for immunophenotyping. Finally, Chapter \ref{chapter:conclusions} concludes with retrospectives on the previous chapters, which includes a revised view of a \emph{design--learn} workflow for synthetic biology, that in principle is completely \emph{differentiable}. Furthermore, we propose how one would use concepts from Chapters \ref{chapter:inference}--\ref{chapter:exploring} to interactivity explore the space of hypotheses that \emph{represent} the same cell phenotype. Our conclusions would be most impactful in cell line development where flow cytometry and other omic-type measruements are taken at different protocol stages of a biomanufacturing process.
 
-Fortunately for biologists copies of the target of their reverse-engineering attempts are
-available all around us. Less fortunate is the fact that most attempts at deconstructing
-the cell end in loss of function and destruction of the individual components. This
-restriction motivates system biologists to manipulate environmental signals \textit{in vivo}
-and build mechanistic models from correlations between signals and responses \cite{Triantafillou2017PredictingCells}.
-Models focus on relationships between macroscopic variables where the underlying
-mechanisms are not known.
-\\\\
-\textit{In vitro} reconstitutive methods aim to isolate minimal mechanisms from the
-complexity of the whole organism in order to unpick the relative importance of
-microscopic details \cite{Gopfrich2018MasteringCells}.
-In situations where purified proteins and crystal structures
-are available these methods can quite accurately characterise the kinetics of
-proteins. Relating these parameters to the \textit{in vivo} context however may
-not be relevant, as too much of the complexity may have been stripped away. 
-\\\\
-From a theoretical modelling perspective, it is important to choose a time-scale
-and space-scale that is relevant to the problem. If one is interested in tissue
-dynamics, attempting to model DNA conformations within each cell will render the
-problem intractable. As George Booth aptly put \textit{``most models are wrong but
-some are useful"} so the role of theoretical descriptions in these settings is not
-necessarily to describe the way reality \textit{is} but serve as tools to bridge
-the non-intuitive gap between bottom-up and top-down approaches. Where intuition
-fails is where the \textit{in silico} hypothesis testing playground becomes most
-valuable \cite{Sharpe2017ComputerTomorrow.}.
+\section{Representation of Single Cells}
+
+While we focus on differential equation \emph{representations} of single cells, they are only one of many \emph{representations}. In this section we give a brief motivation behind why differenital equations were chosen, what other representations exist and how results may translate between differenital equations and other representations. When studying a particular biological phenomenon, the appropriate spatio-temporal scale must be chosen that simplifies the mechanism under study while preserving the relationships between experimentally accessible parameters and the resultant behaviours. Unlike in many physical sciences, we do not expect a single unifying tractable model of biological mechanisms under study. In practice there exist multiple equally valid models with variously degrees of complexity. The paradigm of \emph{top--down} and \emph{bottom--up} modelling methods (Figure \ref{fig:tdbu}) emerged as a means of navigating different scales and complexities.
 
 \begin{Figure}
     \includegraphics[width=80mm]{figures/top-down-bottom-up.png}
-    \caption{Top-down and bottom-up modelling methods}
+    \caption{Top-down and bottom-up modelling for single cells}
     \label{fig:tdbu}
 \end{Figure}
 
-\section{Design, Build, Test, Learn}
-Systems and synthetic biology have historically made progress through a process
-of brute force trial and error. This usually involves the interaction of many
-custom-made parts that are iteratively optimised by human intervention. A trend
-first observed in the 1980s known as \textit{Eroom's law} reveals that discoveries
-in biotechnology are becoming slower and more expensive over time, despite
-improvements in technology \cite{Scannell2012DiagnosingEfficiency}.
-This problem is compounded by the ongoing reproduciblility crisis \cite{Ioannidis2005WhyFalse.}.
-In the effort to transform methods used in academia and industry to become more
-systematic and predictable, a standard for the Design--Build--Test--Learn cycle
-has emerged -- showin in figure \ref{fig:dbtl}.
-\\\\
-This workflow has now been established as a paradigm with some aspects that have
-been automated by liquid handling robots, bioreactor environments and image processing
-pipelines. However, humans in the loop and custom moving parts still persist. The challenge
-in automating these processes lies in defining a programming language that has a
-sufficiently high level of abstraction for transparent implementation
-while allowing for low-level customisation \cite{Abate2018ExperimentalSemantics}.
+Differential equations are convenient because they are \emph{differentiable}, continuous state and continuous time models and hence are already compatible with the two algorithmic principles of deep learning \cite{Bronstein2021GeometricGauges}. In the context of \emph{dynamical systems theory} it is relatively simple to derive analogous results for descrete state or descrete time models: cellular automata \cite{}, markov chains \cite{}, stocastic processes \cite{}, descrete maps \cite{} just to name a few. As long as the model is differentiable, we can proceed to use it in optimisation routines. In practice, with automatic differentiating tools at our disposal most programmes become differentiable in most places...This is because while one could use a sigmoidal-type functions as a differentiable substitutes for conditional branching in the control flow of a program, one is still forced to evaluate multiple passes of the program before getting an accurate estimate of the derivative of the program. At best a program can be piecewise differentiable
 
-\begin{Figure}
-    \includegraphics[width=60mm]{figures/dbtl.png}
-    \caption{Design-Build-Test-Learn cycle from synthetic biology}
-    \label{fig:dbtl}
-\end{Figure}
-\noindent
-This thesis will focus on modelling and inference using systems of differential
-and partial differential equations, which fits into the Design--Learn part of
-the cycle. Differential equations occupy a small subset of possible modelling tools,
-however they are amongst the most popular due to their ease of use formulation
-and simulation. This ease of access creates a zoo of models in literature making
-it difficult to identify the key ingredients that distinguish different models.
-Furthermore the relationship between multiple plausible \textit{and} in-plausible hypotheses
-is rarely investigated. This motivates desire for an automated Design--Learn pipeline --
-outlined in Section \ref{section:design-learn} -- which can generate and catalogue models
-in a transparent manner while producing insights for the Build stage.
-This pipeline is applied in an experiment-theory collaboration described in
-Chapter \ref{chapter:double-exclusive}.
+It is important to choose a time-scale and space-scale that is relevant to the problem. If one is interested in tissue dynamics, attempting to model DNA conformations within each cell will render the problem intractable. As George Booth aptly put \textit{``most models are wrong but some are useful"} so the role of theoretical descriptions in these settings is not necessarily to describe the way reality \textit{is} but serve as tools to bridge the non-intuitive gap between bottom-up and top-down approaches. 
 
-\section{State of the Art}
-\label{section:geometry}
-\subsection{Inference of Differential Equations}
+\subsection{Model Reduction}
+Sloppiness and sensitivity analysis have been extensively used in the
+search for reduced models. Linear mappings between models that preserve stoichiometry and reactant structure were investigated \cite{Cardelli2014MorphismsFunction,Cardelli2017MaximalSystems} and computational tools based on partition-refinement were released \cite{Cardelli2017ERODE:Equations}. Structural similarity between reaction networks can be revealed by such mappings, elucidating the functional aspects of complex networks in terms of simpler networks. The aim of the Design--Learn pipeline is to extend this framework to nonlinear mappings with an emphasis on geometry rather than kinetics. Most inference techniques attempt to match geometry and kinetics simultaneously in an attempt to obtain a quantitative model. This thesis emphasises that geometry alone should be prioritised in order to obtain qualitatively equivalent models. Furthermore recent results in pattern formation theory \cite{Halatek2018} do not depend on kinetics at all, only geometry.
+
 Following the initial literature on smooth and match estimators
 \cite{Gugushvili2012Smoothing} -- which overcome the bottleneck
 having to integrate a proposed hypothesis for every parameter update --
@@ -128,24 +53,24 @@ a parameter is identifiable, reduntant or sloppy have become
 key questions in biology \cite{Chis2016OnIdentifiability,
 Gabor2017ParameterBiosystems,Villaverde2016StructuralModels}.
 
-\subsection{Model Reduction and Classification}
-Sloppiness and sensitivity analysis have been extensively used in the
-search for reduced models. Linear
-mappings between models that preserve stoichiometry and reactant structure were
-investigated \cite{Cardelli2014MorphismsFunction,Cardelli2017MaximalSystems} and
-computational tools based on partition-refinement were released
-\cite{Cardelli2017ERODE:Equations}. Structural similarity between reaction
-networks can be revealed by such mappings, elucidating the functional aspects of
-complex networks in terms of simpler networks. The aim of the Design--Learn
-pipeline is to extend this framework to nonlinear mappings with an emphasis on
-geometry rather than kinetics. Most inference techniques attempt to match
-geometry and kinetics simultaneously in an attempt to obtain a quantitative
-model. This thesis emphasises that geometry alone should be prioritised in
-order to obtain qualitatively equivalent models. Furthermore recent
-results in pattern formation theory \cite{Halatek2018} do not depend
-on kinetics at all, only geometry.
+\section{Differentiability in Experimental Protocols}
 
-\section{Design--Learn Pipeline}
+While there is a clear mathematical definition of what a \emph{differentiable program} \cite{Innes2019AComputing} is, what does it mean for experimental protocols in biology to be \emph{differentiable}? In the effort to introduce transparency and reproducibility in experimental methods in synthetic biology, a standard for the Design--Build--Test--Learn cycle has emerged (Figure \ref{fig:dbtl}). This workflow has now been established as a paradigm with some aspects that have been automated by liquid handling robots, bioreactor environments and image processing pipelines. However, humans in the loop and custom moving parts still persist. The challenge in automating these processes lies in defining a programming interface that has a sufficiently high-level of abstraction for transparent implementation while allowing for customisation \cite{Abate2018ExperimentalSemantics}.
+
+\begin{Figure}
+    \includegraphics[width=60mm]{figures/dbtl.png}
+    \caption{Design-Build-Test-Learn cycle from synthetic biology}
+    \label{fig:dbtl}
+\end{Figure}
+
+In principle,
+
+This thesis will focus on modelling and inference using systems of differential and partial differential equations, which fits into the Design--Learn part of the cycle. Differential equations occupy a small subset of possible modelling tools, however they are amongst the most popular due to their ease of use formulation and simulation. This ease of access creates a zoo of models in literature making it difficult to identify the key ingredients that distinguish different models. Furthermore the relationship between multiple plausible \textit{and} in-plausible hypotheses is rarely investigated. This motivates desire for an automated Design--Learn pipeline -- outlined in Section \ref{section:design-learn} -- which can generate and catalogue models in a transparent manner while producing insights for the Build stage. This pipeline is applied in an experiment-theory collaboration described in
+Chapter \ref{chapter:double-exclusive}.
+
+Fortunately for biologists copies of the target of their reverse-engineering attempts are available all around us. Less fortunate is the fact that most attempts at deconstructing the cell end in loss of function and destruction of the individual components. This restriction motivates system biologists to manipulate environmental signals \textit{in vivo} and build mechanistic models from correlations between signals and responses \cite{Triantafillou2017PredictingCells}. Models focus on relationships between macroscopic variables where the underlying mechanisms are not known.
+
+\subsection{Design--Learn Workflow}
 \label{section:design-learn}
 
 This section outlines the proposal for a design--learn pipeline for
@@ -157,9 +82,6 @@ flow cytometry measruements. On the other hand one may want to specify a behavio
 $\mathcal{H}$ which may have not yet been observed. This would be specified with
 top-down constraints, i.e. there exist oscillations of a fixed frequency or
 a region of bistability.
-
-\subsection{Experimental Design Loop}
-\label{section:experimental-design}
 
 The experimentalists may want to know whether the data collected could
 result in a model of predictive power without mechanistic knowledge
@@ -199,7 +121,6 @@ of the field $\Vector{f}$ that predicts gene expression rates at given expressio
 Based on these predictions, the experimentalist may proceed to collect data in the most
 informative parameter regions, which would in turn more accurately estimate $\Vector{f}$.
 
-\subsection{Hypothesis Scoring and Model Refinement Loop}
 \label{section:refinement}
 Often predictions from field $\Vector{f}$ are not enough. Models constructed
 with feasible biophysical assumptions $\Vector{h}(\Vector{\theta})$ have the potential
@@ -246,8 +167,6 @@ explains the data. This process is known as model refinement or reduction.
     \label{fig:non-parametric}
 \end{Figure}
 
-\subsection{System Design}
-\label{section:system-design}
 Suppose now that refined mechanistic models of the form $\Vector{h}(\Vector{\theta})$
 have been obtained using the model refinement loop. These could be a library of known
 parts that have been individually characterised, but never combined to form a larger

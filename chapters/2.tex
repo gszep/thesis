@@ -295,73 +295,163 @@ Bifurcations are defined as qualitative changes to system behaviour in response 
 
 \begin{Figure}
 	\includegraphics[scale=0.6]{local-bifurcations} 
-	\caption{\emph{Local} bifurcations can be detected by tracking the sign of the largest real part $\Real[\lambda]$ as a function of control condition $p$}
+	\caption{A \emph{local} bifurcation at $(u^\star,p^\star)$ can be detected by tracking the sign of the real parts $\Real[\lambda]$ of Jacobian eigenvalues as a function of control condition $p$}
 	\label{fig:local-bifurcations}
 \end{Figure}
 
-We shall first focus on \emph{local} bifurcations that can be analysed by investigating the eigenvalues of the Jacobian at a specific point $(u^\star,p^\star)$. A \emph{local} bifurcation point $(u^\star,p^\star)$ is in fact a \emph{critical point} in the field $\rates$: a fixed point $\rates(u^\star,p^\star)=0$ where at least one Jacobian eigenvalue crosses the imaginary axis $\Real[\lambda]=0$ with a finite slope. The number of eigenvalues that cross the imaginary axis defines the dimensionality of the centre manifold along which the bifurcation occurs \cite{}. Furthermore, it is the eigenvalue with largest real part that determines the stability of a fixed point and thus it is sufficient to consider the behaviour a single eigenvalue. The number of parameters $p$ that need to be varied defines the \emph{co-dimension} of the bifurcation. Sometimes a bifurcation also \emph{degenerate} in which case eigenvalues cross the imaginary axis with vanishing slope. In this setting the Jacobian does not reveal enough information about the \emph{critical point} and higher-order derivatives in the field $\rates$ are needed.
-
-\emph{Global} bifurcations cannot be determined by local stability analysis at specific points $(u^\star,p^\star)$ alone. We shall see how additional \emph{global} constrains are needed that reveal the formation or changes in limit sets.
+We shall first focus on \emph{local} bifurcations that can be analysed by investigating the eigenvalues of the Jacobian at a specific point $(u^\star,p^\star)$. A \emph{local} bifurcation point $(u^\star,p^\star)$ is in fact a \emph{critical point} in the field $\rates$: a fixed point $\rates(u^\star,p^\star)=0$ where at least one Jacobian eigenvalue crosses the imaginary axis $\Real[\lambda]=0$ with a finite slope. The number of eigenvalues that cross the imaginary axis defines the dimensionality of the centre manifold along which the bifurcation occurs \cite{}. Furthermore, it is the eigenvalue with largest real part that determines the stability of a fixed point and thus it is sufficient to consider the behaviour a single eigenvalue. The number of parameters $p$ that need to be varied defines the \emph{co-dimension} of the bifurcation. Sometimes a bifurcation also \emph{degenerate} in which case eigenvalues cross the imaginary axis with vanishing slope. In this setting the Jacobian does not reveal enough information about the \emph{critical point} and higher-order derivatives in the field $\rates$ are needed. \emph{Global} bifurcations cannot be determined by local stability analysis at specific points $(u^\star,p^\star)$ alone. We shall see how additional \emph{global} constrains are needed that reveal the formation or changes in limit sets. We present the \emph{supercritical} cases of bifurcations in the following sections, with the understanding that \emph{subcritical} cases can be recovered by reversing the flow in state space.
 
 \subsubsection{Generic Robust Bifurcations}
 \label{fig:robust-local-bifurcations}
-We are ready to present the two \emph{generic} and \emph{robust} co-dimension one bifurcations: the \emph{saddle-node} (Figure \ref{fig:saddle-node}) and \emph{Hopf} (Figure \ref{fig:hopf}) bifurcation. These bifurcations are generic in the sense that they happen in $N$ dimensional systems, but can be described as happening along one dimension. The bifurcations are \emph{robust} in the sense that small changes to system parameters do not destroy the bifurcation. This is not the case for \emph{pitchfork} and \emph{transcritical} bifurcations which we will present in a separate section.
-\subsubsection{Fragile Bifurcations}
-The \emph{pitchfork} (Figure \ref{fig:pitchfork}) and \emph{transcritical} (Figure \ref{fig:transcritical}) bifurcations are co-dimension one examples where small perturbations in condition $p$ split the bifurcations into \emph{saddle-nodes}.
+We are ready to present the two \emph{generic} and \emph{robust} co-dimension one bifurcations: the \emph{saddle-node} (Figure \ref{fig:saddle-node}) and \emph{Hopf} (Figure \ref{fig:hopf}) bifurcation. These bifurcations are generic in the sense that they happen in $N$ dimensional systems, but can be described as happening along one dimension. The bifurcations are \emph{robust} in the sense that small changes to system parameters do not destroy the bifurcation. This is not the case for \emph{pitchfork} and \emph{transcritical} bifurcations. The \emph{pitchfork} (Figure \ref{fig:pitchfork}) and \emph{transcritical} (Figure \ref{fig:transcritical}) bifurcations are co-dimension one examples where small perturbations in condition $p$ split the bifurcations into \emph{saddle-nodes}.
 \subsubsection{Global Bifurcations}
 \label{section:global-bifurcations}
-While \emph{global} bifurcations still happen at a specific condition $p^\star$ there is no single location $u^\star$ at which it happens. Instead we need to track the behaviour of a whole set $\partial\Omega$ in state space. The \emph{cyclic fold} and \emph{homoclinic} bifurcations are co-dimension one examples where while the stability of fixed points does not change, a limit set $\partial\Omega$ is created or destroyed. The \emph{infinite period} bifurcation locally appears as a \emph{saddle-node}, but in fact controls the appearance of a limit cycle. The limit cycle becomes evident when trajectories that are pushed away by the saddle point return back to the saddle-point from its stable directions.
+While \emph{global} bifurcations still happen at a specific condition $p^\star$ there is no single location $u^\star$ at which it happens. Instead we need to track the behaviour of a whole set $\partial\Omega$ in state space. The \emph{cyclic fold} (Figure \ref{fig:cyclic-fold}) and \emph{homoclinic} (Figure \ref{fig:homoclinic}) bifurcations are co-dimension one examples where while the stability of fixed points does not change, a limit set $\partial\Omega$ is created or destroyed. The \emph{infinite period} (Figure \ref{fig:infinite-period}) bifurcation locally appears as a \emph{saddle-node}, but in fact controls the appearance of a limit cycle. The limit cycle becomes evident when trajectories that are pushed away by the saddle point return back to the saddle-point from its stable directions.
 
 \begin{Figure}
 	\includegraphics[scale=0.6]{saddle-node} 
-	\caption{The \emph{saddle-node} bifurcation creates or annihilates stable and unstable pairs of fixed points. A critical slow-down that scales like $t\sim\frac{1}{\sqrt{|p|}}$ can be used to detect its onset.}
+	\caption{The \emph{saddle-node} bifurcation creates or annihilates stable and unstable pairs of fixed points. A critical slow-down that scales like $t\sim\frac{1}{\sqrt{|p-p^\star|}}$ can be used to detect its onset.}
 	\label{fig:saddle-node}
 \end{Figure}
 
 \begin{Figure}
 	\includegraphics[scale=0.6]{hopf}
-	\caption{In a \emph{Hopf} bifurcation a stable fixed point becomes an unstable focus that pushes trajectories towards a limit cycle, subject to conditions of the Poincar\'e-Bendixson theorem. The limit cycle amplitude grows as $\sqrt{p}$}
+	\caption{In a \emph{Hopf} bifurcation a stable fixed point becomes an unstable focus that pushes trajectories towards a limit cycle, subject to conditions of the Poincar\'e-Bendixson theorem. The limit cycle amplitude grows as $\sqrt{p-p^\star}$}
 	\label{fig:hopf}
 \end{Figure}
 
 \begin{Figure}
 	\includegraphics[scale=0.6]{pitchfork}
-	\caption{In \emph{Pitchfork} bifurcations a single stable fixed point splits into two stable fixed points separated by a saddle point. The distance between points grows as $\sqrt{p}$. Small perturbations in $p$ breaks the pitchfork into a \emph{saddle node} bifurcation and a stable branch of fixed points.}
+	\caption{In \emph{Pitchfork} bifurcations a single stable fixed point splits into two stable fixed points separated by a saddle point. The distance between points grows as $\sqrt{p-p^\star}$. Small perturbations in $p$ breaks the pitchfork into a \emph{saddle node} bifurcation and a stable branch of fixed points.}
 	\label{fig:pitchfork}
 \end{Figure}
 
 \begin{Figure}
 	\includegraphics[scale=0.6]{transcritical}
-	\caption{In \emph{transcritical} bifurcations a stable and unstable fixed point collide and exchange stability. The distance between points grows as $p$. Small perturbations in $p$ breaks the transcritical into two \emph{saddle-node} bifurcations.}
+	\caption{In \emph{transcritical} bifurcations a stable and unstable fixed point collide and exchange stability. The distance between points grows as $p-p^\star$. Small perturbations in $p$ breaks the transcritical into two \emph{saddle-node} bifurcations.}
 	\label{fig:transcritical}
 \end{Figure}
 
 \begin{Figure}
 	\includegraphics[scale=0.6]{cyclic-fold}
-	\includegraphics[scale=0.6]{infinite-period}
-	\caption{Global Bifurcations}
-	\label{fig:global-bifurcations}
+	\caption{The \emph{cyclic fold} bifurcation is a \emph{global} bifurcation that creates or annihilates stable and unstable pairs of limit cycles.}
+	\label{fig:cyclic-fold}
 \end{Figure}
+
 \begin{Figure}
 	\includegraphics[scale=0.6]{homoclinic}
-	\caption{Homoclinic Bifurcation}
+	\caption{A \emph{homoclinic} bifurcation occurs when a saddle point collides with a limit cycle, forming a \emph{homoclinic} orbit just before breaking the cycle. It is accompanied by a period slow-down that scales like $t\sim|\log|p-p^\star||$}
 	\label{fig:homoclinic}
 \end{Figure}
-\subsubsection{Higher Co-dimension}
-\begin{itemize}
-	\item cusp and Bogdanov-Takens
-\end{itemize}
+
+\begin{Figure}
+	\includegraphics[scale=0.6]{infinite-period}
+	\caption{The \emph{infinite period} bifurcation is a \emph{global} bifurcation where a \emph{saddle-node} bifurcation occurs along the limit set, breaking the cycle. It is accompanied by a period slow-down that scales like $t\sim\frac{1}{\sqrt{|p-p^\star|}}$}
+	\label{fig:infinite-period}
+\end{Figure}
+
+\subsubsection{Normal Forms \& Higher Co-dimension}
+In this introduction we provided a geometrical understanding of co-dimension one bifurcations and would like to re-direct the reader the popular book by Steven Strogatz \cite{Strogatz2000} for mathematical details and higher co-dimension bifurcations such as \emph{cusp} and \emph{Bogdanov-Takens}. The normal forms are essentially taylor expansions of the field $\rates$ around \emph{local} bifurcation points.
 
 \subsubsection{Numerical Methods}
-In this thesis we extensively use the library \texttt{DifferentialEquations.jl} \cite{Rackauckas2017Differentialequations.jlJulia} for numerically solving differential equations and \texttt{BifurcationKit.jl} \cite{Veltz2020BifurcationKit.jl} for calculating bifurcation diagrams. 
-
-\begin{itemize}
-	\item Parameter Continuation
-	\item Marching cubes
-\end{itemize}
+In this thesis we extensively use Julia; the library \texttt{DifferentialEquations.jl} \cite{Rackauckas2017Differentialequations.jlJulia} for numerically solving differential equations and \texttt{BifurcationKit.jl} \cite{Veltz2020BifurcationKit.jl} for calculating bifurcation diagrams. \texttt{DifferentialEquations.jl} implements state-of-the-art, well-optimized ordinary and partial differential equation solvers which routinely outperform the "standard" C/Fortran methods and algorithms optimized for high-precision and high-performance computing applications \cite{}. \texttt{BifurcationKit.jl} aims at performing automatic bifurcation analysis of possibly large dimensional equations $\rates(u,p)=0$ where $p\in\Reals$ by taking advantage of iterative methods, sparse formulation and GPU-acceleration. It incorporates continuation algorithms such as pseudo-arclength continuation \cite{} and deflated continuation \cite{}. A Newton-Krylov method \cite{} is used to correct the predictor step and a matrix-free eigensolver \cite{} is used to compute stability and localise bifurcation points. Additionally, periodic orbit computation and continuation using the shooting \cite{}, finite-difference \cite{} and collocation \cite{} methods are implemented. Details of these algorithms can also be found in in the documentation of the above mentioned Julia packages.
 
 \subsection{Spatially Extended Systems}
-If $\rates$ contains spatial derivatives, additional conditions on $u$ with respect to spatial variables $x\in\Reals^D$, where $D$ is the dimension of the space considered, must be supplied to give a unique solution $u(x,t)$. When studying spatio-temporal dynamics of organisms, a popular choice is to incorporate a diffusive term that models the exchange of matter between spatial locations
+Suppose we wanted to model the spatial distribution biochemicals across an organism, a population of cells or perhaps even within the cell. Our model $\rates$ would have to contain spatial derivatives and we would supply additional conditions on $u$ with respect to spatial variables $x$ to give a unique solution $u(x,t)$ to the resulting partial differential equation. When studying spatio-temporal dynamics of organisms, a popular choice is to incorporate a diffusive term that models the exchange of matter between spatial locations, giving rise to a \emph{reaction-diffusion} equation
+\begin{equation}
+	\frac{\partial u}{\partial t} = \rates(u,p) + D\frac{\partial^2 u}{\partial x^2}
+	\label{eq:reaction-diffusion}
+\end{equation}
+where diagonal matrix $D\in\Reals^{N\times N}$ encodes the spatial mobility of each component. Depending on the spatial scale that is being modelled the components of $D$ will take on a different meaning. If we are modelling a population of cells then the components of $D$ quantify which components the cells can exchange between each other. If we are modelling the spatial distributions within a single cell, then $D$ encodes for components that are passively transported between locations. In order to model active transport we would include a first-order spatial derivative term, giving rise to an \emph{advection-reaction-diffusion} equation \cite{}. Although the inclusion of spatial derivatives and boundary conditions may seen quite complicated, we can rest assured that ultimately the discretisation of any partial differential equation will yield a matrix representation of the spatial derivative. Any partial differential equation with $N$ components can be discretized into $K$ spatial grid-points and re-cast as a set of $N\times K$ ordinary differential equation.
+
+\subsubsection{Eigenvalue Distributions of Derivative Operators}
+Using the Circular Diagonalization Theorem \cite{} one can derive the eigenvalues $\lambda_k$ of an $K\times K$ matrix which represents the second-order central difference approximation to the second derivative on $K$ sites of a one dimensional ring
+\begin{align}
+	\frac{\partial^2}{\partial x^2} \rightarrow
+	\begin{pmatrix}
+	  -2 & 1 &  &  &  & 1 \\
+	  1 & -2 & 1 &  &  &  \\
+	  & 1 & \ddots & \ddots &  & \\
+	  & & \ddots & \ddots & 1 & \\
+	  & & & 1 & -2 & 1 \\
+	  1 & & & & 1 & -2 \\
+	\end{pmatrix}\\
+	\begin{matrix}
+	  \lambda_k =2\left(\cos\left(\frac{2\pi k}{K}\right)-1\right) \\
+	  k\in\{0,1,\cdots,K-1\}
+	\end{matrix}
+	\qquad
+\end{align}
+As the number of sites $K\rightarrow\infty$ the argument $k/K\in[0,1]$
+and the eigenvalues remain bounded $-4<\lambda_k<0$. By shifting and scaling
+the index $k\rightarrow\frac{k-K\pi}{2\pi}$ the eigenvalues are expressed as
+a dispersion relation
+\begin{align}
+  \lambda(k)&=
+  -2\left(\cos k+1\right)
+  \quad k\in[-\pi,\pi]
+\end{align}
+The discrete $L$-dimensional laplacian is simply the kronecker sum $\oplus$ of one
+dimensional cases and thus its eigenvalues is simply the sum one dimensional dispersions \cite{}
+\begin{align}
+  \lambda(k)&=
+  -2\sum_{i=1}^L\left(\cos k_i+1\right)
+  \quad k\in[-\pi,\pi]^L
+\end{align}
+The probability density $P(\lambda)$ can be expressed as a density integral
+over the $L$-dimensional hypercube region $[-\pi,\pi]^L$
+\begin{align}
+	P(\lambda')&=\frac{1}{Z}\int_{[-\pi,\pi]^L}\!\delta(\lambda'-\lambda(k))\,\mathrm{d}k
+\end{align}
+We proceed with an element-wise change of variables $u=2\cos k$ and recognise that the integration region is $L$-fold symmetric across each component axis, which allows restriction of the domain of integration to a hyper-octant. In coordinates $u$ the region becomes $[-2,2]^L$
+\begin{align*}
+  P(\lambda)&=\frac{1}{Z}
+  \int_{\Omega'}\!
+  \frac{\delta(\Lambda_L+\sum_{u\in\bar{\mathbf{u}}}u)}
+  {\sqrt{\prod_{u\in\bar{\mathbf{u}}}(1-u^2/4) }}
+  \,\mathrm{d}\bar{\mathbf{u}}
+  \qquad
+  \begin{matrix}
+    \Lambda_L=\lambda+2L \\
+    |\Lambda_L|\leq2L
+  \end{matrix}\\
+  &=\frac{1}{2\pi Z}
+  \int_{-\infty}^{\infty}\int_{\Omega'}\!
+  \frac{\mathbb{e}^{\Lambda_L\mathbb{i}k}\exp[\sum_{u\in\bar{\mathbf{u}}}u\mathbb{i}k]}
+  {\sqrt{\prod_{u\in\bar{\mathbf{u}}}(1-u^2/4) }}
+  \,\mathrm{d}\bar{\mathbf{u}}\mathrm{d}k\\
+  &=\frac{1}{2\pi Z}
+  \int_{-\infty}^{\infty}\mathbb{e}^{\Lambda_L\mathbb{i}k}
+  \prod_{u\in\bar{\mathbf{u}}}\int_{-2}^{2}\!
+  \frac{\mathbb{e}^{u\mathbb{i}k}}
+  {\sqrt{1-u^2/4}}
+  \,\mathrm{d}u\mathrm{d}k
+\end{align*}
+The fourier representation of the delta function allowed the
+factorisation of the integral. We recognise a repeated Bessel
+integral and replace it with the Bessel function of the first kind
+$J_n(k)$, leaving only a fourier transform which we define
+$ \mathcal{F} :
+f\rightarrow \frac{1}{\sqrt{2\pi}}
+\int_{-\infty}^{\infty}f(k)e^{\mathbb{i}\Lambda k}\mathrm{d}k$. To clean
+the formula up even further we may use the convolution
+theorem to deal with the powers of $M$, leaving only the fourier
+transform of the Bessel function $J_0(k)$, which is the arcsine
+distribution $\alpha(\lambda)$. It becomes clear that the eigenvalue
+density of a kronecker sum of matrices is the convolution of the densities
+of those matrices.
+\begin{align}
+  \Delta_M(\lambda)=\underbrace{
+  \alpha(\lambda)*\alpha(\lambda)*\cdots*\alpha(\lambda)}_{M}\qquad\qquad\label{eq:mlap}\\
+    \alpha(\lambda)=
+      \frac{\Pi\left(\frac{\lambda+2}{2}\right)}{2\pi\sqrt{1-\left(\frac{\lambda+2}{2}\right)^2}}
+    \qquad
+    \Pi(x)=
+      \begin{cases}
+        1 & |x|<1\\
+        0 & |x|\geq1\\
+      \end{cases}
+\end{align}
 
 \subsubsection{Turing Bifurcations}
 Here we first introduce diffusion macroscopically by simply adding the laplacian
@@ -373,7 +463,7 @@ of the moving local equilibria \cite{Halatek2018}.
 \subsection{Basis Functions for State Space}
 \label{section:basis-function-methods}
 
-Suppose that we want to specify a differential equation model \eqref{eq:differential-equations} with high-level constraints without caring too much about the specific mathematical forms or derivations that lead to the model. In this setting the model will not interpretable parameters $\theta$ to manipulate, and hence we will denote such models without a subscript $F$. This may be useful in settings where we know what qualitative behaviours the model of our phenotype has, but do not care about microscopic details. In this section we outline a novel basis function method for specifying state space structures, inspired by the mathematics of electromagnetism. These basis functions were used to generate vector fields for figures throughout the thesis.
+Suppose that we want to specify a differential equation model \eqref{eq:differential-equations} with high-level constraints without caring too much about the specific mathematical forms or derivations that lead to the model. In this setting the model will not have interpretable parameters $\theta$ to manipulate, and hence we will denote such models without a subscript $F$. This may be useful in settings where we know what qualitative behaviours the model of our phenotype has, but do not care about microscopic details. In this section we outline a novel basis function method for specifying state space structures, inspired by the mathematics of electromagnetism. These basis functions were used to generate vector fields for figures throughout the thesis.
 
 Suppose we would like to define a differential equation model whose trajectories approach a given limit set $\partial\Omega$, which are typically either limit cycles or fixed points. We can define a norm from any point $u$ to the set
 \begin{equation}
