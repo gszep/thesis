@@ -17,89 +17,51 @@ The complexity barrier in biology poses a significant challenge. Systems and syn
 
 After a decade of engineering advances in data science and machine learning, epitomised by deep learning methods, theoretical foundations on high-dimensional learning tasks are beginning to condense \cite{Bronstein2021GeometricGauges}. Many tasks such as computer vision, playing Go, or protein folding are in fact feasible with appropriate computational scale. Remarkably, the essence of deep learning is built from two simple algorithmic principles: the notion of lower-dimensional \emph{representation}, whereby group equivariant and invariant transformations are composed to capture the appropriate notion of regularity for each task \cite{Bronstein2021GeometricGauges}, and second, learning by local gradient-descent type methods enabled by \emph{differentiable programming} \cite{Innes2019AComputing}.
 
-The emerging picture suggests that bringing together the advances in software and wetware in iterative hypothesis generation and discovery pipelines are key to overcoming the complexity barrier in biology \cite{Sharpe2017ComputerTomorrow.,Ringel2020BreakingLaw,AlQuraishi2021DifferentiableMechanisms}. The term \textit{in silico} has become popularised amongst biologists, which conceptualises a computational model, alongside \emph{in vitro} and \emph{in vivo}, as a method for investigating an organism \emph{in situ}. Researchers are going as far as conceptualising the \emph{digital twin} for personalised medicine \cite{Bjornsson2019DigitalMedicine}. Bringing together deep learning and biomedical research has the potential of importing the notions of \emph{representation} and \emph{differentiability} into experimental protocols \cite{AlQuraishi2021DifferentiableMechanisms} and thereby reaping their benefits. Differentiability within experimental pipelines has the same advantage over brute force trial and error as it does over sampling-based algorithms and thereby decrease the time and cost for biological research. While not all equipment, data and resources used to perform a study can be shared, \emph{representations} of a study in the form of computational models can increase transparency and reproducibility. Efforts towards open standards have gained traction over the past decade \cite{Malik-Sheriff2020BioModels15Science} with model sharing standards such as Systems Biology Markup Language \cite{Hucka2018TheCore} and data repositories like Human Cell Atlas
+The emerging picture suggests that bringing together the advances in software and wetware in iterative hypothesis generation and discovery pipelines are key to overcoming the complexity barrier in biology \cite{Sharpe2017ComputerTomorrow.,Ringel2020BreakingLaw,AlQuraishi2021DifferentiableMechanisms}. The term \textit{in silico} has become popularised amongst biologists, which conceptualises a computational model, alongside \emph{in vitro} and \emph{in vivo}, as a method for investigating an organism \emph{in situ}. Researchers are going as far as conceptualising the \emph{digital twin} for personalised medicine \cite{Bjornsson2019DigitalMedicine}. Bringing together deep learning and biomedical research has the potential of importing the notions of \emph{representation} and \emph{differentiability} into experimental protocols \cite{AlQuraishi2021DifferentiableMechanisms} and thereby reaping their benefits. Differentiability within experimental pipelines has the same advantage over brute force trial and error as it does over sampling-based algorithms and thereby decrease the time and cost for biological research. While not all equipment, data and resources used to perform a study can be shared, representations of a study in the form of computational models can increase transparency and reproducibility. Efforts towards open standards have gained traction over the past decade \cite{Malik-Sheriff2020BioModels15Science} with model sharing standards such as Systems Biology Markup Language \cite{Hucka2018TheCore} and data repositories like Human Cell Atlas
 \cite{Regev2017TheAtlas} and Flow Repository \cite{Spidlen2012PreparingFlowRepository.org}. The open standards and ethical thresholds of deep learning are also increasing, with the formation of OpenAI \cite{Brockman2016OpenAIGym} and sharing standards such as ONNX \cite{Bai2019ONNX:Exchange}.
-
-In this thesis we focus on the benefits of \emph{representation} and \emph{differentiability} in the context of the genetic engineering of cell phenotypes in synthetic biology. In Chapter \ref{chapter:background} we introduce the reader a relevant background in differential equations and machine learning with applications in cell biology to set the stage for the publications in Chapters \ref{chapter:double-exclusive}--\ref{chapter:exploring}. We will see how a differential equation \emph{representation} of a cell or population of cells requires an exploration of the relationship between \emph{bifurcation theory} and the concept of a \emph{phenotype}. Chapter \ref{chapter:double-exclusive} exhibits the results of an interdisciplicary collaboration between in synthetic biology, during which an iterative \emph{design--learn} workflow was followed in an attempt to overcome the biological complexity barrier. During this collaboration, a disconnect between design goals and parameter inference methods was identified which lead to the novel \emph{bifurcation} inference method published in Chapter \ref{chapter:inference}. Chapter \ref{chapter:exploring} is an adaptation of a publication, in preparation at the time of writing this document, that explores the importance of interactive exploration of high-dimensional flow cytometry data for immunophenotyping. Finally, Chapter \ref{chapter:conclusions} concludes with retrospectives on the previous chapters, which includes a revised view of a \emph{design--learn} workflow for synthetic biology, that in principle is completely \emph{differentiable}. Furthermore, we propose how one would use concepts from Chapters \ref{chapter:inference}--\ref{chapter:exploring} to interactivity explore the space of hypotheses that \emph{represent} the same cell phenotype. Our conclusions would be most impactful in cell line development where flow cytometry and other omic-type measurements are taken at different protocol stages of a biomanufacturing process.
 
 \section{Representation of Single Cells}
 
-While we focus on differential equation \emph{representations} of single cells, they are only one of many \emph{representations}. In this section we give a brief motivation behind why differenital equations were chosen, what other representations exist and how results may translate between differenital equations and other representations. When studying a particular biological phenomenon, the appropriate spatio-temporal scale must be chosen that simplifies the mechanism under study while preserving the relationships between experimentally accessible parameters and the resultant behaviours. Unlike in many physical sciences, we do not expect a single unifying tractable model of biological mechanisms under study. In practice there exist multiple equally valid models with variously degrees of complexity.
-
+In this thesis, the focus is on differential equation representations of single cells. In this section we give a brief motivation behind why differenital equations are convenient, what other representations exist and how results may translate between differenital equations and other representations. When studying a particular biological phenomenon, the appropriate spatio-temporal scale must be chosen that simplifies the mechanism under study while preserving the relationships between experimentally accessible parameters and the resultant behaviours. We do not expect a single unifying tractable model of biological mechanisms under study. In practice there exist multiple equally valid models with variously degrees of complexity.
 \begin{Figure}
     \includegraphics[width=0.9\linewidth]{figures/top-down-bottom-up}
     \caption{Biological models at different spatial scales and complexities, a large class of which can be cast into differential equation form indicated in bold blue}
     \label{fig:tdbu}
 \end{Figure}
+Differential equations are convenient because they are differentiable, continuous state and continuous time models and hence are already compatible with the two algorithmic principles of deep learning \cite{Bronstein2021GeometricGauges}. In the context of dynamical systems theory it is relatively simple to derive analogous results for descrete state or descrete time models: cellular automata \cite{Martin2017DifferentiableAutomata}, markov chains \cite{Darling2008DifferentialChains}, stocastic processes and descrete maps just to name a few. A large class of biological models at different spatial scales can be cast into differential equation form (Figure \ref{fig:tdbu}), although this may not always be necessary. With the help of automatic differentiation, programs with arbitrary control flow become piecewise differentiable \cite{Gune2018AutomaticSurvey}. One of the main limitations to consider is the number of branches in the program due to conditional statements and whether there are non-zero derivatives either side of the conditional statement that provide meaningful information. Rule-based models such as agent-based models are examples of programs with many conditional branches often with no meaningful derivatives on either side of the condition. In such scenarios we must fall back to finite difference approaches, requiring a finite number of evaluations of the model. This can be done in a cost-effective way, only evaluating gradients that will likely benefit the optimisation.
 
-Differential equations are convenient because they are \emph{differentiable}, continuous state and continuous time models and hence are already compatible with the two algorithmic principles of deep learning \cite{Bronstein2021GeometricGauges}. In the context of \emph{dynamical systems theory} it is relatively simple to derive analogous results for descrete state or descrete time models: cellular automata \cite{}, markov chains \cite{}, stocastic processes \cite{}, descrete maps \cite{} just to name a few. A large class of biological models at different spatial scales can be cast into differential equatio form (Figure \ref{fig:tdbu}), although this may not always be necessary. As long as the model is differentiable, we can proceed to use it in optimisation routines. In practice, with automatic differentiating tools at our disposal most programmes become differentiable in most places...This is because while one could use a sigmoidal-type functions as a differentiable substitutes for conditional branching in the control flow of a program, one is still forced to evaluate multiple passes of the program before getting an accurate estimate of the derivative of the program. At best a program can be piecewise differentiable
+Differential equations models span a large range of spatial and temporal scales. It is important to choose a time-scale and space-scale that is relevant to the problem. If one is interested in tissue dynamics, attempting to model DNA conformations within each cell will render the problem intractable. As George Booth aptly put \textit{``most models are wrong but some are useful"} so the role of theoretical descriptions in these settings is not necessarily to describe the way reality \textit{is} but serve as tools to bridge the non-intuitive gap between bottom-up and top-down approaches \cite{Gopfrich2018MasteringCells,Powell2018HowScratch,Pezzulo2016Top-downLevel}.
 
-It is important to choose a time-scale and space-scale that is relevant to the problem. If one is interested in tissue dynamics, attempting to model DNA conformations within each cell will render the problem intractable. As George Booth aptly put \textit{``most models are wrong but some are useful"} so the role of theoretical descriptions in these settings is not necessarily to describe the way reality \textit{is} but serve as tools to bridge the non-intuitive gap between bottom-up and top-down approaches. 
+\subsection{Model Selection \& Reduction}
+With such a hetergenous selection of models that are valid at different spatial and temporal scales it becomes increasingly important to develop tools to navigate the space of models. This problem is known in machine learning as model selection \cite{Ding2018ModelOverview} and establishing relationships between models of varying complexity is know as model reduction \cite{Besselink2013AControl}. We will see in the following section that exploring the space of models inherently involves some form of iterative hypothesis generation workflow.
 
-\subsection{Model Reduction}
-Sloppiness and sensitivity analysis have been extensively used in the
-search for reduced models. Linear mappings between models that preserve stoichiometry and reactant structure were investigated \cite{Cardelli2014MorphismsFunction,Cardelli2017MaximalSystems} and computational tools based on partition-refinement were released \cite{Cardelli2017ERODE:Equations}. Structural similarity between reaction networks can be revealed by such mappings, elucidating the functional aspects of complex networks in terms of simpler networks. The aim of the Design--Learn pipeline is to extend this framework to nonlinear mappings with an emphasis on geometry rather than kinetics. Most inference techniques attempt to match geometry and kinetics simultaneously in an attempt to obtain a quantitative model. This thesis emphasises that geometry alone should be prioritised in order to obtain qualitatively equivalent models. Furthermore recent results in pattern formation theory \cite{Halatek2018} do not depend on kinetics at all, only geometry.
+In the context of parameter inference \cite{Brunton2016SparseSINDYc,GorbachScalableSystems}, sloppiness and sensitivity analysis have been extensively used in the search for reduced models \cite{Daniels2008,Chis2016OnIdentifiability,Gutenkunst2007UniversallyModels,Gabor2017ParameterBiosystems,Villaverde2016StructuralModels}. Linear mappings between models that preserve stoichiometry and reactant structure were investigated \cite{Cardelli2014MorphismsFunction,Cardelli2017MaximalSystems} and computational tools based on partition-refinement were released \cite{Cardelli2017ERODE:Equations}. Structural similarity between reaction networks can be revealed by such mappings, elucidating the functional aspects of complex networks in terms of simpler networks. Nonlinear mappings between models that preserve high-level features without resorting to structural assumptions about the models were still lacking lacking and formed part of the motivation for developing the methods in Chapter \ref{chapter:inference}.
 
-Following the initial literature on smooth and match estimators
-\cite{Gugushvili2012Smoothing} -- which overcome the bottleneck
-having to integrate a proposed hypothesis for every parameter update --
-a plethora of methods for the inference of differential equations
-became available \cite{Brunton2016SparseSINDYc,GorbachScalableSystems}.
-The essence of these methods is to estimate the derivatives of the
-data rather than integrate the model and simultaneously estimate 
-the qualitative and quantitative behaviours. In most biological
-experiments batch-to-batch variations decrease the certainty
-with which it is possible to quantify a behaviour. Whether or not
-a parameter is identifiable, reduntant or sloppy have become
-key questions in biology \cite{Chis2016OnIdentifiability,
-Gabor2017ParameterBiosystems,Villaverde2016StructuralModels}.
+We will see how a suitably defined cost function that focuses on high-level features of a model enables navigation and organisation of models across various levels of complexity. Indeed the focus on higher-level features of differential equation models, such as geometry rather than kinetics, has already been gaining traction in 
+pattern formation theory \cite{Halatek2018}.
 
 \section{Differentiability in Experimental Protocols}
 
-While there is a clear mathematical definition of what a \emph{differentiable program} \cite{Innes2019AComputing} is, what does it mean for experimental protocols in biology to be \emph{differentiable}? In the effort to introduce transparency and reproducibility in experimental methods in synthetic biology, a standard for the Design--Build--Test--Learn cycle has emerged (Figure \ref{fig:dbtl}). This workflow has now been established as a paradigm with some aspects that have been automated by liquid handling robots, bioreactor environments and image processing pipelines. However, humans in the loop and custom moving parts still persist. The challenge in automating these processes lies in defining a programming interface that has a sufficiently high-level of abstraction for transparent implementation while allowing for customisation \cite{Abate2018ExperimentalSemantics}.
-
+While there is a clear mathematical definition of what a \emph{differentiable program} \cite{Innes2019AComputing} is, what does it mean for experimental protocols in biology to be differentiable? In the effort to move past brute force trial and error methods, a standard for the \emph{design--build--test--learn} cycle has emerged in synthetic biology (Figure \ref{fig:dbtl}). This workflow has now been established as a paradigm \cite{Carbonell2018AnChemicals,Opgenorth2019LessonsLearning} with some aspects that have been automated by liquid handling robots, bioreactor environments and image processing pipelines. However, humans in the loop and custom moving parts still persist. Defining the boundary between parts that can be automated, and parts that need regular intervention by domain experts is a challenge \cite{Abate2018ExperimentalSemantics}.
 \begin{Figure}
-    \includegraphics[width=60mm]{figures/dbtl.png}
-    \caption{Design-Build-Test-Learn cycle from synthetic biology}
+    \includegraphics[width=0.6\linewidth]{figures/dbtl}
+    \caption{\emph{design--build--test--learn} cycle from synthetic biology. This cycle is differentiable if a domain expert can track changes in any observation pair \emph{X,Y} along the pipeline}
     \label{fig:dbtl}
 \end{Figure}
+In principle such a pipeline is differentiable if a domain expert can efficiently get an answer questions like: \emph{What happens to Y when I change X?} or \emph{Which X do need to change in order to change Y?} for as many observable pairs \emph{X,Y} as possible. Furthermore, suitable experiments are identified to the capture the relevant data.
 
-In principle,
-
-This thesis will focus on modelling and inference using systems of differential and partial differential equations, which fits into the Design--Learn part of the cycle. Differential equations occupy a small subset of possible modelling tools, however they are amongst the most popular due to their ease of use formulation and simulation. This ease of access creates a zoo of models in literature making it difficult to identify the key ingredients that distinguish different models. Furthermore the relationship between multiple plausible \textit{and} in-plausible hypotheses is rarely investigated. This motivates desire for an automated Design--Learn pipeline -- outlined in Section \ref{section:design-learn} -- which can generate and catalogue models in a transparent manner while producing insights for the Build stage. This pipeline is applied in an experiment-theory collaboration described in
-Chapter \ref{chapter:double-exclusive}.
-
-Fortunately for biologists copies of the target of their reverse-engineering attempts are available all around us. Less fortunate is the fact that most attempts at deconstructing the cell end in loss of function and destruction of the individual components. This restriction motivates system biologists to manipulate environmental signals \textit{in vivo} and build mechanistic models from correlations between signals and responses \cite{Triantafillou2017PredictingCells}. Models focus on relationships between macroscopic variables where the underlying mechanisms are not known.
+The \emph{design--build--test--learn} paradigm was used during the interdisciplinary collaboration described in Chapter \ref{chapter:double-exclusive}. In this thesis we focus on the \emph{design--learn} part of this workflow. One of the main learnings, as we shall see, from applying this paradigm is that, in order for the lab to converge onto their cell design goals efficiently, the workflow must be bidirectional, rather than a cycle. This way each part of the workflow can operate with its neighbours indepentently, without being blocked by other parts of the workflow.
 
 \subsection{Design--Learn Workflow}
 \label{section:design-learn}
-
-This section outlines the proposal for a design--learn pipeline for
-the purposes of model reduction and system design. Suppose experimental
-collaborators have provided us with time-course gene expression data $\mathcal{D}$,
-which could be taken via time-lapse microscopy of cells growing on microfluidic plates,
-optical density measurements from microtiter plate assays or temporal snapshots of
-flow cytometry measruements. On the other hand one may want to specify a behaviour
-$\mathcal{H}$ which may have not yet been observed. This would be specified with
-top-down constraints, i.e. there exist oscillations of a fixed frequency or
-a region of bistability.
-
-The experimentalists may want to know whether the data collected could
-result in a model of predictive power without mechanistic knowledge
-of the underlying biochemistry. Moreover it would be desirable gain insights
-in parameter regimes in the vicinity of observations, without having to
-wait for the theorists to produce a refined model. Such real-time insights
-would guide data collection protocols, optimising the amount of information
-gained while keeping the number of experiments performed to a minimum. Often
-data is noisy and at worst case contradictory; these issues must also be exposed.
-
+Let us focus on the \emph{design--learn} part of the workflow in the context of model inference. Partial knowledge of mechanisms in biology has given rise to a class of models that have been coided as \emph{grey box models} \cite{Meeds2019EfficientSystems}. In this setting, domain expertise dictates which aspects of the model are highly structured with specific hypotheses and which are composed with generic transformations that obey a chosen set of group symmetries.
 \begin{Figure}
     \begin{tikzpicture}[node distance=2cm]
 
-        \node (nonparametric) [process, minimum width=5cm] {non-parametric inference};
+        \node (nonparametric) [process, minimum width=5cm] {unstructured inference};
         \node (data) [io, right of=nonparametric, xshift=1cm, yshift=2cm] {observations $\mathcal{D}$};
 
-        \node (field) [decision, below of=nonparametric] {field $\Vector{f}$};
+        \node (field) [decision, below of=nonparametric] {model $F$};
         \node (pred) [io, right of=field,  xshift=2cm] {predictions};
 
         \draw [arrow] (data) |- (nonparametric);
@@ -109,92 +71,89 @@ data is noisy and at worst case contradictory; these issues must also be exposed
         \draw [arrow,color=BurntOrange] (pred) -- +(0,3.5);
 
     \end{tikzpicture}
-    \caption{Workflow loop for optimal experimental design, without mechanistic model}
+    \caption{\emph{Design--learn} workflow without mechanistic knowledge. Predictions generated from the model $F$ are only accurate in the vicinity of data $\targets$}
     \label{fig:experimental-design}
 \end{Figure}
-\noindent
-Figure \ref{fig:experimental-design} outlines the workflow for optimal experimental design.
-The term \textit{non-parametric} defines the procedures that have prioritised  
-functional generality and flexibility over mechanistic insights gained from the values
-of the parameters and shapes of the mathematical forms. Neural networks and Gaussian process
-regressors are examples of non-parametric estimation procedures, which produce an estimate
-of the field $\Vector{f}$ that predicts gene expression rates at given expression levels.
-Based on these predictions, the experimentalist may proceed to collect data in the most
-informative parameter regions, which would in turn more accurately estimate $\Vector{f}$.
+Suppose our collaborators have provided us with time-course gene expression data $\mathcal{D}$, which could be taken via time-lapse microscopy of cells growing on microfluidic plates, optical density measurements from microtiter plate assays or temporal snapshots of flow cytometry measruements. If nothing is known about a mechanism under study, we can infer an unstructured model from a set of observations, and even generate predictions without needing to know anything about the mechanism (Figure \ref{fig:experimental-design}). Unstructured models do not generate accurate predictions outside the input data distribution; they are good interpolars, but terrible extrapolators.
 
-\label{section:refinement}
-Often predictions from field $\Vector{f}$ are not enough. Models constructed
-with feasible biophysical assumptions $\Vector{h}(\Vector{\theta})$ have the potential
-to extrapolate predictions and give concrete biophysical meanings to each parameter $\Vector{\theta}$.
-This way the experimentalist knows exactly which modification to the system they must
-make in order to achieve a desired behaviour. More often than not it is also unclear
-whether the model and its assumptions are reasonable, which brings us to the desire
-to score our hypotheses. For increased
-accuracy and efficiency \cite{Meeds2019EfficientSystems} the mechanistic model
-$\Vector{h}(\Vector{\theta})$ is inferred against non-parametric estimate $\Vector{f}$
-rather than the data $\mathcal{D}$ directly. Furthermore as discussed in Section
-\ref{section:geometry} the aim is to optimise geometry rather than kinetics.
-Alternatively one may construct $\Vector{h}(\Vector{\theta})$ to cover a whole class
-of models, such as those that satisfy mass-action. The expectation is that most of the
-parameters would be zero but some would be informative. One can obtain a distribution
-of optimal parameters $\rho(\Vector{\theta})$ by running multiple optimisations. From
-this distribution one may construct alternative hypotheses and update $\Vector{h}(\Vector{\theta})$.
-By iterating this procedure one would identify the minimal model within the model class that
-explains the data. This process is known as model refinement or reduction.
-
+Models $\rates$ constructed with feasible biophysical assumptions have the potential to extrapolate predictions and give concrete biophysical meanings to each parameter $\theta$. This way the experimentalist knows exactly which modification to the system they must make in order to achieve a desired behaviour. More often than not it is also unclear whether the model and its assumptions are reasonable, which brings us to model selection and reduction (Figure \ref{fig:non-parametric}). 
 \begin{Figure}
     \begin{tikzpicture}[node distance=2cm]
 
-        \node (field) [decision] {field $\Vector{f}$};
-        \node (hypothesis) [io, left of=field,  xshift=-2cm] {hypothesis $\Vector{h}(\Vector{\theta})$};
-        \node (parametric) [process, below of=field, minimum width=5cm] {geometric inference};
+        \node (field) [decision] {model $F$};
+        \node (hypothesis) [io, left of=field,  xshift=-2cm] {hypothesis $\rates$};
+        \node (parametric) [process, below of=field, minimum width=5cm] {model selection};
         
-        \node (params) [io, below of=parametric] {parameter distribution $\rho(\Vector{\theta})$};
-        \node (score) [io, right of=params, xshift=4cm] {score};
-        \node (decomp) [process, below of=params, minimum width=5cm] {clustering and decomposition};
+        \node (decomp) [process, below of=parametric, minimum width=5cm] {model reduction};
         \node (models) [io, left of=decomp, xshift=-3cm] {models};
 
         \draw [arrow] (field) -- (parametric);
         \draw [arrow] (hypothesis) |- (parametric);
-        \draw [arrow] (parametric) -- (params);
+        \draw [arrow] (parametric) -- (decomp);
         
-        \draw [arrow] (params) -- (decomp);
-        \draw [arrow] (params) -- (score);
         \draw [arrow] (decomp) -- (models);
-        \draw [arrow,color=ForestGreen] (models) -- +(0,5.5);
+        \draw [arrow,color=ForestGreen] (models) -- +(0,3.5);
 
     \end{tikzpicture}
-    \caption{Overview of hypothesis scoring pipeline and model refinement loop}
+    \caption{Overview of model selection, reduction and refinement loop}
     \label{fig:non-parametric}
 \end{Figure}
+Alternatively one may construct $\rates$ to cover a whole class of models rather than a single model. The expectation is that most of the parameters would be zero but some would be informative \cite{Brunton2016SparseSINDYc}. From the inferred parameters $\theta$ one may construct alternative hypotheses and narrow down the set of plausible models. By iterating this procedure one would identify the minimal model within the model class that explains the data.
 
-Suppose now that refined mechanistic models of the form $\Vector{h}(\Vector{\theta})$
-have been obtained using the model refinement loop. These could be a library of known
-parts that have been individually characterised, but never combined to form a larger
-system. The experimentalists would like to create a system with a specified behaviour
-$\mathcal{H}$ and would like to know which parts to combine and which modifications
-to make. The model refinement loop can be used with the design as an input.
+In this thesis we focus on the benefits of representation and differentiability in the context of the genetic engineering of cell phenotypes in synthetic biology. In Chapter \ref{chapter:background} we introduce the reader a relevant background in differential equations and machine learning with applications in cell biology to set the stage for the publications in Chapters \ref{chapter:double-exclusive}--\ref{chapter:exploring}. We will see how a differential equation representation of a cell or population of cells requires an exploration of the relationship between bifurcation theory and the concept of a phenotype. Chapter \ref{chapter:double-exclusive} exhibits the results of an interdisciplicary collaboration between in synthetic biology, during which an iterative \emph{design--learn} workflow was followed in an attempt to overcome the biological complexity barrier. During this collaboration, a disconnect between design goals and parameter inference methods was identified which lead to the novel bifurcation inference method published in Chapter \ref{chapter:inference}. Chapter \ref{chapter:exploring} is an adaptation of a publication, in preparation at the time of writing this document, that explores the importance of interactive exploration of high-dimensional flow cytometry data for immunophenotyping. Finally, Chapter \ref{chapter:conclusions} concludes with retrospectives on the previous chapters, which includes a revised view of a \emph{design--learn} workflow for synthetic biology, that in principle is completely differentiable. Furthermore, we propose how one would use concepts from Chapters \ref{chapter:inference}--\ref{chapter:exploring} to interactivity explore the space of hypotheses that represent the same cell phenotype. Our conclusions would be most impactful in cell line development where flow cytometry and other omic-type measurements are taken at different protocol stages of a biomanufacturing process.
 
-\begin{Figure}
-    \begin{tikzpicture}[node distance=2cm]
+% On the other hand one may want to specify a behaviour
+% $\mathcal{H}$ which may have not yet been observed. This would be specified with
+% top-down constraints, i.e. there exist oscillations of a fixed frequency or
+% a region of bistability.
 
-        \node (nonparametric) [process, minimum width=5cm] {non-parametric inference};
-        \node (design) [io, left of=nonparametric, xshift=-1cm, yshift=2cm] {design $\mathcal{H}$};
+% The experimentalists may want to know whether the data collected could
+% result in a model of predictive power without mechanistic knowledge
+% of the underlying biochemistry. Moreover it would be desirable gain insights
+% in parameter regimes in the vicinity of observations, without having to
+% wait for the theorists to produce a refined model. Such real-time insights
+% would guide data collection protocols, optimising the amount of information
+% gained while keeping the number of experiments performed to a minimum. Often
+% data is noisy and at worst case contradictory; these issues must also be exposed.
 
-        \node (field) [decision, below of=nonparametric] {field $\Vector{f}$};
-        \node (hypothesis) [io, left of=field,  xshift=-2cm] {models $\Vector{h}(\Vector{\theta})$};
-        \node (parametric) [process, below of=field, minimum width=5cm] {geometric inference};
+% \noindent
+% Figure \ref{fig:experimental-design} outlines the workflow for optimal experimental design.
+% The term \textit{non-parametric} defines the procedures that have prioritised  
+% functional generality and flexibility over mechanistic insights gained from the values
+% of the parameters and shapes of the mathematical forms. Neural networks and Gaussian process
+% regressors are examples of non-parametric estimation procedures, which produce an estimate
+% of the field $\Vector{f}$ that predicts gene expression rates at given expression levels.
+% Based on these predictions, the experimentalist may proceed to collect data in the most
+% informative parameter regions, which would in turn more accurately estimate $\Vector{f}$.
+
+
+% Suppose now that refined mechanistic models of the form $\Vector{h}(\Vector{\theta})$
+% have been obtained using the model refinement loop. These could be a library of known
+% parts that have been individually characterised, but never combined to form a larger
+% system. The experimentalists would like to create a system with a specified behaviour
+% $\mathcal{H}$ and would like to know which parts to combine and which modifications
+% to make. The model refinement loop can be used with the design as an input.
+
+% \begin{Figure}
+%     \begin{tikzpicture}[node distance=2cm]
+
+%         \node (nonparametric) [process, minimum width=5cm] {non-parametric inference};
+%         \node (design) [io, left of=nonparametric, xshift=-1cm, yshift=2cm] {design $\mathcal{H}$};
+
+%         \node (field) [decision, below of=nonparametric] {field $\Vector{f}$};
+%         \node (hypothesis) [io, left of=field,  xshift=-2cm] {models $\Vector{h}(\Vector{\theta})$};
+%         \node (parametric) [process, below of=field, minimum width=5cm] {geometric inference};
         
-        \node (params) [io, below of=parametric] {parameter distribution $\rho(\Vector{\theta})$};
+%         \node (params) [io, below of=parametric] {parameter distribution $\rho(\Vector{\theta})$};
 
-        \draw [arrow] (design) |- (nonparametric);
-        \draw [arrow] (nonparametric) -- (field);
+%         \draw [arrow] (design) |- (nonparametric);
+%         \draw [arrow] (nonparametric) -- (field);
         
-        \draw [arrow] (field) -- (parametric);
-        \draw [arrow] (hypothesis) |- (parametric);
-        \draw [arrow] (parametric) -- (params);
+%         \draw [arrow] (field) -- (parametric);
+%         \draw [arrow] (hypothesis) |- (parametric);
+%         \draw [arrow] (parametric) -- (params);
 
-    \end{tikzpicture}
-    \caption{Overview of system design pipeline}
-    \label{fig:design}
-\end{Figure}
+%     \end{tikzpicture}
+%     \caption{Overview of system design pipeline}
+%     \label{fig:design}
+% \end{Figure}
