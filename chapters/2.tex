@@ -352,10 +352,10 @@ Suppose we wanted to model the spatial distribution biochemicals across an organ
 	\frac{\partial u}{\partial t} = \rates(u,p) + D\frac{\partial^2 u}{\partial x^2}
 	\label{eq:reaction-diffusion}
 \end{equation}
-where diagonal matrix $D\in\Reals^{N\times N}$ encodes the spatial mobility of each component. Depending on the spatial scale that is being modelled the components of $D$ will take on a different meaning. If we are modelling a population of cells then the components of $D$ quantify which components the cells can exchange between each other. If we are modelling the spatial distributions within a single cell, then $D$ encodes for components that are passively transported between locations. In order to model active transport we would include a first-order spatial derivative term, giving rise to an \emph{advection-reaction-diffusion} equation \cite{}. Although the inclusion of spatial derivatives and boundary conditions may seen quite complicated, we can rest assured that ultimately the discretisation of any partial differential equation will yield a matrix representation of the spatial derivative. Any partial differential equation with $N$ components can be discretized into $K$ spatial grid-points and re-cast as a set of $N\times K$ ordinary differential equation.
+where diagonal matrix $D\in\Reals^{N\times N}$ encodes the spatial mobility of each component. Depending on the spatial scale that is being modelled the components of $D$ will take on a different meaning. If we are modelling a population of cells then the components of $D$ quantify which components the cells can exchange between each other. If we are modelling the spatial distributions within a single cell, then $D$ encodes for components that are passively transported between locations. In order to model active transport we would include a first-order spatial derivative term, giving rise to an \emph{advection-reaction-diffusion} equation \cite{Tuimala2013Reaction-Diffusion-AdvectionEquation}. Although the inclusion of spatial derivatives and boundary conditions may seen quite complicated, we can rest assured that ultimately the discretisation of partial differential equations will yield a matrix representation of the spatial derivative. Any partial differential equation with $N$ components can be discretized into $K$ spatial grid-points and re-cast as a set of $N\times K$ ordinary differential equation.
 
 \subsubsection{Eigenvalue Distributions of Derivative Operators}
-Using the Circular Diagonalization Theorem \cite{} one can derive the eigenvalues $\lambda_k$ of an $K\times K$ matrix which represents the second-order central difference approximation to the second derivative on $K$ sites of a one dimensional ring
+Using the Circular Diagonalization Theorem \cite{Ingleton1956TheMatrices} one can derive the eigenvalues $\lambda_k$ of an $K\times K$ matrix which represents the second-order central difference approximation to the second derivative on $K$ sites of a one dimensional ring
 \begin{align}
 	\frac{\partial^2}{\partial x^2} \rightarrow
 	\begin{pmatrix}
@@ -382,7 +382,8 @@ a dispersion relation
   \quad k\in[-\pi,\pi]
 \end{align}
 The discrete $L$-dimensional laplacian is simply the kronecker sum $\oplus$ of one
-dimensional cases and thus its eigenvalues is simply the sum one dimensional dispersions \cite{}
+dimensional cases and thus its eigenvalues is simply the sum one dimensional dispersions \cite{Laub2004MatrixEngineers}
+
 \begin{align}
   \lambda(k)&=
   -2\sum_{i=1}^L\left(\cos k_i+1\right)
@@ -397,9 +398,9 @@ We proceed with an element-wise change of variables $u=2\cos k$ and recognise th
 \begin{align*}
   P(\lambda)&=\frac{1}{Z}
   \int_{\Omega'}\!
-  \frac{\delta(\Lambda_L+\sum_{u\in\bar{\mathbf{u}}}u)}
-  {\sqrt{\prod_{u\in\bar{\mathbf{u}}}(1-u^2/4) }}
-  \,\mathrm{d}\bar{\mathbf{u}}
+  \frac{\delta(\Lambda_L+\sum_{i}u_i)}
+  {\sqrt{\prod_{i}(1-u_i^2/4) }}
+  \,\mathrm{d}u
   \qquad
   \begin{matrix}
     \Lambda_L=\lambda+2L \\
@@ -407,32 +408,22 @@ We proceed with an element-wise change of variables $u=2\cos k$ and recognise th
   \end{matrix}\\
   &=\frac{1}{2\pi Z}
   \int_{-\infty}^{\infty}\int_{\Omega'}\!
-  \frac{\mathbb{e}^{\Lambda_L\mathbb{i}k}\exp[\sum_{u\in\bar{\mathbf{u}}}u\mathbb{i}k]}
-  {\sqrt{\prod_{u\in\bar{\mathbf{u}}}(1-u^2/4) }}
-  \,\mathrm{d}\bar{\mathbf{u}}\mathrm{d}k\\
+  \frac{\mathbb{e}^{\Lambda_L\mathbb{i}k}\exp[\sum_{i}u_i\mathbb{i}k]}
+  {\sqrt{\prod_{i}(1-u_i^2/4) }}
+  \,\mathrm{d}u\mathrm{d}k\\
   &=\frac{1}{2\pi Z}
   \int_{-\infty}^{\infty}\mathbb{e}^{\Lambda_L\mathbb{i}k}
-  \prod_{u\in\bar{\mathbf{u}}}\int_{-2}^{2}\!
-  \frac{\mathbb{e}^{u\mathbb{i}k}}
-  {\sqrt{1-u^2/4}}
-  \,\mathrm{d}u\mathrm{d}k
+  \prod_{i}\int_{-2}^{2}\!
+  \frac{\mathbb{e}^{u_i\mathbb{i}k}}
+  {\sqrt{1-u_i^2/4}}
+  \,\mathrm{d}u_i\mathrm{d}k
 \end{align*}
 The fourier representation of the delta function allowed the
-factorisation of the integral. We recognise a repeated Bessel
-integral and replace it with the Bessel function of the first kind
-$J_n(k)$, leaving only a fourier transform which we define
-$ \mathcal{F} :
-f\rightarrow \frac{1}{\sqrt{2\pi}}
-\int_{-\infty}^{\infty}f(k)e^{\mathbb{i}\Lambda k}\mathrm{d}k$. To clean
-the formula up even further we may use the convolution
-theorem to deal with the powers of $M$, leaving only the fourier
-transform of the Bessel function $J_0(k)$, which is the arcsine
-distribution $\alpha(\lambda)$. It becomes clear that the eigenvalue
-density of a kronecker sum of matrices is the convolution of the densities
-of those matrices.
+factorisation of the integral. We recognise a repeated Bessel integral and replace it with the Bessel function of the first kind $J_n(k)$, leaving only a fourier transform which we define $ \mathcal{F} : f\rightarrow \frac{1}{\sqrt{2\pi}} \int_{-\infty}^{\infty}f(k)e^{\mathbb{i}\Lambda k}\mathrm{d}k$. To clean the formula up even further we may use the convolution theorem to deal with the powers of $L$, leaving only the fourier transform of the Bessel function $J_0(k)$, which is the arcsine distribution $\alpha(\lambda)$. The eigenvalue density of a kronecker sum of matrices is the convolution of the densities of those matrices.
+
 \begin{align}
-  \Delta_M(\lambda)=\underbrace{
-  \alpha(\lambda)*\alpha(\lambda)*\cdots*\alpha(\lambda)}_{M}\qquad\qquad\label{eq:mlap}\\
+  P(\lambda)=\underbrace{
+  \alpha(\lambda)*\alpha(\lambda)*\cdots*\alpha(\lambda)}_{L}\qquad\qquad\label{eq:mlap}\\
     \alpha(\lambda)=
       \frac{\Pi\left(\frac{\lambda+2}{2}\right)}{2\pi\sqrt{1-\left(\frac{\lambda+2}{2}\right)^2}}
     \qquad
@@ -441,14 +432,47 @@ of those matrices.
         1 & |x|<1\\
         0 & |x|\geq1\\
       \end{cases}
+	\label{eq:laplacian-distribution}
 \end{align}
+\begin{Figure}
+\includegraphics[width=0.8\linewidth]{laplacian-spectrum}
+\caption{Eigenvalue distributions $P(\lambda)$ of the $L$-dimensional laplacian}
+\label{fig:dos}
+\end{Figure}
+The one dimensional density has two Van Hove singularities at $\lambda=-4,0$ given by the arcsine law $\alpha(\lambda)$, whereas the two dimensional case has one at $\lambda=-4$ given by the complete elliptic integral of the first kind $K(m)$. Figure~\ref{fig:dos} reveals that in higher dimensions singularities do not occur; instead there appear to be discontinuities in the higher order derivatives. The density smooths out as repeated convolutions bring it to a normal distribution; this is another way to state the Central Limit Theorem. In the context of diffusion, the laplacian is scaled by the diagonal diffusion matrix. To take this scaling into account, components $D_i$ are introduced in the arcsine laws
+\begin{align}
+	\alpha(\lambda) \rightarrow \frac{1}{D_i}\alpha(\lambda/D_i)
+\end{align}
+The eigenvalue distributions determine the eigenbasis evolution  \eqref{eq:eigenbasis-vector-evolution} which reveals that the second order derivative leads to exponential relaxation of all basis vectors, except for the subset with vanishing eigenvalue $\lambda=0$. The corresponding zero eigenvectors $v_0$ are the fourier components of the steady state distribution, are the only components that remain as $t\rightarrow\infty$. The diffusive components $D_i$ determine the timescale of relaxation in each dimension.
 
 \subsubsection{Turing Bifurcations}
-Here we first introduce diffusion macroscopically by simply adding the laplacian
-to mean field equation. We introduce the turning bifurcation and
-show how linear stability analysis is insufficient to capture pattern formation
-and rich inhomogeneous steady states. A promising approach may be geometrisation
-of the moving local equilibria \cite{Halatek2018}.
+The partial derivatives in the diffusion equation \eqref{eq:reaction-diffusion} can be converted into algebraic expression with the help of fourier transforms. Suppose we define the spatial-temporal fourier transform as
+\begin{align}
+	\mathcal{F} : f\rightarrow \frac{1}{\sqrt{2\pi}^L} \int_{-\infty}^\infty\int_{\Reals^L} f(x,t)e^{\mathbb{i} k\cdot x-\omega t}\mathrm{d}x
+	\mathrm{d}t\where x,k\in\Reals^L
+\end{align}
+where $\omega$ is an unknown dispersion relation that determines which modes $k$ are sustained or exponentially decay. The corresponding reaction diffusion equation becomes
+\begin{equation}
+	(\omega\mathbb{I}+ |k|^2  D)\mathcal{F}[u] = \mathcal{F}[\rates]
+\end{equation}
+where we have a matrix vector multiplication on the left-hand side and the fourier transform of a non-linear field on the right. Linearising the field $\rates$ around a fixed point $\steady$ yields an eigenvalue equation
+\begin{equation}
+	\left(\left.\jacobian\right|_{\steady} - |k|^2D - \omega\mathbb{I} \right)\mathcal{F}[u] = 0
+\end{equation}
+identifying $\omega$ and the eigenvalues to corresponding eigenvectors $\mathcal{F}[u]$. Using the determinant equation
+\begin{equation}
+	\left|\,\,\left.\jacobian\right|_{\steady} - |k|^2D - \omega\mathbb{I} \right| = 0
+	\label{eq:dispersion-relation}
+\end{equation}
+\begin{Figure}
+\includegraphics[width=0.5\linewidth]{turing-bifurcation}
+\caption{A \emph{Turing bifurcation} occurs at condition $p=p^\star$ when the the dispersion relation crosses the imaginary axis $\Real[\omega(k)]>0$. A region of unstable modes pushes the dynamics away from homogenous state $\steady$ giving rise to patters}
+\label{fig:turing-bifurcation}
+\end{Figure}
+We can solve for the dispersion $\omega(k)$
+which yields the conditions for necessary for diffusion-driven instability \cite{Strogatz2000}. Figure \ref{fig:turing-bifurcation} illustrates a typical dispersion relation that indicates a \emph{Turing} bifurcation at $p=p^\star$. The unstable modes $k$ where $\Real[\omega(k)]>0$ prevent the system from reaching a homogenous steady state $\steady$ and result in patterns. What may seem surprising is that the homogenous steady state $\steady$ is stable in the absence of diffusion $k=0$.
+
+Whether its through eigenvalue distributions \eqref{eq:laplacian-distribution} or through dispersion relations \eqref{eq:dispersion-relation} it is possible to get a handle on pattern formation by looking at when eigenvalues cross the imaginary axis. Progress has been made toward pattern analysis beyond linear stability \cite{Halatek2018}. In this setting we consider local equilibria in state space, the dynamics of which are determined by reactive and diffusive fluxes.
 
 \subsection{Basis Functions for State Space}
 \label{section:basis-function-methods}
@@ -470,7 +494,7 @@ If the limit set $\partial\Omega$ is a connected surface we can additionally spe
 	F(u) = \mathbb{e}^{-|u-\partial\Omega|}\left(\omega(u)\times\frac{\partial}{\partial u}-|u-\partial\Omega|\frac{\partial}{\partial u}\right)|u-\partial\Omega|
 	\label{eq:basis-functions}
 \end{equation}
-We also have an additional property that the tangential components $\omega(u)\times\frac{\partial}{\partial u}$ vanish faster than the normal components as $|u-\partial\Omega|\rightarrow\infty$. This makes any limit set $\partial\Omega$ look like a stable fixed point from a sufficient distance. We note that the cross product is only defined for three dimensions $N=3$; the higher dimensional analogues of this operation is the wedge product $\wedge$ defined in the language of exterior algebra \cite{}.
+We also have an additional property that the tangential components $\omega(u)\times\frac{\partial}{\partial u}$ vanish faster than the normal components as $|u-\partial\Omega|\rightarrow\infty$. This makes any limit set $\partial\Omega$ look like a stable fixed point from a sufficient distance. We note that the cross product is only defined for three dimensions $N=3$; the higher dimensional analogues of this operation is the wedge product $\wedge$ defined in the language of exterior algebra \cite{Flystad2015TheMathematics}.
 
 Forcing the fields to vanish sufficiently far from their limit sets allows us to construct the field for multiple limit sets $\partial\Omega_k$ with their associated angular momenta $\omega_k(u)$ as a superposition
 \begin{equation}
