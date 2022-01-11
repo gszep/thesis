@@ -266,7 +266,7 @@ Expanding the distribution in the vicinity of a stable fixed point gives rise to
 We learn that accompanying the \emph{critical slowing down} \eqref{eq:critical-slowing} we also have the divergence of variance along the degenerate direction. These are the two main observations that accompany bifurcations and have a deep relationship to the theory of phase transitions \cite{Bose2019BifurcationCriticality}.
 
 \subsubsection{Limit Cycle Analysis}
-Thus far we dealt with static state space structures like \emph{fixed points}. We found that the eigenvalues of the Jacobian are sufficient for their characterisation, unless the field is  \emph{degenerate}, in which case higher order derivatives of the field must be investigated.
+Thus far we dealt with static state space structures like \emph{fixed points}. We found that the eigenvalues of the Jacobian are sufficient for their characterisation, unless the field is \emph{degenerate}, in which case higher order derivatives of the field must be investigated.
 
 If fields lines point towards a region of state space but the region \emph{does not} contain any fixed points, then the only other option is for the field lines to converge onto a \emph{limit cycle}. This is actually a rough statement of the Poincar\'e-Bendixson theorem \cite{Ciesielski2012TheCentury}  which allows us to define trapping regions where trajectories do not escape from and make statements about the existence or non-existence of limit cycles. Limit cycles also enclose a finite number of \emph{unstable foci} that push trajectories away from their centers.
 \begin{Figure}
@@ -594,22 +594,21 @@ Now that we've understood how genetic switches can manifest within a single cell
 Suppose we define a reaction-diffusion system where the reaction term has a finite number of stable fixed points $\steady$. This means that at any given spatial location $x$ the state $u$ will be attracted to one of these fixed points $\steady$. The competition between reactive forces $\rates$ pulling towards fixed points $\steady$ and diffusive fluxes $\frac{\partial u}{\partial x}$ pulling towards the spatial average $\langle u(x,t) \rangle$ dictates local dynamics and hence the velocity of domain boundary (Figure \ref{fig:reaction-diffusion-balance}). Moving boundaries result in one domain dominating over the other and can be described as a hetero-clinic orbit. Homoclinic orbits on the other hand characterise transient excitations that propagate through the medium \cite{Strogatz2000}. We will see these concepts applied to a colony of synthetic \emph{E. coli} in Chapter \ref{chapter:double-exclusive} to determine whether boundaries between two phenotypes are maintained or whether one phenotype switches into the other.
 
 \subsection{Self-organised Patterns \& Development}
-During the development of any organism a hierarchy of self-organisation takes place that leads to the breaking of symmetry from a spherical cluster of undifferentiated cells to the formation of organ segments and limbs. This process is known as morphogenesis. Figure \ref{fig:morph}, taken from \cite{}, shows an example in which \textit{Hox} gene expression patterns in the body segments of Drosophila can drastically affect its development.
-
 \begin{Figure}
 \includegraphics[width=90mm]{figures/morph1.png}\\
 \includegraphics[width=90mm]{figures/morph2.png}
-\caption{Top: \textit{Hox} gene expression patterns in body segments of drosophila Bottom: Mutation where legs grow in-place of antenna \cite{}}
+\caption{Top: \textit{Hox} gene expression patterns in body segments of drosophila Bottom: Mutation where legs grow in-place of antenna \cite{Several2022HoxGene}}
 \label{fig:morph}
 \end{Figure}
+During the development of any organism a hierarchy of self-organisation takes place that leads to the breaking of symmetry from a spherical cluster of undifferentiated cells to the formation of organ segments and limbs. This process is known as morphogenesis. Figure \ref{fig:morph}, taken from \cite{Several2022HoxGene}, shows an example in which \textit{Hox} gene expression patterns in the body segments of Drosophila can drastically affect its development.
 \subsubsection{Morphogen-driven Patterns}
 One of the central questions in developmental biology is how positional information is sensed by a population of cells and how sharp gene expression boundaries between populations are maintained for robust organ and body segment development. The French Flag model \cite{Wolpert1969PositionalDifferentiation.} proposes that cells have a threshold response to external signalling molecules -- henceforth referred to as morphogens -- which pre-pattern the organism from anterior to posterior and laterally. Some examples of morphogens include Wingless, Decapentaplegic and Sonic Hedgehog. Figure \ref{fig:gap} show the \textit{Gap} expression patterns that partition the Drosophila embryo into segments which are later differentiated by \textit{Hox} genes.
-
 \begin{Figure}
 \includegraphics[width=90mm]{figures/gap.jpg}
-\caption{Expression patterns of pair-rule \textit{Gap} genes in Drosophila embryo \cite{}}
+\caption{Expression patterns of pair-rule \textit{Gap} genes in Drosophila embryo \cite{Hejnol2017LarvalLater}}
 \label{fig:gap}
 \end{Figure}
+This gene network can be modelled with reaction-diffusion equations, where the fixed points $\steady$ correspond to the concentrations of relevant biochemicals required to for tissue differentiation. Morphogens would have non-zero diffusion coefficients $D$ as they would be responsible for pre-patterning across the organism.
 
 \subsubsection{Self-organised Patterns}
 How are morphogen gradients set up and maintained? How can they be robust against changes in size and geometry? A canonical example of self-organisation in bacteria is the quorum sensing system \cite{Miller2002QuorumBacteria}. Each cell secretes a signalling molecule resulting in the total concentration being proportional to the population density. This signal induces adaptive responses in metabolic and mobility in the whole colony. A long standing mathematical hypothesis that Turing patterns underlie self-organisation in cell populations. Recent literature suggests both morphogen-driven and Turing patterning mechanisms play a role in development \cite{Green2015PositionalCombine}
@@ -620,17 +619,19 @@ How are morphogen gradients set up and maintained? How can they be robust agains
 \label{fig:turing}
 \end{Figure}
 
+Unpacking the necessary and sufficient conditions for cell and tissue differentiation in the presence of the complexity of the whole organism is difficult. Is a \emph{Turing} mechanism required? Or is morphogen patterning sufficient? In Chapter \ref{chapter:double-exclusive} we investigate developmental questions in a synthetic bacterial colony designed to mimic how populations of cells would differentiate into various tissues.
+
 \clearpage
 \section{Phenotype Inference with Machine Learning}
 \label{section:phenotype-inference}
 
-Thus far we have outlined how applying bifurcation analysis to a model $\rates(u,p)$ relating the organism state $u$ to environmental conditions $p$ and genotype $\theta$ can be used to distinguish its phenotypes. What do we do in circumstances where the model is partially or completely unknown? In this case, rather than deriving the functional forms relating states $u$ from reasonable biochemical assumptions and mass-action laws, we rely on \emph{universal function approximators} \cite{}.
+Thus far we have outlined how applying bifurcation analysis to a model $\rates(u,p)$ relating the organism state $u$ to environmental conditions $p$ and genotype $\theta$ can be used to distinguish its phenotypes. What do we do in circumstances where the model is partially or completely unknown? In this case, rather than deriving the functional forms relating states $u$ from reasonable biochemical assumptions and mass-action laws, we rely on \emph{universal function approximators} \cite{Bronstein2021GeometricGauges}.
 \begin{Figure}
     \includegraphics[width=14cm]{inferring-bifurcations}
     \caption{Bifurcation point extraction along the condition $p$ via two possible routes: steady state inference (a,d$\rightarrow$c) and fixed point inference (a,d$\rightarrow$b,e$\rightarrow$c). The fixed point inference route requires \emph{universal function approximator} $F(u)$ at different values of the condition $p$ and yields additional unstable fixed points.}
     \label{fig:inferring-bifurcations}
 \end{Figure}
-When a model $\rates(u,p)$ is absent it becomes difficult to know which observations to collect. In the era of high-throughput biology, the solution to this is to simply collect as many observations as possible and search the high-dimensional data for mechanisms that elucidate what the organism model could be. Such data may include flow cytometry, proteomics (MS/MS), transcriptomics (scRNA-seq) metabolomics (MS) and a wide variety of next-generation sequencing data \cite{}. Thus the problem of differentiating phenotypes becomes a matter of extracting bifurcations from high dimensional \emph{universal function approximators}.
+When a model $\rates(u,p)$ is absent it becomes difficult to know which observations to collect. In the era of high-throughput biology, the solution to this is to simply collect as many observations as possible and search the high-dimensional data for mechanisms that elucidate what the organism model could be. Such data may include flow cytometry, proteomics (MS/MS), transcriptomics (scRNA-seq) metabolomics (MS) and a wide variety of next-generation sequencing data \cite{Perkel2021Single-cellAge}. Thus the problem of differentiating phenotypes becomes a matter of extracting bifurcations from high dimensional \emph{universal function approximators}.
 
 Bifurcations along conditions $p$ can be extracted from data via two possible routes as depicted in Figure \ref{fig:inferring-bifurcations}: via a \emph{universal function approximator} $F(u)$ which enables the location of all fixed points, including unstable ones, or via direct inference from steady state data $u(t\rightarrow\infty)$. At best we could have state trajectory data $u(t)$ like single cell trajectories extracted via segmentation and tracking in fluorescence microscopy movies (for example the data acquired using the CellASIC ONIX Microfluidic Platform in Figure \ref{fig:double-exclusive:bistability}c). The majority of biomedical data is sparsely sampled with respect to time (for example the flow cytometry measurements in Figure \ref{fig:double-exclusive:flow-hysteresis} which were only collected at experiment end-points) and in such settings expecting to capture dynamical transients which would reveal the locations of unstable fixed points would be unreasonable. If we assume that the data was collected at a time where the organism is in homeostasis, then we can infer the steady states $u(t\rightarrow\infty)$ and any possible bifurcations directly from statistical measures of the data without needing a \emph{universal function approximator} $F(u)$. The emergent picture suggests a model of the state space $F(u)$ is desirable because it fully characterises the phenotype, but requires data or prior knowledge about dynamical transients of the organism. Fortunately, as we will see, statistics on the organism in homeostasis reveal stable steady states and static bifurcations.
 
@@ -643,10 +644,11 @@ Suppose we collected a high dimensional single cell omics dataset $\dataset$ fro
 	 \exists \theta,p :
 	U \sim P_{\theta}(u,p) \}
 \end{equation}
-Since we can't possibly know the distribution $P_\theta$ because that would require knowing microscopic details and deriving a reasonable model $\rates$, we resort to dimensionality reduction in tandem with clustering methods to detect the phenotypes. To detect bifurcations look for regions of the data where the variance appears to diverge and we can use scaling laws from equation \eqref{eq:steady-state-distribution-near-fixed-point} to determine the type of bifurcation that is occurring and its corresponding degenerate direction.
+Since we can't possibly know the distribution $P_\theta$ because that would require knowing microscopic details and deriving a reasonable model $\rates$, we resort to dimensionality reduction in tandem with clustering methods to detect the phenotypes. To detect bifurcations look for regions of the data where the variance appears to diverge and we can use scaling laws from equation \eqref{eq:steady-state-distribution-near-fixed-point} to determine the type of bifurcation that is occurring and its corresponding centre manifold.
 
 \subsubsection{Impute, Reduce \& Cluster}
-While the details of particular algorithms may vary, a popular pipeline for processing high dimensional biomedical data emerged: imputation of missing values followed by a combination of clustering and dimensionality reduction \cite{}. Imputation using \emph{nearest-neighbour methods} \cite{}, \emph{interpolation}  \cite{} or \emph{density sampling} \cite{} allow merging of datasets obtained from different experimental designs. Dimensionality reduction methods such as \emph{tSNE} \cite{} and \emph{UMAP} \cite{} are used to produce two dimensional overviews of datasets and are typically the first methods leveraged to get a feel for the global geometry of the high-dimensional point clouds. These methods also identify the highly variable feature combinations \cite{} as well noisy features that provide any information in distinguishing cell populations \cite{}. For a suitable choice of hyperparameters these maps reveal clusters and hence the number of distinct cell sub-populations. Clustering can then be used, either in the original high-dimensional space or the reduced space to segment the clouds \cite{}. Once the dataset is clustered, in principle we've identified the modes of the steady state distribution \eqref{eq:steady-state-distribution} and differential analysis \cite{} can be applied, together with domain knowledge, to distinguish whether any two clusters represent \emph{different phenotypes} or \emph{behavioural states} of the same phenotype.
+\label{section:impute-reduce-cluster}
+While the details of particular algorithms may vary, a popular pipeline for processing high dimensional biomedical data emerged: imputation of missing values followed by a combination of clustering and dimensionality reduction \cite{Reel2021UsingReview}. Imputation using \emph{nearest-neighbour methods}, \emph{interpolation} or \emph{density sampling} allow merging of datasets obtained from different experimental designs \cite{Lin2020Missing20062017}. Dimensionality reduction methods such as \emph{tSNE} and \emph{UMAP} \cite{Velliangiri2019AComputation} are used to produce two dimensional overviews of datasets and are typically the first methods leveraged to get a feel for the global geometry of the high-dimensional point clouds. These methods also identify the highly variable feature combinations \cite{Velliangiri2019AComputation} as well noisy features that provide any information in distinguishing cell populations \cite{Reel2021UsingReview}. For a suitable choice of hyperparameters these maps reveal clusters and hence the number of distinct cell sub-populations. Clustering can then be used, either in the original high-dimensional space or the reduced space to segment the clouds \cite{Reel2021UsingReview}. Once the dataset is clustered, in principle we've identified the modes of the steady state distribution \eqref{eq:steady-state-distribution} and differential analysis \cite{Reel2021UsingReview} can be applied, together with domain knowledge, to distinguish whether any two clusters represent \emph{different phenotypes} or \emph{behavioural states} of the same phenotype.
 
 \begin{Figure}
 	{\phantomsubcaption\label{fig:impute}}
@@ -684,79 +686,13 @@ This approach would not work for extracting dynamic bifurcations such as \emph{H
 
 Suppose we have the state as a function of time $u(t)$, sampled at sufficiently broad initial conditions $u(0)$. This would enable the estimation of field geometry $F(u)$ via \emph{universal function approximators} such as neural networks \cite{Chen2018NeuralEquations} and Gaussian processes \cite{Seeger2004GaussianLearning.}. We refer the reader to a modern review of the most successful machine learning approaches for designing \emph{universal function approximators} \cite{Bronstein2021GeometricGauges} where emphasis is made on understanding how group equivariant and group invariant transformations are stacked together. Note that we've dropped $\theta$ and $p$ from the \emph{universal function approximator}. We reserve $\theta$ to be a vector of biophysically meaningful parameters that make up an organism genotype. While \emph{universal function approximators} typically have a lot of parameters, they tend not to reveal the mechanism under study and hence cannot be used to deduce which genetic design interventions can be made.
 
-In applications where the mechanism is partially known it is possible to combine the principled microscopic derivations of reaction rate model $\rates$ together with some \emph{universal function approximator} $F$. This is known as \emph{grey-box modelling} \cite{Meeds2019EfficientSystems}.
+The vast majority of successful machine learning models rely in the differentiable optimisation of a cost function \cite{Bronstein2021GeometricGauges}. The cost is typically a scalar quantity that measures some norm $|\cdot|$ between the output of the universal function approximator $f_\theta(x)$ and a set of constraints or data $y$. Such an optimisation problem can be written as
+\begin{align}
+	\theta^* = \mathrm{argmin}_\theta | f_\theta(x) - y |
+	\label{eq:optimise-cost}
+\end{align}
+The form of the constraint or data $y$ and the group symmetries encoded in $ f_\theta(x)$ determine the class of models that are learnable in optimisation. As we shall argue in Chapter \ref{chapter:inference}, higher-level qualitative information should be learned before any details in observations. The challenge lies in mathematically expressing qualitative information; this is where bifurcation theory enters the machine learning picture.
 
-\subsubsection{Comparing Fields and Models}
-% Non-parametric ___ using Gaussian Process regression
-\label{section:field-inference}
+In applications where the mechanism is partially known it is possible to combine the principled microscopic derivations of reaction rate model $\rates$ together with some \emph{universal function approximator} $F$. This is known as \emph{grey-box modelling} \cite{Meeds2019EfficientSystems}. In this approach, mechanistic models (Section \ref{section:phenotypes-with-bifurcations}) and data-driven models (Section \ref{section:phenotype-inference}) can be used together to iteratively refine knowledge (Figure \ref{fig:model-reduction}). The scientific machine learning community (SciML) in Julia makes use and develops tools for these mixed approaches, which is one of the reasons much of the research during this thesis was done with Julia.
 
-In this early days of this thesis, we investigated whether it was possible to transform the time-domain data into state-space. This approach, and related works, are discussed in this section and can in principle be used with the microfluidic fluorescence microscopy data for parameter inference.
-
-Consider we are given $K$ cell trajectories $\mathcal{D}_1$, $\mathcal{D}_2$ ... $\mathcal{D}_K$, each containing $N$ noisy observations of the state of the cell. Let the cell state be represented by state vector $u(t)\in\Reals^N$ which is hypothesized to obey a set of ordinary differential equations of the form \eqref{eq:differential-equations}. Instead of integrating the equations \eqref{eq:differential-equations} we would find an estimate for the derivative of the trajectories $\hat{f}$.
-
-This is known as the \textit{smoothing} step \cite{Gugushvili2012Smoothing} should be done using unsupervised methods, for example with Gaussian Process Regressors \cite{Seeger2004GaussianLearning.} as shown in in Figure \ref{fig:inferred-cycles}. This requires the inversion of an $K'\times K'$ data matrix where $K':=\sum_k |\mathcal{D}_k|$ is the total number of trajectory data points. This has a computational complexity $K'^3$ which is only tractable with sparse datasets.
-
-Let the region $\partial\mathcal{D}$ be a boundary defined by the Delaunay tessellation of the input data. Let us define the estimate $\hat f$ only within the region $\partial\mathcal{D}$ so that there are no extrapolation artefacts. For the Gaussian Process approach the estimate would be
-\begin{equation}
-    \hat{f}(u)\sim
-        \mathcal{N}(\,\mu(u) ,\Matrix{\Sigma}(u)\,)
-    \quad\mathrm{for}\quad u\in\partial\mathcal{D}
-\end{equation}
-\noindent where at any given state $u$ the field estimate $\hat{f}$ is generated by Gaussian distributions of mean vector $\mu$ and covariance matrix $\Matrix{\Sigma}$. Solving for these requires a choice of matrix-valued kernel function $\Matrix{K}(u,v)$ which encodes our knowledge about the local structure of the field. Sophisticated kernels for learning vector fields exist \cite{Fuselier2017ADecompositions} for decomposing fields in conservative and solenoidal components, which aid in localising fixed points and cycles.
-
-The simplest choice of kernel assumes the components are independent and have a finite correlation length $\gamma$, such as Gaussian radial basis functions. Here $\Matrix{I}$ is the identity matrix and the hyperparameter $\gamma$ has to be optimised.
-\begin{equation}
-    \Matrix{K}(\Vector{u},\Vector{v}) = \Matrix{I}\,\mathbb{e}^{-\gamma|\Vector{u}-\Vector{v}|^2}
-\end{equation}
-
-The second step is called \textit{matching} where the estimated field $\hat{f}$ is used as an optimisation target against some parametrised function $\rates$ with unknown parameters $\theta$.
-
-In our setting we would like to match the geometry of the field but not its magnitude; in this sense we are focusing on the qualitative aspects of the dynamics of a set of differential equations, rather than the quantitative dynamics or kinetics. This could be achieved with the following objective function
-\begin{equation}
-    \mathcal{L}(\theta|\mathcal{D}) := \e^{-\frac{\hat{f}\cdot\rates}
-    {|\hat{f}||\rates|}}
-	\label{eq:geometric-cost}
-\end{equation}
-\noindent where the cost is minimal when the data derivative $\hat{f}$ and the parametrised model $\rates$ point in the same direction and maximal when they point in opposing directions.
-
-\begin{Figure}
-    \includegraphics[width=125mm]{figures/cycle-2.png}
-    \includegraphics[width=125mm]{figures/cycle-1.png}
-    \caption{Gaussian process regressors estimating derivative of the trajectories $\hat{f}$ from example trajectory datasets $\mathcal{D}_1$ ... $\mathcal{D}_K$ with varying signal to noise ratios. Interpolation error $E$ is shown as a heatmap; extrapolation fails}
-    \label{fig:inferred-cycles}
-\end{Figure}
-
-Although we are getting close to focusing on qualitative features of a model, this objective function is still sensitive to the locations and shapes of fixed point and limit cycles. What if we cared about even higher-level features such as the number of fixed points? Or perhaps whether a system oscillates or not? This is where the language of bifurcation theory described in Chapter \ref{chapter:background} is optimally suited for this task, but fist we need to discuss how to set up experiments to detect bifurcations from flow cytometry data.
-
-\begin{itemize}
-    \item Vector field estimates too noisy to get bifurcation points?
-    \item Divergence and the stability of fixed points
-    \item curl and limit cycles. How does this relate to hopf example \ref{fig:inferred-cycles}
-    \item Do we need a bistable example?
-\end{itemize}
-
-The accuracy of the cell trajectories is limited by cell segmentation and tracking algorithms. Initial investigations into this approach also suggested that trajectories need to be of sufficient temporal resolution and sampled from a wide variety of initial conditions. Such data is not widely available and ultimately we decided to focus on a method that could be used with a well-known workhorse in biomedical research: flow cytometry.
-
-
-
-
-% We can then extract important state-space structures, such as stable and unstable fixed points, their eigenvalues $\lambda$, from the field geometry $F(u)$ at different values of the control condition $p$, and hence identify possible bifurcations.
-
-
-% Data on steady states $u(t\rightarrow\infty)$ are more abundant and typically found in flow cytometry measurements. It is possible to infer the steady state manifold directly from such data (Figure \ref{fig:inferring-bifurcations} a,d$\rightarrow$c) but we would not be able to extract information on unstable fixed points or eigenvalues $\lambda$ of state-space structures. Since the criteria for bifurcations are not directly accessible, indirect measures (such as the population separation that can be seen in Figure \ref{fig:double-exclusive:flow-hysteresis}) must be used to extract bifurcations.
-
-
-% \subsection{Classification and Regression}
-% \begin{itemize}
-%     \item Logistic regression
-%     \item Nearest neighbour methods
-%     \item Mixture Models
-% \end{itemize}
-
-% \subsection{Dimensionality Reduction Methods}
-% \begin{itemize}
-%     \item UMAP and Tsne
-%     \item Sloppy parameters and identify-ability
-% \end{itemize}
-
-% \subsection{Clustering Methods}
+In this introduction we have provided the reader with an overview of bifurcation theory (Section \ref{section:phenotypes-with-bifurcations}) and elucidated its relevance in cell biology with examples in genetic switches and morphogenesis (Section \ref{section:applications-cell-biology}). We established the connection between phenotypes and bifurcations. The task of phenotyping becomes the task of extracting bifurcation information raw data. The background in genetic switches and morphogenesis as well as methods for extracting bifurcations from data will adequately prepare the reader for understanding the goals and methods of the publication in Chapter \ref{chapter:double-exclusive}.
