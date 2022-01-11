@@ -518,7 +518,7 @@ The first gene regulatory network that was discovered is the \emph{lac operon} i
 
 \begin{Figure}
 	\includegraphics[scale=0.9]{lac-operon}
-	\caption{Overview of the \emph{lac operon} }
+	\caption{Overview of the \emph{lac operon}}
 	\label{fig:lac-operon}
 \end{Figure}
 
@@ -581,9 +581,17 @@ In order to trigger the \emph{switch}-like behaviour we must engineer the dynami
 	\frac{dp}{dt} = -\beta p\mathrm{Gal} + f(p,\mathrm{Gal})
 	\label{eq:lactose-control}
 \end{align}
-yields three intersections with equation \eqref{eq:gal-steady}. In practice $f$ can come from additional chemical reactions introduced by genetic engineering. We shall see how this was done with non-hydrolysable synthetic analogues of the \emph{lac operon} in Chapter \ref{chapter:double-exclusive}. The main take-away from this analysis is that whenever biochemical reactions yield \emph{hill}-type functions with inflection points, they tend to manifest on steady-state manifolds. This means that with  there is a good chance there exist chemical reactions that use it for its switching behaviour. In fact when the transglycosylation of lactose into \emph{allolactose} is taken into account, bistable behaviour is observed \cite{}.
+yields three intersections with equation \eqref{eq:gal-steady}. In practice $f$ can come from additional chemical reactions introduced by genetic engineering. We shall see how this was done with non-hydrolysable synthetic analogues of the \emph{lac operon} in Chapter \ref{chapter:double-exclusive}. The main take-away from this analysis is that whenever biochemical reactions yield \emph{hill}-type functions with inflection points, they tend to manifest on steady-state manifolds. This means that with  there is a good chance there exist chemical reactions that use it for its switching behaviour. In fact when the transglycosylation of lactose into \emph{allolactose} is taken into account, bistable behaviour is observed \cite{Yildirim2004DynamicsOperon}.
 
-Now that we've understood how genetic switches can manifest within a single cell, we can begin asking questions about populations of cells. We will do this again in the \emph{mean field approximation}, where a large population of cells can be described as a continuum of spatially extended concentrations $u(x,t)$. Some of molecules can be exchanges between cells, which gives rise to non-zero \emph{diffusion coefficients}, while others are confined within cells. As we shall see in Chapter \ref{chapter:double-exclusive}, a bistable region gives rise to sharp boundaries in gene expression. Such boundaries, their velocity and stability have been studied in the context of \emph{travelling wave solutions} of the \emph{Kolmogorov-Petrovsky-Piskunov equation} \cite{}.
+Now that we've understood how genetic switches can manifest within a single cell, we can begin asking questions about populations of cells. We will do this again in the \emph{mean field approximation}, where a large population of cells can be described as a continuum of spatially extended concentrations $u(x,t)$. Some of molecules can be exchanges between cells, which gives rise to non-zero \emph{diffusion coefficients}, while others are confined within cells. As we shall see in Chapter \ref{chapter:double-exclusive}, a bistable region gives rise to sharp boundaries in gene expression. Such boundaries, their velocity and stability have been studied in the context of \emph{travelling wave solutions} of the \emph{Kolmogorov-Petrovsky-Piskunov equation} \cite{Fisher1937TheGenes}.
+
+\subsection{Wave Propagation \& Boundaries}
+\begin{Figure}
+	\includegraphics[width=0.8\linewidth]{reaction-diffusion-balance}
+	\caption{The competition between reactive forces $\rates$ pulling towards fixed points $\steady$ and diffusive fluxes $\frac{\partial u}{\partial x}$ pulling towards the spatial average $\langle u(x,t) \rangle$ dictates local dynamics and hence the velocity of domain boundary}
+	\label{fig:reaction-diffusion-balance}
+\end{Figure}
+Suppose we define a reaction-diffusion system where the reaction term has a finite number of stable fixed points $\steady$. This means that at any given spatial location $x$ the state $u$ will be attracted to one of these fixed points $\steady$. The competition between reactive forces $\rates$ pulling towards fixed points $\steady$ and diffusive fluxes $\frac{\partial u}{\partial x}$ pulling towards the spatial average $\langle u(x,t) \rangle$ dictates local dynamics and hence the velocity of domain boundary (Figure \ref{fig:reaction-diffusion-balance}). Moving boundaries result in one domain dominating over the other and can be described as a hetero-clinic orbit. Homoclinic orbits on the other hand characterise transient excitations that propagate through the medium \cite{Strogatz2000}. We will see these concepts applied to a colony of synthetic \emph{E. coli} in Chapter \ref{chapter:double-exclusive} to determine whether boundaries between two phenotypes are maintained or whether one phenotype switches into the other.
 
 \subsection{Self-organised Patterns \& Development}
 During the development of any organism a hierarchy of self-organisation takes place that leads to the breaking of symmetry from a spherical cluster of undifferentiated cells to the formation of organ segments and limbs. This process is known as morphogenesis. Figure \ref{fig:morph}, taken from \cite{}, shows an example in which \textit{Hox} gene expression patterns in the body segments of Drosophila can drastically affect its development.
