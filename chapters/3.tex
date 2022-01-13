@@ -1,57 +1,22 @@
 \chapter{Interpretation of Morphogen Gradients by a Bistable Circuit}
 \label{chapter:double-exclusive}
-\epigraph{\textit{memory of younger days}}{Ocarina of Time}
-\section{Preface}
+\begin{music}
+    \parindent10mm \instrumentnumber{1} \setstaffs1{1} 
+    \generalmeter{\meterfrac34} \generalsignature{0}
+    \startextract
+		\Notes\zq d\qu a \qu f\qu h\enotes\bar
+        \Notes\zq h\qu b\hl i\enotes
+    \zendextract
+\end{music}
+\epigraph{\textit{the clear water's surface reflects
+growth}}{Serenade of Water --- Ocarina of Time}\section{Preface}
+
+This chapter contains a published article which resulted from an interdisciplinary collaboration in synthetic cell biology with Station B at Microsoft Research Cambridge. The aim of Station B was to improve all phases of the \emph{design--build--test--learn} workflow (Figure \ref{fig:dbtl}). While specific questions in developmental biology were addressed in the publication, the research was conducted with the wider purpose of identifying bottlenecks in synthetic biology workflow and designing software and automation tools to alleviate those bottlenecks. In particular, the workflow should enable the optimisation of experimental conditions that would yield specific design goals within biomanufacturing pipelines. Applications could range from increasing the yield on \emph{leghemoglobin} through the genetic manipulation of synthetic yeast in the production of plant-based meats, to optimisation of transfection protocols for the production of cell-based therapies, through to engineering bacteria or algae for bio-compatible dye production and application.
+
 \subsection{Problem Statement \& Context}
 
-\begin{enumerate}
-    \item Keep focus on developmental biology
-    \item Revised supplement as this chapter
-\end{enumerate}
-
-\usetikzlibrary{patterns}
-\begin{Figure}
-\begin{tikzpicture}
-\def\H{3.5}
-\def\L{10.0}
-\def\l{1.0}
-\def\epsilon{0.5}
-\def\dx{0.25}
-\def\dy{0.25}
-
-%cell region
-\filldraw[fill=Red!50!white] (\l,\H) rectangle (\L-\l,\H+\epsilon) node[midway] {Cells};
-
-%agar region
-\filldraw[fill=Dandelion!10!white,draw=black] (0,0) rectangle (\L,\H) node[midway] {Agar};
-\fill[pattern=north east lines, pattern color=cyan] (0,0) rectangle (\l,\H) node[midway] {\begin{tabular}{c}Agar\\+\\$C_6$\end{tabular}};
-\fill[pattern=north east lines, pattern color=yellow!80!black] (\L-\l,0) rectangle (\L,\H) node[midway] {\begin{tabular}{c}Agar\\+\\$C_{12}$\end{tabular}};
-\draw[|<->|](0,-\dy) -- (\L,-\dy) node[midway, below] {$L$} ;
-\draw[|<->|](0,\dy) -- (\l,\dy) node[midway, above] {$l$} ;
-\draw[|<->|](\L-\l,\dy) -- (\L,\dy) node[midway, above] {$l$} ;
-%\draw[|<->|](\L+\dx,0) -- (\L+\dx,\H) node[midway, right] {$H$} ;
-%\draw[|<->|](\L+\dx,\H) -- (\L+\dx,\H+\epsilon) node[midway, right] {$H_\varepsilon$} ;
-
-%axis
-%\draw[->] (-\dx-\dy,-\dy)--(0.1*\L,-\dy) node[right] {$x$};
-%\draw[->] (-\dx,-\dx-\dy)--(-\dx,0.5*\H) node[above] {$y$};
-\end{tikzpicture}
-\caption{Geometry of opposing gradients experiment}
-\label{fig:experiment_geometry}
-\end{Figure}
-
-This section outlines how the Design---Learn pipeline may help achieve a specific
-aim in a typical collaboration between theory, computation and experiment.
-The aim of this project is to reconstitute and control minimal self-organisation
-mechanisms which are believed play crucial roles in developmental biology. To this
-end \textit{E. Coli} has been genetically engineered to produce orthogonal responses
-to two different input signals --- henceforth this organism will be referred to as the
-\textit{double exclusive reporter} circuit \cite{Grant2016}. The colony of reporters
-serve as a reduced model for a multi-cellular organism during embryonic stages of
-development. While patterns with sharp boundaries have successfully been realised,
-producing Turing instabilities remains challenging as the system needs to be such
-that patterns develop before the colony reaches stationary phase.
-The role of theory and computation in this project is to help identify the
+The aim of this project is to reconstitute and control minimal self-organisation mechanisms which are believed play crucial roles in developmental biology. To this
+end \textit{E. Coli} has been genetically engineered to produce orthogonal responses to two different input signals --- henceforth this organism will be referred to as the \textit{double exclusive reporter} circuit \cite{Grant2016}. The colony of reporters serve as a reduced model for a multi-cellular organism during embryonic stages of development. While patterns with sharp boundaries have successfully been realised, producing Turing instabilities remains challenging as the system needs to be such that patterns develop before the colony reaches stationary phase. The role of theory and computation in this project is to help identify the
 parameter regimes that produce controllable and self-organised patterns.
 
 \subsection{Contributions}
@@ -99,6 +64,6 @@ parameter regimes that produce controllable and self-organised patterns.
 
 \section{Afterword}
 
-The decision to focus on single cell trajectories and flow cytometry came from the limitations of using microplate data in Chapter \ref{chapter:double-exclusive}. The model parameters $\theta$ were estimated using a hierarchical monte-carlo approach and time-course fluorescence microplate measurements (details of which can be found in Appendix \ref{appendix:double-exclusive:inference}). The time-courses include information about dynamical transients and colony growth in liquid culture. The desired cusp bifurcation, however, lives in state-space rather than the time-domain. The disconnect between the domain that the data lives in and the domain of the design goals poses the risk of over-fitting the model on undesired information that exists in the data domain. 
+The decision to focus on single cell trajectories and flow cytometry in this study came from the limitations of using microplate data: it is not possible to detect multi-modality in fluorescence distributions from plates that could indicate a population of mixed phenotypes. In order to restore phenotype information, model parameters $\theta$ were estimated using a hierarchical monte-carlo approach and time-course fluorescence microplate measurements (details of which can be found in Appendix \ref{appendix:double-exclusive:inference}). Unfortunately time-courses include information about dynamical transients and colony growth in liquid culture. The desired cusp bifurcation, however, lives in state-space rather than the time-domain. It is not possible to observe the cusp bifurcation in microplate data due to the averaging of signals originating from heterogeneous cell populations. Instead, the cusp bifurcation can be observed in flow cytometry measurements of colonies in exponential phase (Supplementary Figure \ref{fig:double-exclusive:flow-hysteresis}) and microfluidic fluorescence microscopy data (Figure \ref{fig:double-exclusive:bistability}c) where computations on single-cell trajectories reveal the hysteresis loop which must necessarily accompany the cusp. The disconnect between the domain that the data lives in and the domain of the design goals poses the risk of over-fitting the model on undesired information that exists in the data domain.
 
-It is not possible to observe the cusp bifurcation in microplate data, due to the averaging of signals originating from heterogeneous cell populations. Instead, the cusp bifurcation can be observed in flow cytometry measurements of colonies in exponential phase (Supplementary Figure \ref{fig:double-exclusive:flow-hysteresis}) and microfluidic fluorescence microscopy data (Figure \ref{fig:double-exclusive:bistability}c) where computations on single-cell trajectories reveal the hysteresis loop which must necessarily accompany the cusp. 
+This motivated investigating \emph{inverse bifurcation analysis} methods that would use the cusp and limit points directly. Searching for bifurcating parameter regimes within a model is a difficult task. Whilst bespoke methods taking advantage of model structure and sampling-type methods existed, there was no end-to-end differentiable method that took advantage of bifurcation theory directly. We filled the gap in literature with the publication in Chapter \ref{chapter:inference}, and elucidated the importance of fitting the qualitative before any attempt at fitting the quantitative features within datasets.
