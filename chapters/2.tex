@@ -400,7 +400,7 @@ We proceed with an element-wise change of variables $u=2\cos k$ and recognise th
   P(\lambda)&=\frac{1}{Z}
   \int_{\Omega'}\!
   \frac{\delta(\Lambda_L+\sum_{i}u_i)}
-  {\sqrt{\prod_{i}(1-u_i^2/4) }}
+  {\sqrt{\prod_{i=1}^L(1-u_i^2/4) }}
   \,\mathrm{d}u
   \qquad
   \begin{matrix}
@@ -410,17 +410,24 @@ We proceed with an element-wise change of variables $u=2\cos k$ and recognise th
   &=\frac{1}{2\pi Z}
   \int_{-\infty}^{\infty}\int_{\Omega'}\!
   \frac{\mathbb{e}^{\Lambda_L\mathbb{i}k}\exp[\sum_{i}u_i\mathbb{i}k]}
-  {\sqrt{\prod_{i}(1-u_i^2/4) }}
+  {\sqrt{\prod_{i=1}^L(1-u_i^2/4) }}
   \,\mathrm{d}u\mathrm{d}k\\
   &=\frac{1}{2\pi Z}
   \int_{-\infty}^{\infty}\mathbb{e}^{\Lambda_L\mathbb{i}k}
-  \prod_{i}\int_{-2}^{2}\!
+  \prod_{i=1}^L\int_{-2}^{2}\!
   \frac{\mathbb{e}^{u_i\mathbb{i}k}}
   {\sqrt{1-u_i^2/4}}
   \,\mathrm{d}u_i\mathrm{d}k
 \end{align*}
-The fourier representation of the delta function allowed the
-factorisation of the integral. We recognise a repeated Bessel integral and replace it with the Bessel function of the first kind $J_n(k)$, leaving only a fourier transform which we define $ \mathcal{F} : f\rightarrow \frac{1}{\sqrt{2\pi}} \int_{-\infty}^{\infty}f(k)e^{\mathbb{i}\Lambda k}\mathrm{d}k$. To clean the formula up even further we may use the convolution theorem to deal with the powers of $L$, leaving only the fourier transform of the Bessel function $J_0(k)$, which is the arcsine distribution $\alpha(\lambda)$. The eigenvalue density of a kronecker sum of matrices is the convolution of the densities of those matrices.
+The Fourier representation of the delta function allowed the
+factorisation of the integral. We recognise a repeated Bessel integral and replace it with the Bessel function of the first kind $J_n(k)$, leaving only a Fourier transform which we define as $\mathcal{F} : f\rightarrow \frac{1}{\sqrt{2\pi}} \int_{-\infty}^{\infty}f(k)e^{\mathbb{i}\Lambda k}\mathrm{d}k$
+where
+\begin{equation*}
+    f(k) = \frac{1}{\sqrt{2\pi}Z}\prod_{i=1}^L\int_{-2}^{2}\!
+  \frac{\mathbb{e}^{u_i\mathbb{i}k}}
+  {\sqrt{1-u_i^2/4}} \mathrm{d}u_i
+\end{equation*}
+To clean the formula up even further we may use the convolution theorem to deal with the powers of $L$, leaving only the Fourier transform of the Bessel function $J_0(k)$, which is the arcsine distribution $\alpha(\lambda)$. The eigenvalue density of a Kronecker sum of matrices is the convolution of the densities of those matrices.
 
 \begin{align}
   P(\lambda)=\underbrace{
@@ -435,28 +442,29 @@ factorisation of the integral. We recognise a repeated Bessel integral and repla
       \end{cases}
 	\label{eq:laplacian-distribution}
 \end{align}
+
 \begin{Figure}
 \includegraphics[width=0.8\linewidth]{laplacian-spectrum}
-\caption{Eigenvalue distributions $P(\lambda)$ of the $L$-dimensional laplacian}
+\caption{Eigenvalue distributions $P(\lambda)$ of the $L$-dimensional Laplacian}
 \label{fig:dos}
 \end{Figure}
-The one dimensional density has two Van Hove singularities at $\lambda=-4,0$ given by the arcsine law $\alpha(\lambda)$, whereas the two dimensional case has one at $\lambda=-4$ given by the complete elliptic integral of the first kind $K(m)$. Figure~\ref{fig:dos} reveals that in higher dimensions singularities do not occur; instead there appear to be discontinuities in the higher order derivatives. The density smooths out as repeated convolutions bring it to a normal distribution; this is another way to state the Central Limit Theorem. In the context of diffusion, the laplacian is scaled by the diagonal diffusion matrix. To take this scaling into account, components $D_i$ are introduced in the arcsine laws
+The one dimensional density has two Van Hove singularities at $\lambda=-4,0$ given by the arcsine law $\alpha(\lambda)$, whereas the two dimensional case has one at $\lambda=-4$ given by the complete elliptic integral of the first kind $K(m)$. Figure~\ref{fig:dos} reveals that in higher dimensions singularities do not occur; instead there appear to be discontinuities in the higher order derivatives. The density smooths out as repeated convolutions bring it to a normal distribution; this is another way to state the Central Limit Theorem. In the context of diffusion, the Laplacian is scaled by the diagonal diffusion matrix. To take this scaling into account, components $D_i$ are introduced in the arcsine laws
 \begin{align}
 	\alpha(\lambda) \rightarrow \frac{1}{D_i}\alpha(\lambda/D_i)
 \end{align}
-The eigenvalue distributions determine the eigenbasis evolution  \eqref{eq:eigenbasis-vector-evolution} which reveals that the second order derivative leads to exponential relaxation of all basis vectors, except for the subset with vanishing eigenvalue $\lambda=0$. The corresponding zero eigenvectors $v_0$ are the fourier components of the steady state distribution, are the only components that remain as $t\rightarrow\infty$. The diffusive components $D_i$ determine the timescale of relaxation in each dimension.
+The eigenvalue distributions determine the eigenbasis evolution  \eqref{eq:eigenbasis-vector-evolution} which reveals that the second order derivative leads to exponential relaxation of all basis vectors, except for the subset with vanishing eigenvalue $\lambda=0$. The corresponding zero eigenvectors $v_0$ are the Fourier components of the steady state distribution, and are the only components that remain as $t\rightarrow\infty$. The diffusive components $D_i$ determine the timescale of relaxation in each dimension.
 
 \subsubsection{Turing Bifurcations}
-The partial derivatives in the diffusion equation \eqref{eq:reaction-diffusion} can be converted into algebraic expression with the help of fourier transforms. Suppose we define the spatial-temporal fourier transform as
+The partial derivatives in the diffusion equation \eqref{eq:reaction-diffusion} can be converted into an algebraic expression with the help of Fourier transforms. Suppose we define the spatial-temporal Fourier transform as
 \begin{align}
 	\mathcal{F} : f\rightarrow \frac{1}{\sqrt{2\pi}^L} \int_{-\infty}^\infty\int_{\Reals^L} f(x,t)e^{\mathbb{i} k\cdot x-\omega t}\mathrm{d}x
 	\mathrm{d}t\where x,k\in\Reals^L
 \end{align}
-where $\omega$ is an unknown dispersion relation that determines which modes $k$ are sustained or exponentially decay. The corresponding reaction diffusion equation becomes
+where $\omega$ is an unknown dispersion relation that determines which modes $k$ are sustained or exponentially decay. The corresponding reaction-diffusion equation becomes
 \begin{equation}
 	(\omega\mathbb{I}+ |k|^2  D)\mathcal{F}[u] = \mathcal{F}[\rates]
 \end{equation}
-where we have a matrix vector multiplication on the left-hand side and the fourier transform of a non-linear field on the right. Linearising the field $\rates$ around a fixed point $\steady$ yields an eigenvalue equation
+where we have a matrix vector multiplication on the left-hand side and the Fourier transform of a non-linear field on the right. Linearising the field $\rates$ around a fixed point $\steady$ yields an eigenvalue equation
 \begin{equation}
 	\left(\left.\jacobian\right|_{\steady} - |k|^2D - \omega\mathbb{I} \right)\mathcal{F}[u] = 0
 \end{equation}
@@ -465,32 +473,33 @@ identifying $\omega$ and the eigenvalues to corresponding eigenvectors $\mathcal
 	\left|\,\,\left.\jacobian\right|_{\steady} - |k|^2D - \omega\mathbb{I} \right| = 0
 	\label{eq:dispersion-relation}
 \end{equation}
+
 \begin{Figure}
 \includegraphics[width=0.5\linewidth]{turing-bifurcation}
-\caption{A \emph{Turing bifurcation} occurs at condition $p=p^\star$ when the the dispersion relation crosses the imaginary axis $\Real[\omega(k)]>0$. A region of unstable modes pushes the dynamics away from homogenous state $\steady$ giving rise to patters}
+\caption{A \emph{Turing bifurcation} occurs at condition $p=p^\star$ when the the dispersion relation crosses the imaginary axis $\Real[\omega(k)]>0$. A region of unstable modes pushes the dynamics away from homogeneous state $\steady$, giving rise to patterns.}
 \label{fig:turing-bifurcation}
 \end{Figure}
 We can solve for the dispersion $\omega(k)$
-which yields the conditions for necessary for diffusion-driven instability \cite{Strogatz2000}. Figure \ref{fig:turing-bifurcation} illustrates a typical dispersion relation that indicates a \emph{Turing} bifurcation at $p=p^\star$. The unstable modes $k$ where $\Real[\omega(k)]>0$ prevent the system from reaching a homogenous steady state $\steady$ and result in patterns. What may seem surprising is that the homogenous steady state $\steady$ is stable in the absence of diffusion $k=0$.
+which yields the conditions necessary for diffusion-driven instability \cite{Strogatz2000}. Figure \ref{fig:turing-bifurcation} illustrates a typical dispersion relation that indicates a \emph{Turing} bifurcation at $p=p^\star$. The unstable modes $k$ where $\Real[\omega(k)]>0$ prevent the system from reaching a homogeneous steady state $\steady$, and instead leads to pattern formation. What may seem surprising is that the homogeneous steady state $\steady$ is stable in the absence of diffusion $k=0$.
 
-Whether its through eigenvalue distributions \eqref{eq:laplacian-distribution} or through dispersion relations \eqref{eq:dispersion-relation} it is possible to get a handle on pattern formation by looking at when eigenvalues cross the imaginary axis. Progress has been made toward pattern analysis beyond linear stability \cite{Halatek2018}. In this setting we consider local equilibria in state space, the dynamics of which are determined by reactive and diffusive fluxes.
+Whether its through eigenvalue distributions \eqref{eq:laplacian-distribution} or through dispersion relations \eqref{eq:dispersion-relation}, it is possible to analyse pattern formation by looking at when eigenvalues cross the imaginary axis. Progress has been made toward pattern analysis beyond linear stability, particularly in mass-conserving systems \cite{Halatek2018}. In this setting, we consider local equilibria in state space, the dynamics of which are determined by reactive and diffusive fluxes.
 
 \subsection{Basis Functions for State Space}
 \label{section:basis-function-methods}
 
-Suppose that we want to specify a differential equation model \eqref{eq:differential-equations} with high-level constraints without caring too much about the specific mathematical forms or derivations that lead to the model. In this setting the model will not have interpretable parameters $\theta$ to manipulate, and hence we will denote such models without a subscript $F$. This may be useful in settings where we know what qualitative behaviours the model of our phenotype has, but do not care about microscopic details. In this section we outline a novel basis function method for specifying state space structures, inspired by the mathematics of electromagnetism. These basis functions were used to generate vector fields for figures throughout the thesis.
+Suppose that we want to specify a differential equation model \eqref{eq:differential-equations} with high-level constraints without caring too much about the specific mathematical forms or derivations that lead to the model. In this setting the model will not have interpretable parameters $\theta$ to manipulate, and hence we will denote such models without a subscript $F$. This may be useful in settings where we know what qualitative behaviours the model of our phenotype has, but either do not know or maybe not care about the microscopic details. In this section we outline a novel basis function method for specifying state space structures, inspired by the mathematics of electromagnetism. These basis functions were used to generate vector fields for figures throughout the thesis.
 
 Suppose we would like to define a differential equation model whose trajectories approach a given limit set $\partial\Omega$, which are typically either limit cycles or fixed points. We can define a norm from any point $u$ to the set
 \begin{equation}
 	|u-\partial\Omega| := \min_{u'\in\partial\Omega}|u-u'| 
 	\label{eq:distance-function}
 \end{equation}
-which can be used as a scalar potential that generates a vector field $F(u)$ that drives the dynamics towards $\partial\Omega$. Additionally we would like the field to vanish on limit set $F(u\in\partial\Omega)=0$ as well as far away from the limit set
+which can be used as a scalar potential that generates a vector field $F(u)$ that drives the dynamics towards $\partial\Omega$. Additionally we would like the field to vanish on the limit set $F(u\in\partial\Omega)=0$ as well as far away from the limit set
 \begin{equation}
 	F(u) = -|u-\partial\Omega|\mathbb{e}^{-|u-\partial\Omega|}\frac{\partial}{\partial u}|u-\partial\Omega|
 	\label{eq:scalar-potential}
 \end{equation}
-If the limit set $\partial\Omega$ is a connected surface we can additionally specify an angular momentum field $\omega(u)$ that gives rise dynamics tangent to the limit set, giving rise to limit cycles. We want the field to be tangent to the limit set $\left.\frac{\partial}{\partial u}|u-\partial\Omega|\cdot F(u)\right|_{u\in\partial\Omega}=0$ and still vanish far away from the set. The field can be written in terms of tangential and normal field components to the limit set
+If the limit set $\partial\Omega$ is a connected surface we can additionally specify an angular momentum field $\omega(u)$ that gives rise to dynamics tangent to the limit set, which leads to limit cycles. We want the field to be tangent to the limit set $\left.\frac{\partial}{\partial u}|u-\partial\Omega|\cdot F(u)\right|_{u\in\partial\Omega}=0$ and still vanish far away from the set. The field can be written in terms of tangential and normal field components to the limit set
 \begin{equation}
 	F(u) = \mathbb{e}^{-|u-\partial\Omega|}\left(\omega(u)\times\frac{\partial}{\partial u}-|u-\partial\Omega|\frac{\partial}{\partial u}\right)|u-\partial\Omega|
 	\label{eq:basis-functions}
@@ -518,8 +527,8 @@ In order to address these questions the paradigm of the \emph{genetic switch} em
 The first gene regulatory network that was discovered is the \emph{lac operon} in the bacterium \emph{Escherichia coli} \cite{Jacob1961GeneticProteins}. In this network, enzymes that metabolise lactose are expressed only in the presence of lactose and absence of glucose. This regulation evolved because metabolising lactose is energetically more expensive and having the \emph{lac} genes always turned \emph{on} would be a waste of resources. An outline of how this network works is shown with in Figure \ref{fig:lac-operon}. The main proteins involved in this mechanism are the \emph{Lac Repressor} and $\beta$-\emph{galactosidase} which are transcribed and translated from the \emph{LacI} and \emph{LacZ} genes respectively. The repressor binds to the operator which sits between the promoter and coding region \emph{LacZ}. When the transcription machinery binds to promoter region, it is blocked from transcribing \emph{LacZ}. When lactose is present, binding to the repressor causes a conformational change which leads to unbinding of the complex from the DNA. Thus in the presence of lactose, \emph{LacZ} is turned \emph{on} and $\beta$-\emph{galactosidase} is produced by the cell. In this setting lactose is referred to as the \emph{effector}. We note that the effector of \emph{LacZ} is actually \emph{allolactose} which arises from the transglycosylation of lactose by $\beta$-\emph{galactosidase} but for the purposes of introducing the genetic switch we need not focus in this detail. $\beta$-\emph{galactosidase} hydrolyses lactose, breaking it down into glucose and galactose which decreases the overall concentration of lactose available to bind to the repressor. Eventually all the lactose is is broken down and the repressors turn \emph{off} the \emph{LacZ} gene.
 
 \begin{Figure}
-	\includegraphics[scale=0.9]{lac-operon}
-	\caption{Overview of the \emph{lac operon}}
+	\includegraphics{lac-operon}
+	\caption{Overview of the \emph{lac operon}.}
 	\label{fig:lac-operon}
 \end{Figure}
 
@@ -587,26 +596,29 @@ yields three intersections with equation \eqref{eq:gal-steady}. In practice $f$ 
 Now that we've understood how genetic switches can manifest within a single cell, we can begin asking questions about populations of cells. We will do this again in the \emph{mean field approximation}, where a large population of cells can be described as a continuum of spatially extended concentrations $u(x,t)$. Some of molecules can be exchanges between cells, which gives rise to non-zero \emph{diffusion coefficients}, while others are confined within cells. As we shall see in Chapter \ref{chapter:double-exclusive}, a bistable region gives rise to sharp boundaries in gene expression. Such boundaries, their velocity and stability have been studied in the context of \emph{travelling wave solutions} of the \emph{Kolmogorov-Petrovsky-Piskunov equation} \cite{Fisher1937TheGenes}.
 
 \subsection{Wave Propagation \& Boundaries}
-\begin{Figure}
-	\includegraphics[width=0.8\linewidth]{reaction-diffusion-balance}
-	\caption{The competition between reactive forces $\rates$ pulling towards fixed points $\steady$ and diffusive fluxes $\frac{\partial u}{\partial x}$ pulling towards the spatial average $\langle u(x,t) \rangle$ dictates local dynamics and hence the velocity of domain boundary}
-	\label{fig:reaction-diffusion-balance}
-\end{Figure}
+
 Suppose we define a reaction-diffusion system where the reaction term has a finite number of stable fixed points $\steady$. This means that at any given spatial location $x$ the state $u$ will be attracted to one of these fixed points $\steady$. The competition between reactive forces $\rates$ pulling towards fixed points $\steady$ and diffusive fluxes $\frac{\partial u}{\partial x}$ pulling towards the spatial average $\langle u(x,t) \rangle$ dictates local dynamics and hence the velocity of domain boundary (Figure \ref{fig:reaction-diffusion-balance}). Moving boundaries result in one domain dominating over the other and can be described as a hetero-clinic orbit. Homoclinic orbits on the other hand characterise transient excitations that propagate through the medium \cite{Strogatz2000}. We will see these concepts applied to a colony of synthetic \emph{E. coli} in Chapter \ref{chapter:double-exclusive} to determine whether boundaries between two phenotypes are maintained or whether one phenotype switches into the other.
 
-\subsection{Self-organised Patterns \& Development}
 \begin{Figure}
-\includegraphics[width=90mm]{figures/morph1.png}\\
-\includegraphics[width=90mm]{figures/morph2.png}
-\caption{Top: \textit{Hox} gene expression patterns in body segments of drosophila Bottom: Mutation where legs grow in-place of antenna \cite{Several2022HoxGene}}
+	\includegraphics[width=0.9\linewidth]{reaction-diffusion-balance}
+	\caption{The competition between reactive forces $\rates$ pulling towards fixed points $\steady$ and diffusive fluxes $\frac{\partial u}{\partial x}$ pulling towards the spatial average $\langle u(x,t) \rangle$ dictates local dynamics and hence the velocity of the domain boundary.}
+	\label{fig:reaction-diffusion-balance}
+\end{Figure}
+
+\subsection{Self-organised Patterns \& Development}
+During the development of any organism a hierarchy of self-organisation takes place that leads to the breaking of symmetry from a spherical cluster of undifferentiated cells to the formation of organ segments and limbs. This process is known as morphogenesis. Figure \ref{fig:morph} shows an example in which \textit{Hox} gene expression patterns in the body segments of Drosophila can drastically affect its development.
+\begin{Figure}
+\includegraphics[width=100mm]{figures/morph1.png}\\
+\includegraphics[width=100mm]{figures/morph2.png}
+\caption{Top: \textit{Hox} gene expression patterns in body segments of \emph{Drosophila}. Bottom: Mutation where legs grow in-place of antenna. Figure reproduced from \cite{Several2022HoxGene}.}
 \label{fig:morph}
 \end{Figure}
-During the development of any organism a hierarchy of self-organisation takes place that leads to the breaking of symmetry from a spherical cluster of undifferentiated cells to the formation of organ segments and limbs. This process is known as morphogenesis. Figure \ref{fig:morph}, taken from \cite{Several2022HoxGene}, shows an example in which \textit{Hox} gene expression patterns in the body segments of Drosophila can drastically affect its development.
-\subsubsection{Morphogen-driven Patterns}
+
+\subsubsection{Morphogen-Driven Patterns}
 One of the central questions in developmental biology is how positional information is sensed by a population of cells and how sharp gene expression boundaries between populations are maintained for robust organ and body segment development. The French Flag model \cite{Wolpert1969PositionalDifferentiation.} proposes that cells have a threshold response to external signalling molecules -- henceforth referred to as morphogens -- which pre-pattern the organism from anterior to posterior and laterally. Some examples of morphogens include Wingless, Decapentaplegic and Sonic Hedgehog. Figure \ref{fig:gap} show the \textit{Gap} expression patterns that partition the Drosophila embryo into segments which are later differentiated by \textit{Hox} genes.
 \begin{Figure}
-\includegraphics[width=90mm]{figures/gap.jpg}
-\caption{Expression patterns of pair-rule \textit{Gap} genes in Drosophila embryo \cite{Hejnol2017LarvalLater}}
+\includegraphics[width=100mm]{figures/gap.jpg}
+\caption{Expression patterns of pair-rule \textit{Gap} genes in the \emph{Drosophila} embryo. Figure reproduced from \cite{Hejnol2017LarvalLater}.}
 \label{fig:gap}
 \end{Figure}
 This gene network can be modelled with reaction-diffusion equations, where the fixed points $\steady$ correspond to the concentrations of relevant biochemicals required to for tissue differentiation. Morphogens would have non-zero diffusion coefficients $D$ as they would be responsible for pre-patterning across the organism.
@@ -615,12 +627,12 @@ This gene network can be modelled with reaction-diffusion equations, where the f
 How are morphogen gradients set up and maintained? How can they be robust against changes in size and geometry? A canonical example of self-organisation in bacteria is the quorum sensing system \cite{Miller2002QuorumBacteria}. Each cell secretes a signalling molecule resulting in the total concentration being proportional to the population density. This signal induces adaptive responses in metabolic and mobility in the whole colony. A long standing mathematical hypothesis that Turing patterns underlie self-organisation in cell populations. Recent literature suggests both morphogen-driven and Turing patterning mechanisms play a role in development \cite{Green2015PositionalCombine}
 
 \begin{Figure}
-\includegraphics[width=70mm]{figures/turing.png}
-\caption{Pigment patterns hypothesised to be generated by Turing mechanism}
+\includegraphics[width=100mm]{figures/turing.png}
+\caption{Pigment patterns hypothesised to be generated by Turing mechanism. Figure reproduced from \cite{Kondo2010Reaction-DiffusionFormation}.}
 \label{fig:turing}
 \end{Figure}
 
-Unpacking the necessary and sufficient conditions for cell and tissue differentiation in the presence of the complexity of the whole organism is difficult. Is a \emph{Turing} mechanism required? Or is morphogen patterning sufficient? In Chapter \ref{chapter:double-exclusive} we investigate developmental questions in a synthetic bacterial colony designed to mimic how populations of cells would differentiate into various tissues.
+Unpacking the necessary and sufficient conditions for cell and tissue differentiation in the presence of the complexity of the whole organism is difficult. Is a \emph{Turing} mechanism required? Or is morphogen patterning sufficient? In Chapter \ref{chapter:double-exclusive}, we investigate questions about developmental patterning in a synthetic bacterial colony designed to mimic how populations of cells would differentiate into various tissues.
 
 \clearpage
 \section{Phenotype Inference with Machine Learning}
@@ -636,7 +648,7 @@ When a model $\rates(u,p)$ is absent it becomes difficult to know which observat
 
 Bifurcations along conditions $p$ can be extracted from data via two possible routes as depicted in Figure \ref{fig:inferring-bifurcations}: via a \emph{universal function approximator} $F(u)$ which enables the location of all fixed points, including unstable ones, or via direct inference from steady state data $u(t\rightarrow\infty)$. At best we could have state trajectory data $u(t)$ like single cell trajectories extracted via segmentation and tracking in fluorescence microscopy movies (for example the data acquired using the CellASIC ONIX Microfluidic Platform in Figure \ref{fig:double-exclusive:bistability}c). The majority of biomedical data is sparsely sampled with respect to time (for example the flow cytometry measurements in Figure \ref{fig:double-exclusive:flow-hysteresis} which were only collected at experiment end-points) and in such settings expecting to capture dynamical transients which would reveal the locations of unstable fixed points would be unreasonable. If we assume that the data was collected at a time where the organism is in homeostasis, then we can infer the steady states $u(t\rightarrow\infty)$ and any possible bifurcations directly from statistical measures of the data without needing a \emph{universal function approximator} $F(u)$. The emergent picture suggests a model of the state space $F(u)$ is desirable because it fully characterises the phenotype, but requires data or prior knowledge about dynamical transients of the organism. Fortunately, as we will see, statistics on the organism in homeostasis reveal stable steady states and static bifurcations.
 
-\clearpage
+%\clearpage
 \subsection{Phenotypes from Statistics in Homeostasis}
 \label{section:steady-state-inference}
 Suppose we collected a high dimensional single cell omics dataset $\dataset$ from an organism of genotype $\theta$ in various conditions $p$. We would like to know how many cell phenotypes there are in our dataset and how they may change in response to changes in environment $p$ or genetic manipulation $\theta$. Formally the data are a set of same size $|\dataset|$ as the number of cells, with an $N$-dimensional sample $U$ per cell. In practice there will be missing entries as not each cell will yield the same number or quality of observations. We assume that each sample is generated by a state distribution \eqref{eq:steady-state-distribution}. Not all cells share the same $\theta$ or even $p$ and this could give rise to an unknown number of clusters around a multitude of fixed points $\steady$ that could also depend on $\theta$ and $p$. We can write
@@ -696,4 +708,4 @@ The form of the constraint or data $y$ and the group symmetries encoded in $ f_\
 
 In applications where the mechanism is partially known it is possible to combine the principled microscopic derivations of reaction rate model $\rates$ together with some \emph{universal function approximator} $F$. This is known as \emph{grey-box modelling} \cite{Meeds2019EfficientSystems}. In this approach, mechanistic models (Section \ref{section:phenotypes-with-bifurcations}) and data-driven models (Section \ref{section:phenotype-inference}) can be used together to iteratively refine knowledge (Figure \ref{fig:model-reduction}). The scientific machine learning community (SciML) in Julia makes use and develops tools for these mixed approaches, which is one of the reasons much of the research during this thesis was done with Julia.
 
-In this introduction we have provided the reader with an overview of bifurcation theory (Section \ref{section:phenotypes-with-bifurcations}) and elucidated its relevance in cell biology with examples in genetic switches and morphogenesis (Section \ref{section:applications-cell-biology}). We established the connection between phenotypes and bifurcations. The task of phenotyping becomes the task of extracting bifurcation information raw data. The background in genetic switches and morphogenesis as well as methods for extracting bifurcations from data will adequately prepare the reader for understanding the goals and methods of the publication in Chapter \ref{chapter:double-exclusive}.
+In this chapter we have provided the reader with an overview of bifurcation theory (Section \ref{section:phenotypes-with-bifurcations}) and elucidated its relevance in cell biology with examples in genetic switches and morphogenesis (Section \ref{section:applications-cell-biology}). Along the way, we established connections between phenotypes and bifurcations. We propose that the task of phenotyping is analogous to the task of extracting bifurcation information from raw data, and developed such a perspective in this section (\ref{section:phenotype-inference}). It is hoped that the background material on genetic switches and morphogenesis as well as methods for extracting bifurcations from data will adequately prepare the reader for understanding the goals and methods of the publication in Chapter \ref{chapter:double-exclusive}.
