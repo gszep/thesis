@@ -29,7 +29,7 @@ Before we get carried away and think that with the right tooling we could geneti
 \subsection{An Alternative Approach}
 \label{section:field-inference}
 
-In this early days of this thesis, we investigated whether it was possible to transform the time-domain data into state-space. This approach is discussed in this section and can in principle be used with microfluidic fluorescence microscopy data in a \emph{design--learn} workflow (Figure \ref{fig:experimental-design}).
+In this early days of this thesis, we investigated whether it was possible to transform single cell trajectory data in the time-domain into state-space. This approach is discussed in this section and can in principle be used with microfluidic fluorescence microscopy data in a \emph{design--learn} workflow (Figure \ref{fig:experimental-design}).
 
 Consider we are given $K$ cell trajectories $\mathcal{D}_1$, $\mathcal{D}_2$ ... $\mathcal{D}_K$, each containing $N$ noisy observations of the state of the cell. Let the cell state be represented by state vector $u(t)\in\Reals^N$ which is hypothesized to obey a set of ordinary differential equations of the form \eqref{eq:differential-equations}. Instead of integrating the equations \eqref{eq:differential-equations} we would find an estimate for the derivative of the trajectories $\hat{f}$.
 
@@ -58,16 +58,16 @@ In our setting we would like to match the geometry of the field but not its magn
 \end{equation}
 \noindent where the cost is minimal when the data derivative $\hat{f}$ and the parametrised model $\rates$ point in the same direction and maximal when they point in opposing directions.
 
+The accuracy of the cell trajectories is limited by cell segmentation and tracking algorithms. Initial investigations into this approach also suggested that trajectories need to be of sufficient temporal resolution and sampled from a wide variety of initial conditions. Such data is not widely available and ultimately we decided to focus on a method that could be used with a well-known workhorse in biomedical research: flow cytometry.
+
+Although we are getting close to focusing on qualitative features of a model, this objective function \eqref{eq:geometric-cost} is still sensitive to the locations and shapes of fixed point and limit cycles. What if we cared about even higher-level features such as the number of fixed points? Or perhaps whether a system oscillates or not? This is where the language of bifurcation theory described in Chapter \ref{chapter:background} is optimally suited for this task.
+
 \begin{Figure}
     \includegraphics[width=125mm]{figures/cycle-2.png}
     \includegraphics[width=125mm]{figures/cycle-1.png}
     \caption{Gaussian process regressors estimating derivative of the trajectories $\hat{f}$ from example trajectory datasets $\mathcal{D}_1$ ... $\mathcal{D}_K$ with varying signal to noise ratios. Interpolation error $E$ is shown as a heatmap; extrapolation fails}
     \label{fig:inferred-cycles}
 \end{Figure}
-
-The accuracy of the cell trajectories is limited by cell segmentation and tracking algorithms. Initial investigations into this approach also suggested that trajectories need to be of sufficient temporal resolution and sampled from a wide variety of initial conditions. Such data is not widely available and ultimately we decided to focus on a method that could be used with a well-known workhorse in biomedical research: flow cytometry.
-
-Although we are getting close to focusing on qualitative features of a model, this objective function \eqref{eq:geometric-cost} is still sensitive to the locations and shapes of fixed point and limit cycles. What if we cared about even higher-level features such as the number of fixed points? Or perhaps whether a system oscillates or not? This is where the language of bifurcation theory described in Chapter \ref{chapter:background} is optimally suited for this task.
 
 \includepdf[pages=1-11, offset=75 -95, scale=0.85, frame,
         clip,trim=31mm 21mm 31mm 21mm,
@@ -93,8 +93,16 @@ Although we are getting close to focusing on qualitative features of a model, th
 }]{publications/bifurcation-inference.pdf}
 
 \section{Afterword}
-\begin{itemize}
-    \item extension to cusp bifurcation
-    \item extension to spatial system and turing
-    \item designing limit cycles
-\end{itemize}
+The publication in this chapter presents a method illustrating how to leverage bifurcation theory in gradient-based optimisation to obtain models that match qualitative observations. These qualitative observations are cast as constraints on structures in state space, which we have established also play a role in defining an organism phenotype (Section \ref{section:phenotypes-with-bifurcations}). In the supplementary material (Appendix \ref{appendix:more-complex-model}) we apply this method to infer parameters of the double exclusive reporter  (Chapter \ref{chapter:double-exclusive}) against a specific width for the bistable region along one input signal, keeping the other one fixed. Surprisingly, a parameter regime which gives rise to a phenotype with damped oscillatory behaviour, previously now known during the collaboration, was discovered.
+
+Extending the method to co-dimension two bifurcations would enable parameter inference against the whole cusp in the space of two varying inputs. While sampling the posteriors of the monte-carlo parameter estimations (Figure \ref{fig:double-exclusive:degradation-models}) gave us a rough indication of how robust model predictions were, the differentiability of our method would enable a more precise quantification of robustness using local sensitivity analysis.
+
+Gradient-based optimisation is local and hence will always suffer from initialisation-specific convergence behaviour. During the development of \texttt{BifurcationInference.jl} a lot of effort was dedicated to ensuring that initial guesses would converge, designing hyperparameter updates between iterations and pre-conditioning of Jacobians.
+
+We would like navigate equivalent models that match the same qualitative behaviour and the explore space of behaviours for a single model as part of a \emph{design--learn} workflow (Figure \ref{fig:experimental-design}--\ref{fig:non-parametric}). In order to do this, optimal parameter basins need to be sampled by re-running the optimisation multiple times and exploring possible Bayesian extensions to our method. The resultant parameter distributions will be high-dimensional and will require additional processing with machine learning methods to enable interpretation and navigation. In Chapter \ref{chapter:exploring} we introduce a tool for navigating high-dimensional point clouds in the context of flow cytometry and immunology. The high-dimensional exploration tool and its relevance in model reduction and navigation is discussed in Chapter \ref{chapter:conclusions}.
+
+% \begin{itemize}
+%     \item extension to cusp bifurcation
+%     \item extension to spatial system and turing
+%     \item designing limit cycles
+% \end{itemize}
