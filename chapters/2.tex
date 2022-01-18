@@ -34,7 +34,7 @@ In the biological context, we can consider changes in $\theta$ as changes in the
 
 \begin{Figure}
 \includegraphics[scale=0.6]{waddington}
-\caption{Waddington landscapes representing the set of available behaviours for two phenotypes in response to a controlled condition $p$. Phenotypes are related by changes in landscape topology via changes in $\theta$}
+\caption{Waddington-type landscapes representing the set of available behaviours for two phenotypes in response to a controlled condition $p$. Phenotypes are related by changes in landscape topology via changes in $\theta$}
 \label{fig:waddington}
 \end{Figure}
 
@@ -234,7 +234,7 @@ Here we kept the first-order derivative because we would still like to see how t
 
 This equation reveals two timescales for blob deformations in the vicinity of a field degeneracy: the familiar exponential timescale $\e^{t-t'}$ and a new polynomial timescale $(t-t')^{\frac{1}{1-n}}$. The emergence of a polynomial timescale that dominates over the exponential is called \emph{critical slowing down} and is a marker of degeneracy. We can see once the dynamics are confined to the degenerate subspace the eigenvalues of the Jacobian are insufficient for determining the timescales. The curvature of the field around the degenerate subspace drives the polynomial dynamics, and therefore higher-order derivatives are needed to reveal this.
 
-This critical slowing can be observed in data when fixed points become degenerate. Degenerate fixed points are also called \emph{critical points}. The transition between these two timescales in data is a signal that a critical point is nearby. We will see that critical points may lead to bifurcations and are accompanied by degeneracies in the field known as centre manifolds \cite{Carr1981ApplicationsTheory}.
+This critical slowing can be observed in data when fixed points become degenerate \cite{}. Degenerate fixed points are also called \emph{critical points}. The transition between these two timescales in data is a signal that a critical point is nearby. We will see that critical points may lead to bifurcations and are accompanied by degeneracies in the field known as centre manifolds \cite{Carr1981ApplicationsTheory}.
 
 \subsubsection{Fluctuations}
 \label{section:fluctuations}
@@ -308,7 +308,7 @@ While \emph{global} bifurcations still happen at a specific condition $p^\star$ 
 
 \begin{Figure}
 	\includegraphics[scale=0.6]{hopf}
-	\caption{In a \emph{Hopf} bifurcation a stable fixed point becomes an unstable focus that pushes trajectories towards a limit cycle, subject to conditions of the Poincar\'e-Bendixson theorem. The limit cycle amplitude grows as $\sqrt{p-p^\star}$}
+	\caption{In a \emph{Hopf} bifurcation a stable fixed point becomes an unstable focus that pushes trajectories towards a limit cycle, subject to conditions of the Poincar\'e-Bendixson theorem. The limit cycle amplitude grows as $\sqrt{p-p^\star}$.}
 	\label{fig:hopf}
 \end{Figure}
 
@@ -332,13 +332,13 @@ While \emph{global} bifurcations still happen at a specific condition $p^\star$ 
 
 \begin{Figure}
 	\includegraphics[scale=0.6]{homoclinic}
-	\caption{A \emph{homoclinic} bifurcation occurs when a saddle point collides with a limit cycle, forming a \emph{homoclinic} orbit just before breaking the cycle. It is accompanied by a period slow-down that scales like $t\sim|\log|p-p^\star||$}
+	\caption{A \emph{homoclinic} bifurcation occurs when a saddle point collides with a limit cycle, forming a \emph{homoclinic} orbit just before breaking the cycle. It is accompanied by a period slow-down that scales like $t\sim|\log|p-p^\star||$.}
 	\label{fig:homoclinic}
 \end{Figure}
 
 \begin{Figure}
 	\includegraphics[scale=0.6]{infinite-period}
-	\caption{The \emph{infinite period} bifurcation is a \emph{global} bifurcation where a \emph{saddle-node} bifurcation occurs along the limit set, breaking the cycle. It is accompanied by a period slow-down that scales like $t\sim\frac{1}{\sqrt{|p-p^\star|}}$}
+	\caption{The \emph{infinite period} bifurcation is a \emph{global} bifurcation where a \emph{saddle-node} bifurcation occurs along the limit set, breaking the cycle. It is accompanied by a period slow-down that scales like $t\sim\frac{1}{\sqrt{|p-p^\star|}}$.}
 	\label{fig:infinite-period}
 \end{Figure}
 
@@ -409,22 +409,22 @@ We proceed with an element-wise change of variables $u=2\cos k$ and recognise th
   \end{matrix}\\
   &=\frac{1}{2\pi Z}
   \int_{-\infty}^{\infty}\int_{\Omega'}\!
-  \frac{\mathbb{e}^{\Lambda_L\mathbb{i}k}\exp[\sum_{i}u_i\mathbb{i}k]}
+  \frac{\mathbb{e}^{\Lambda_L Ik}\exp[\sum_{i}u_i Ik]}
   {\sqrt{\prod_{i=1}^L(1-u_i^2/4) }}
   \,\mathrm{d}u\mathrm{d}k\\
   &=\frac{1}{2\pi Z}
-  \int_{-\infty}^{\infty}\mathbb{e}^{\Lambda_L\mathbb{i}k}
+  \int_{-\infty}^{\infty}\mathbb{e}^{\Lambda_L Ik}
   \prod_{i=1}^L\int_{-2}^{2}\!
-  \frac{\mathbb{e}^{u_i\mathbb{i}k}}
+  \frac{\mathbb{e}^{u_i Ik}}
   {\sqrt{1-u_i^2/4}}
   \,\mathrm{d}u_i\mathrm{d}k
 \end{align*}
 The Fourier representation of the delta function allowed the
-factorisation of the integral. We recognise a repeated Bessel integral and replace it with the Bessel function of the first kind $J_n(k)$, leaving only a Fourier transform which we define as $\mathcal{F} : f\rightarrow \frac{1}{\sqrt{2\pi}} \int_{-\infty}^{\infty}f(k)e^{\mathbb{i}\Lambda k}\mathrm{d}k$
+factorisation of the integral. We recognise a repeated Bessel integral and replace it with the Bessel function of the first kind $J_n(k)$, leaving only a Fourier transform which we define as $\mathcal{F} : f\rightarrow \frac{1}{\sqrt{2\pi}} \int_{-\infty}^{\infty}f(k)e^{ I\Lambda k}\mathrm{d}k$
 where
 \begin{equation*}
     f(k) = \frac{1}{\sqrt{2\pi}Z}\prod_{i=1}^L\int_{-2}^{2}\!
-  \frac{\mathbb{e}^{u_i\mathbb{i}k}}
+  \frac{\mathbb{e}^{u_i Ik}}
   {\sqrt{1-u_i^2/4}} \mathrm{d}u_i
 \end{equation*}
 To clean the formula up even further we may use the convolution theorem to deal with the powers of $L$, leaving only the Fourier transform of the Bessel function $J_0(k)$, which is the arcsine distribution $\alpha(\lambda)$. The eigenvalue density of a Kronecker sum of matrices is the convolution of the densities of those matrices.
@@ -462,15 +462,15 @@ The partial derivatives in the diffusion equation \eqref{eq:reaction-diffusion} 
 \end{align}
 where $\omega$ is an unknown dispersion relation that determines which modes $k$ are sustained or exponentially decay. The corresponding reaction-diffusion equation becomes
 \begin{equation}
-	(\omega\mathbb{I}+ |k|^2  D)\mathcal{F}[u] = \mathcal{F}[\rates]
+	(\omega I+ |k|^2  D)\mathcal{F}[u] = \mathcal{F}[\rates]
 \end{equation}
 where we have a matrix vector multiplication on the left-hand side and the Fourier transform of a non-linear field on the right. Linearising the field $\rates$ around a fixed point $\steady$ yields an eigenvalue equation
 \begin{equation}
-	\left(\left.\jacobian\right|_{\steady} - |k|^2D - \omega\mathbb{I} \right)\mathcal{F}[u] = 0
+	\left(\left.\jacobian\right|_{\steady} - |k|^2D - \omega I \right)\mathcal{F}[u] = 0
 \end{equation}
 identifying $\omega$ and the eigenvalues to corresponding eigenvectors $\mathcal{F}[u]$. Using the determinant equation
 \begin{equation}
-	\left|\,\,\left.\jacobian\right|_{\steady} - |k|^2D - \omega\mathbb{I} \right| = 0
+	\left|\,\,\left.\jacobian\right|_{\steady} - |k|^2D - \omega I \right| = 0
 	\label{eq:dispersion-relation}
 \end{equation}
 
@@ -491,20 +491,20 @@ Suppose that we want to specify a differential equation model \eqref{eq:differen
 
 Suppose we would like to define a differential equation model whose trajectories approach a given limit set $\partial\Omega$, which are typically either limit cycles or fixed points. We can define a norm from any point $u$ to the set
 \begin{equation}
-	|u-\partial\Omega| := \min_{u'\in\partial\Omega}|u-u'| 
+	N(u,\partial\Omega) := \min_{u'\in\partial\Omega}|u-u'| 
 	\label{eq:distance-function}
 \end{equation}
 which can be used as a scalar potential that generates a vector field $F(u)$ that drives the dynamics towards $\partial\Omega$. Additionally we would like the field to vanish on the limit set $F(u\in\partial\Omega)=0$ as well as far away from the limit set
 \begin{equation}
-	F(u) = -|u-\partial\Omega|\mathbb{e}^{-|u-\partial\Omega|}\frac{\partial}{\partial u}|u-\partial\Omega|
+	F(u) = -N(u,\partial\Omega)\mathbb{e}^{-N(u,\partial\Omega)}\frac{\partial}{\partial u}N(u,\partial\Omega)
 	\label{eq:scalar-potential}
 \end{equation}
-If the limit set $\partial\Omega$ is a connected surface we can additionally specify an angular momentum field $\omega(u)$ that gives rise to dynamics tangent to the limit set, which leads to limit cycles. We want the field to be tangent to the limit set $\left.\frac{\partial}{\partial u}|u-\partial\Omega|\cdot F(u)\right|_{u\in\partial\Omega}=0$ and still vanish far away from the set. The field can be written in terms of tangential and normal field components to the limit set
+If the limit set $\partial\Omega$ is a connected surface we can additionally specify an angular momentum field $\omega(u)$ that gives rise to dynamics tangent to the limit set, which leads to limit cycles. We want the field to be tangent to the limit set $\left.\frac{\partial}{\partial u}N(u,\partial\Omega)\cdot F(u)\right|_{u\in\partial\Omega}=0$ and still vanish far away from the set. The field can be written in terms of tangential and normal field components to the limit set
 \begin{equation}
-	F(u) = \mathbb{e}^{-|u-\partial\Omega|}\left(\omega(u)\times\frac{\partial}{\partial u}-|u-\partial\Omega|\frac{\partial}{\partial u}\right)|u-\partial\Omega|
+	F(u) = \mathbb{e}^{-N(u,\partial\Omega)}\left(\omega(u)\times\frac{\partial}{\partial u}-N(u,\partial\Omega)\frac{\partial}{\partial u}\right)N(u,\partial\Omega)
 	\label{eq:basis-functions}
 \end{equation}
-We also have an additional property that the tangential components $\omega(u)\times\frac{\partial}{\partial u}$ vanish faster than the normal components as $|u-\partial\Omega|\rightarrow\infty$. This makes any limit set $\partial\Omega$ look like a stable fixed point from a sufficient distance. We note that the cross product is only defined for three dimensions $N=3$; the higher dimensional analogues of this operation is the wedge product $\wedge$ defined in the language of exterior algebra \cite{Flystad2015TheMathematics}.
+We also have an additional property that the tangential components $\omega(u)\times\frac{\partial}{\partial u}$ vanish faster than the normal components as $N(u,\partial\Omega)\rightarrow\infty$. This makes any limit set $\partial\Omega$ look like a stable fixed point from a sufficient distance. We note that the cross product is only defined for three dimensions $N=3$; the higher dimensional analogues of this operation is the wedge product $\wedge$ defined in the language of exterior algebra \cite{Flystad2015TheMathematics}.
 
 Forcing the fields to vanish sufficiently far from their limit sets allows us to construct the field for multiple limit sets $\partial\Omega_k$ with their associated angular momenta $\omega_k(u)$ as a superposition
 \begin{equation}
