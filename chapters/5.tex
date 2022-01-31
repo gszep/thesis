@@ -119,25 +119,14 @@ Exploratory analysis of the CD8\textsuperscript{+} T cell population. FlowAtlas-
 
 \section{Discussion}
 \label{exploring:discussion}
-
-In conclusion, FlowAtlas brings a new iterative analysis concept to biomedical scientists by linking the familiar FlowJo workflow with a high-performance machine learning framework in a fully graphical, interactive environment. FlowAtlas allows rapid computation of embedding of millions of high-dimensional events on an average laptop without the need for down-sampling. The resulting embedding is highly interactive, offering zooming to explore deeper cluster structures, colouring and filtering of
-embedded events by custom conditions, the generation frequency statistics and the drawing of gates directly in the
-embedding for comparative analysis of marker expression.
-Moreover, state-of-the-art missing data handling methods enable concomitant cross-study analysis of datasets
-with non-identical panel designs or marker numbers. Findings can be immediately validated in FlowJo in an iterative
-discovery loop with FlowAtlas simplifying the identification
-and validation of rare or novel cell populations, which are
-more likely to be detected in the absence of down-sampling.
-FlowAtlas aims to strengthen the open-source collaborations between researchers using flow cytometry and the
-rapidly growing scientific machine learning community in
-Julia programming language.
+In conclusion, FlowAtlas brings a new iterative analysis concept to biomedical scientists by linking the familiar FlowJo workflow with a high-performance machine learning framework in a fully graphical, interactive environment. FlowAtlas allows rapid computation of embedding of millions of high-dimensional events on an average laptop without the need for down-sampling. The resulting embedding is highly interactive, offering zooming to explore deeper cluster structures, colouring and filtering of embedded events by custom conditions, the generation frequency statistics and the drawing of gates directly in the embedding for comparative analysis of marker expression. Moreover, state-of-the-art missing data handling methods enable concomitant cross-study analysis of datasets with non-identical panel designs or marker numbers. Findings can be immediately validated in FlowJo in an iterative discovery loop with FlowAtlas simplifying the identification and validation of rare or novel cell populations, which are more likely to be detected in the absence of down-sampling. FlowAtlas aims to strengthen the open-source collaborations between researchers using flow cytometry and the rapidly growing scientific machine learning community in Julia programming language.
 
 \section{Methods}
 \label{exploring:methods}
 
 \subsection{Tissue Acquisition \& Dissociation} 
 
-All samples were collected via the \href{https://www.cbtm.group.cam.ac.uk}{Cambridge Biorepository for Translational Medicine} under Research Ethics Committee approval 15/EE/0152. Tissue was obtained from five deceased organ donors following circulatory death. Donor metadata is given in Extended Data Table \ref{table:donors}. Briefly, following cessation of circulatory function donors proceeded to organ donation. Organs were perfused \emph{in situ} with cold organ preservation solution and cooled with topical application of ice. Samples for the study were obtained within 60 minutes of cessation of circulation and placed in University of Wisconsin organ preservation solution for transport at 4°C to the laboratory. Lung and liver samples were obtained from the left lower lobe of the lung and the right lobe of the liver. In addition, two donor-matched blood samples were collected prior to withdrawal of life support, under approval 97/290.
+All samples were collected via the \href{https://www.cbtm.group.cam.ac.uk}{Cambridge Biorepository for Translational Medicine} under Research Ethics Committee approval 15/EE/0152. Tissue was obtained from five deceased organ donors following circulatory death. Donor metadata is given in Table \ref{table:donors}. Briefly, following cessation of circulatory function donors proceeded to organ donation. Organs were perfused \emph{in situ} with cold organ preservation solution and cooled with topical application of ice. Samples for the study were obtained within 60 minutes of cessation of circulation and placed in University of Wisconsin organ preservation solution for transport at 4°C to the laboratory. Lung and liver samples were obtained from the left lower lobe of the lung and the right lobe of the liver. In addition, two donor-matched blood samples were collected prior to withdrawal of life support, under approval 97/290.
 
 To minimise the possibility of processing-depended differences in cell surface marker expression, all samples, including blood, were processed using enzymatic digestion protocol. Briefly, solid tissues were weighed, transferred into 10cm tissue culture dishes and cut into small pieces. Up to 5g of tissue was then transferred to each of eight GentleMACS C tubes (Miltenyi Biotec) containing 5mL of dissociation media composed of X-vivo15 supplemented with 0.13U/mL Liberase TL (Roche), 10U/mL Benzonase nuclease (Millipore/Merck), 2\% (v/v) heat-inactivated fetal bovine serum (FBS, Gibco), penicillin (100 U/ml, Sigma-Aldrich), streptomycin (0.1 mg/ml, Sigma-Aldrich), and 10mM HEPES (Sigma Aldrich). The samples were then dissociated on a GentleMACS Octo dissociator (Miltenyi Biotec) running a protocol that provided gradual ramping up of homogenisation speed and two 15 minute heating/mixing steps at 37°C. Digested tissue was passed through a 70$\mu$m MACS Smartstrainer (Miltenyi Biotec) and the flow-through was first washed with media supplemented with 2 mM EDTA and then with PBS. Mononuclear cells were enriched by Ficoll-Paque (GE Healthcare) density centrifugation according to manufacturer's instructions. Following, density centrifugation, mononuclear layer was collected, washed once with PBS and cell pellet was resuspended in FACS buffer (PBS, 2.5$\%$ FBS).
 
@@ -147,19 +136,10 @@ Bone marrow aspirates and peripheral blood samples were first subjected to Ficol
 
 Depending on the cell yield, up to 1x10\textsuperscript{6} mononuclear cells/tissue were stained with antibodies shown in Extended Data Table \ref{table:panel}. Not all donors were stained with the same panel. To expand total number of markers, sentinel panel design was implemented where CD3 and IgD were detected with antibodies conjugated to BUV395 and Foxp3 and IgM were detected with antibodies conjugated to PE in some donors. Refer to Extended Data Table \ref{table:panels} for details. 
 
-Single cell suspensions were washed once in PBS, transferred into 96 v-bottom plate and stained with Zombie UV viability dye for 30 min at 4°C following by a wash with FACS buffer. Cell pellets were resuspended in 50$\mu$l FACS buffer with Human FcR block (BD Biosciences) and incubated for 10 min at 4°C. Next, cells were pelleted, excess buffer removed and 100$\mu$l of antibody master mix composed of cell-surface antibody cocktail (see Table Extended Data \ref{table:panels}), BV buffer (BD) and True-Stain Monocyte Blocker (Biolegend) and incubated for 1h at 4°C. Following incubation, cells were washed three times in PBS and prepared for intracellular staining using transcription factor fixation/permeabilisation kit (eBioscience) according to the manufacturer's instructions. Following IC staining, cell were resuspended in PBS and analysed on BD FACSymphony A3 cell analyser within 10 hours.
-
-% \subsection{Imputation \& Embedding}
-
-% When some markers are not present in every dataset, cells for which a marker is missing are not displayed in the embedding when the embedding is coloured by the expression of the missing marker in FlowAtlas.jl. To compute the initial embedding, however, missing values are sampled from non-missing values. 
-
-% or re-use embedding transformations on new datasets. Note that the number of channels and names of the new dataset must match those used to calculate the embedding. With this approach it is possible to calculate an embedding for a sub-sampled dataset to save time and use the resultant transformation on the whole dataset to retain the embedding coordinates of rare populations.
-% Enables novel population discovery
+Single cell suspensions were washed once in PBS, transferred into 96 v-bottom plate and stained with Zombie UV viability dye for 30 min at 4°C following by a wash with FACS buffer. Cell pellets were resuspended in 50$\mu$l FACS buffer with Human FcR block (BD Biosciences) and incubated for 10 min at 4°C. Next, cells were pelleted, excess buffer removed and 100$\mu$l of antibody master mix composed of cell-surface antibody cocktail (see Table \ref{table:panels}), BV buffer (BD) and True-Stain Monocyte Blocker (Biolegend) and incubated for 1h at 4°C. Following incubation, cells were washed three times in PBS and prepared for intracellular staining using transcription factor fixation/permeabilisation kit (eBioscience) according to the manufacturer's instructions. Following IC staining, cell were resuspended in PBS and analysed on BD FACSymphony A3 cell analyser within 10 hours.
 
 \section{Afterword}
-All data is made available in \href{https://flowrepository.org}{\texttt{FlowRepository}}. Code and installation instructions can be found in our GitHub \href{https://github.com/gszep/FlowAtlas.jl}{\texttt{github.com/gszep/FlowAtlas.jl}}
-
-% \subsection{Julia \& SciML}
-% \subsection{OpenLayers \& Data-driven Documents}
-% \subsection{Interactivity}
-% \subsection{Dataset Integration}
+\begin{itemize}
+    \item disagreement between immunologists between themselves and clustering methods requires crowd-sourced gating and consensus protocols
+    \item adaptive embedding based on zoom levels to reveal right scale to separate clusters
+\end{itemize}
