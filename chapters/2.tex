@@ -280,15 +280,12 @@ Newton-type methods can easily be applied to find \emph{fixed points} because th
 We have surveyed sufficiently many state space structures, the geometry of which determine the qualitative behaviour of the organism we are describing. An organism has many qualitative behaviours in response to conditions $p$ and many phenotypes emerging from changes in $\theta$.
 
 Bifurcations are defined as qualitative changes to system behaviour in response to smooth changes to some conditions. This means that as conditions change, state space structure will merge, split and change geometry. In our setting these conditions could be either $\theta$ or $p$, but we will focus on changes with respect to $p$ with the understanding that the analysis is equally valid for $\theta$. Changes to state space structures, and hence bifurcations can be \emph{local} or \emph{global}.
-
 \begin{Figure}
-	\includegraphics[scale=0.6]{local-bifurcations} 
+	\includegraphics[scale=0.55]{local-bifurcations} 
 	\caption{A \emph{local} bifurcation at $(u^\star,p^\star)$ can be detected by tracking the sign of the real parts $\Real[\lambda]$ of Jacobian eigenvalues as a function of control condition $p$. A local fixed point changes from being stable (dark blue) to unstable (light blue)}
 	\label{fig:local-bifurcations}
 \end{Figure}
-
 We shall first focus on \emph{local} bifurcations that can be analysed by investigating the eigenvalues of the Jacobian at a specific point $(u^\star,p^\star)$. A \emph{local} bifurcation point $(u^\star,p^\star)$ is in fact a \emph{critical point} in the field $\rates$: a fixed point $\rates(u^\star,p^\star)=0$ where at least one Jacobian eigenvalue crosses the imaginary axis $\Real[\lambda]=0$ with a finite slope. The number of eigenvalues that cross the imaginary axis defines the dimensionality of the centre manifold along which the bifurcation occurs \cite{Carr1981ApplicationsTheory}. Furthermore, it is the eigenvalue with largest real part that determines the stability of a fixed point and thus it is sufficient to consider the behaviour a single eigenvalue. The number of parameters $p$ that need to be varied defines the \emph{co-dimension} of the bifurcation. Sometimes a bifurcation is also degenerate (see Section \ref{section:field-degeneracy}) in which case eigenvalues cross the imaginary axis with vanishing slope. In this setting the Jacobian does not reveal enough information about the \emph{critical point} and higher-order derivatives in the field $\rates$ are needed. \emph{Global} bifurcations cannot be determined by local stability analysis at specific points $(u^\star,p^\star)$ alone. We shall see how additional \emph{global} constraints are needed that reveal the formation or changes in limit sets. We present the \emph{supercritical} cases of bifurcations in the following sections, with the understanding that \emph{subcritical} cases can be recovered by reversing the flow in state space.
-
 \subsubsection{Generic Robust Bifurcations}
 \label{fig:robust-local-bifurcations}
 We are ready to present the two \emph{generic} and \emph{robust} co-dimension one bifurcations: the \emph{saddle-node} (Figure \ref{fig:saddle-node}) and \emph{Hopf} (Figure \ref{fig:hopf}) bifurcation. These bifurcations are generic in the sense that they happen in $N$ dimensional systems, but can be described as happening along one dimension. The bifurcations are \emph{robust} in the sense that small changes to system parameters do not destroy the bifurcation. This is not the case for \emph{pitchfork} and \emph{transcritical} bifurcations. The \emph{pitchfork} (Figure \ref{fig:pitchfork}) and \emph{transcritical} (Figure \ref{fig:transcritical}) bifurcations are co-dimension one examples where small perturbations in condition $p$ split the bifurcations into \emph{saddle-nodes}.
@@ -298,43 +295,43 @@ While \emph{global} bifurcations still happen at a specific condition $p^\star$ 
 
 \begin{Figure}
 	\includegraphics[scale=0.6]{saddle-node} 
-	\caption{The \emph{saddle-node} bifurcation creates or annihilates stable and unstable pairs of fixed points. A critical slow-down that scales like $t\sim\frac{1}{\sqrt{|p-p^\star|}}$ can be used to detect its onset.}
+	\caption{The \emph{saddle-node} bifurcation creates or annihilates stable (dark blue) and unstable (light blue) pairs of fixed points. A critical slow-down that scales like $t\sim\frac{1}{\sqrt{|p-p^\star|}}$ can be used to detect its onset.}
 	\label{fig:saddle-node}
 \end{Figure}
 
 \begin{Figure}
 	\includegraphics[scale=0.6]{hopf}
-	\caption{In a \emph{Hopf} bifurcation a stable fixed point becomes an unstable focus that pushes trajectories towards a limit cycle, subject to conditions of the Poincar\'e-Bendixson theorem. The limit cycle amplitude grows as $\sqrt{p-p^\star}$.}
+	\caption{In a \emph{Hopf} bifurcation a stable (dark blue) fixed point becomes an unstable (light blue) focus that pushes trajectories towards a limit cycle (shaded dark blue). The limit cycle amplitude grows as $\sqrt{p-p^\star}$.}
 	\label{fig:hopf}
 \end{Figure}
 
 \begin{Figure}
 	\includegraphics[scale=0.6]{pitchfork}
-	\caption{In \emph{Pitchfork} bifurcations a single stable fixed point splits into two stable fixed points separated by a saddle point. The distance between points grows as $\sqrt{p-p^\star}$. Small perturbations in $p$ breaks the pitchfork into a \emph{saddle node} bifurcation and a stable branch of fixed points.}
+	\caption{In \emph{Pitchfork} bifurcations a single stable (dark blue) fixed point splits into two stable fixed points separated by a saddle point (light blue). The distance between points grows as $\sqrt{p-p^\star}$. Small perturbations in $p$ breaks the pitchfork into a \emph{saddle node} bifurcation and a stable branch of fixed points.}
 	\label{fig:pitchfork}
 \end{Figure}
 
 \begin{Figure}
 	\includegraphics[scale=0.6]{transcritical}
-	\caption{In \emph{transcritical} bifurcations a stable and unstable fixed point collide and exchange stability. The distance between points grows as $p-p^\star$. Small perturbations in $p$ breaks the transcritical into two \emph{saddle-node} bifurcations.}
+	\caption{In \emph{transcritical} bifurcations a stable (dark blue) and unstable (light blue) fixed point collide and exchange stability. The distance between points grows as $p-p^\star$. Perturbations in $p$ breaks the transcritical into two \emph{saddle-node} bifurcations.}
 	\label{fig:transcritical}
 \end{Figure}
 
 \begin{Figure}
 	\includegraphics[scale=0.6]{cyclic-fold}
-	\caption{The \emph{cyclic fold} bifurcation is a \emph{global} bifurcation that creates or annihilates stable and unstable pairs of limit cycles.}
+	\caption{The \emph{cyclic fold} bifurcation is a \emph{global} bifurcation that creates or annihilates stable (dark blue) and unstable (light blue) pairs of limit cycles.}
 	\label{fig:cyclic-fold}
 \end{Figure}
 
 \begin{Figure}
 	\includegraphics[scale=0.6]{homoclinic}
-	\caption{A \emph{homoclinic} bifurcation occurs when a saddle point collides with a limit cycle, forming a \emph{homoclinic} orbit just before breaking the cycle. It is accompanied by a period slow-down that scales like $t\sim|\log|p-p^\star||$.}
+	\caption{A \emph{homoclinic} bifurcation occurs when a saddle point (light blue) collides with a limit cycle (dark blue) forming a \emph{homoclinic} orbit just before breaking the cycle. It is accompanied by a period slow-down that scales like $t\sim|\log|p-p^\star||$.}
 	\label{fig:homoclinic}
 \end{Figure}
 
 \begin{Figure}
 	\includegraphics[scale=0.6]{infinite-period}
-	\caption{The \emph{infinite period} bifurcation is a \emph{global} bifurcation where a \emph{saddle-node} bifurcation occurs along the limit set, breaking the cycle. It is accompanied by a period slow-down that scales like $t\sim\frac{1}{\sqrt{|p-p^\star|}}$.}
+	\caption{The \emph{infinite period} bifurcation is a \emph{global} bifurcation where a \emph{saddle-node} bifurcation occurs along the limit cycle (dark blue), breaking it. It is accompanied by a period slow-down that scales like $t\sim\frac{1}{\sqrt{|p-p^\star|}}$.}
 	\label{fig:infinite-period}
 \end{Figure}
 
@@ -342,8 +339,8 @@ While \emph{global} bifurcations still happen at a specific condition $p^\star$ 
 In this introduction we provided a geometrical understanding of co-dimension one bifurcations and would like to re-direct the reader to the popular book by Steven Strogatz \cite{Strogatz2000} for mathematical details and higher co-dimension bifurcations such as \emph{cusp} and \emph{Bogdanov-Takens}. Each local bifurcation is expressed mathematically as a normal form; a Taylor expansion of the field $\rates$ around local bifurcation point. There are no normal forms for global bifurcations.
 
 \subsubsection{Numerical Methods}
-In this thesis we extensively use Julia: library \texttt{DifferentialEquations.jl} \cite{Rackauckas2017Differentialequations.jlJulia} for numerically solving differential equations and \texttt{BifurcationKit.jl} \cite{Veltz2020BifurcationKit.jl} for calculating bifurcation diagrams. \texttt{DifferentialEquations.jl} implements state-of-the-art, well-optimized ordinary and partial differential equation solvers which routinely outperform the "standard" C/Fortran methods and algorithms optimized for high-precision and high-performance computing applications \cite{Rackauckas2017Differentialequations.jlJulia}. \texttt{BifurcationKit.jl} aims at performing automatic bifurcation analysis of possibly large dimensional equations, $\rates(u,p)=0$ where $p\in\Reals$, by taking advantage of iterative methods, sparse formulation and GPU-acceleration. It incorporates continuation algorithms such as pseudo-arclength continuation \cite{Keller1987LecturesProblems} and deflated continuation \cite{Farrell2016TheDiagrams}. A Newton-Krylov method \cite{Knoll2004Jacobian-freeApplications} is used to correct the predictor step and a matrix-free eigensolver \cite{Waugh2014Matrix-freeFlame} is used to compute stability and localise bifurcation points. Additionally, periodic orbit computation and continuation using the shooting \cite{Lust2000ComputationSystems}, finite-difference \cite{Lust2000ComputationSystems,Uecker2018HopfApplications} and collocation \cite{Kuznetsov2004NumericalBifurcations} methods are implemented. Details of these algorithms can also be found in in the documentation of the above mentioned Julia packages.
-
+An exhaustive list of numerical bifurcation tools can be found on \href{https://dsweb.siam.org/Software}{\texttt{dsweb.siam.org/Software}} amongst which the most popular are AUTO-07p \cite{Doedel2007AUTO-07P:Equations}, XPPAUT \cite{Ermentrout2003SimulatingStudents}, MATCONT \cite{Dhooge2003MATCONT:ODEs} and PyDSTool \cite{Clewley2012HybridPyDSTool}. Versatile and feature-rich tools for partial differential equations such as pde2path \cite{Uecker2014Pde2path-ASystems} and trilinos \cite{Heroux2005AnProject} also exist. While these libraries are very reliable, some even addressing high co-dimensional problems, they consist of highly optimised low-level code that requires additional engineering efforts in order to benefit from automatic differentiation. While tools such as Oscill8 \cite{Chickarmane2005BifurcationTool} that make progress in \emph{inverse bifurcation analysis} they do not take advantage of differentiability in the underlying models. Our publication in Chapter \ref{chapter:inference} makes use of the \emph{scientific machine learning} (Sci ML) ecosystem in Julia, namely: \texttt{DifferentialEquations.jl} \cite{Rackauckas2017Differentialequations.jlJulia} for numerically solving differential equations and \texttt{BifurcationKit.jl} \cite{Veltz2020BifurcationKit.jl} for calculating bifurcation diagrams.  \texttt{DifferentialEquations.jl} implements state-of-the-art, well-optimized ordinary and partial differential equation solvers which routinely outperform the "standard" C/Fortran methods and algorithms optimized for high-precision and high-performance computing applications \cite{Rackauckas2017Differentialequations.jlJulia}. \texttt{BifurcationKit.jl} aims at performing automatic bifurcation analysis of possibly large dimensional equations, $\rates(u,p)=0$ where $p\in\Reals$, by taking advantage of iterative methods, sparse formulation and GPU-acceleration. It incorporates continuation algorithms such as pseudo-arclength continuation \cite{Keller1987LecturesProblems} and deflated continuation \cite{Farrell2016TheDiagrams}. A Newton-Krylov method \cite{Knoll2004Jacobian-freeApplications} is used to correct the predictor step and a matrix-free eigensolver \cite{Waugh2014Matrix-freeFlame} is used to compute stability and localise bifurcation points. Additionally, periodic orbit computation and continuation using the shooting \cite{Lust2000ComputationSystems}, finite-difference \cite{Lust2000ComputationSystems,Uecker2018HopfApplications} and collocation \cite{Kuznetsov2004NumericalBifurcations} methods are implemented. Details of these algorithms can also be found in in the documentation of the above mentioned Julia packages.
+\pagebreak
 \subsection{Spatially Extended Systems}
 Suppose we wanted to model the spatial distribution biochemicals across an organism, a population of cells or perhaps even within the cell. Our model $\rates$ would have to contain spatial derivatives and we would supply additional conditions on $u$ with respect to spatial variables $x$ to give a unique solution $u(x,t)$ to the resulting partial differential equation. When studying spatio-temporal dynamics of organisms, a popular choice is to incorporate a diffusive term that models the exchange of matter between spatial locations, giving rise to a \emph{reaction-diffusion} equation
 \begin{equation}
