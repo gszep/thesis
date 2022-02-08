@@ -1,6 +1,100 @@
 \addcontentsline{toc}{chapter}{Appendices}
 \appendix
 
+\chapter{Eigenvalue Distributions of Derivative Operators}
+\label{appendix:eigenvalue-distributions}
+Using the Circular Diagonalization Theorem \cite{Ingleton1956TheMatrices} one can derive the eigenvalues $\lambda_k$ of an $K\times K$ matrix which represents the second-order central difference approximation to the second derivative on $K$ sites of a one dimensional ring
+\begin{align}
+	\frac{\partial^2}{\partial x^2} \rightarrow
+	\begin{pmatrix}
+	  -2 & 1 &  &  &  & 1 \\
+	  1 & -2 & 1 &  &  &  \\
+	  & 1 & \ddots & \ddots &  & \\
+	  & & \ddots & \ddots & 1 & \\
+	  & & & 1 & -2 & 1 \\
+	  1 & & & & 1 & -2 \\
+	\end{pmatrix}\\
+	\begin{matrix}
+	  \lambda_k =2\left(\cos\left(\frac{2\pi k}{K}\right)-1\right) \\
+	  k\in\{0,1,\cdots,K-1\}
+	\end{matrix}
+	\qquad
+\end{align}
+As the number of sites $K\rightarrow\infty$ the argument $k/K\in[0,1]$
+and the eigenvalues remain bounded $-4<\lambda_k<0$. By shifting and scaling
+the index $k\rightarrow\frac{k-K\pi}{2\pi}$ the eigenvalues are expressed as
+a dispersion relation
+\begin{align}
+  \lambda(k)&=
+  -2\left(\cos k+1\right)
+  \quad k\in[-\pi,\pi]
+\end{align}
+The discrete $L$-dimensional Laplacian is simply the Kronecker sum $\oplus$ of one
+dimensional cases and thus its eigenvalues are simply the sum over one dimensional dispersions \cite{Laub2004MatrixEngineers}
+\begin{align}
+  \lambda(k)&=
+  -2\sum_{i=1}^L\left(\cos k_i+1\right)
+  \quad k\in[-\pi,\pi]^L
+\end{align}
+The probability density $P(\lambda)$ can be expressed as a density integral
+over the $L$-dimensional hypercube region $[-\pi,\pi]^L$
+\begin{align}
+	P(\lambda')&=\frac{1}{Z}\int_{[-\pi,\pi]^L}\!\delta(\lambda'-\lambda(k))\,\mathrm{d}k
+\end{align}
+We proceed with an element-wise change of variables $u=2\cos k$ and recognise that the integration region is $L$-fold symmetric across each component axis, which allows restriction of the domain of integration to a hyper-octant. In coordinates $u$ the region becomes $[-2,2]^L$
+\begin{align*}
+  P(\lambda)&=\frac{1}{Z}
+  \int_{\Omega'}\!
+  \frac{\delta(\Lambda_L+\sum_{i}u_i)}
+  {\sqrt{\prod_{i=1}^L(1-u_i^2/4) }}
+  \,\mathrm{d}u
+  \qquad
+  \begin{matrix}
+    \Lambda_L=\lambda+2L \\
+    |\Lambda_L|\leq2L
+  \end{matrix}\\
+  &=\frac{1}{2\pi Z}
+  \int_{-\infty}^{\infty}\int_{\Omega'}\!
+  \frac{\mathbb{e}^{\Lambda_L Ik}\exp[\sum_{i}u_i Ik]}
+  {\sqrt{\prod_{i=1}^L(1-u_i^2/4) }}
+  \,\mathrm{d}u\mathrm{d}k\\
+  &=\frac{1}{2\pi Z}
+  \int_{-\infty}^{\infty}\mathbb{e}^{\Lambda_L Ik}
+  \prod_{i=1}^L\int_{-2}^{2}\!
+  \frac{\mathbb{e}^{u_i Ik}}
+  {\sqrt{1-u_i^2/4}}
+  \,\mathrm{d}u_i\mathrm{d}k
+\end{align*}
+The Fourier representation of the delta function allowed the
+factorisation of the integral. We recognise a repeated Bessel integral and replace it with the Bessel function of the first kind $J_n(k)$, leaving only a Fourier transform which we define as $\mathcal{F} : f\rightarrow \frac{1}{\sqrt{2\pi}} \int_{-\infty}^{\infty}f(k)e^{ I\Lambda k}\mathrm{d}k$
+where
+\begin{equation*}
+    f(k) = \frac{1}{\sqrt{2\pi}Z}\prod_{i=1}^L\int_{-2}^{2}\!
+  \frac{\mathbb{e}^{u_i Ik}}
+  {\sqrt{1-u_i^2/4}} \mathrm{d}u_i
+\end{equation*}
+To clean the formula up even further we may use the convolution theorem to deal with the powers of $L$, leaving only the Fourier transform of the Bessel function $J_0(k)$, which is the arcsine distribution $\alpha(\lambda)$. The eigenvalue density of a Kronecker sum of matrices is the convolution of the densities of those matrices.
+
+\begin{align}
+  P(\lambda)=\underbrace{
+  \alpha(\lambda)*\alpha(\lambda)*\cdots*\alpha(\lambda)}_{L}\qquad\qquad\label{eq:mlap}\\
+    \alpha(\lambda)=
+      \frac{\Pi\left(\frac{\lambda+2}{2}\right)}{2\pi\sqrt{1-\left(\frac{\lambda+2}{2}\right)^2}}
+    \qquad
+    \Pi(x)=
+      \begin{cases}
+        1 & |x|<1\\
+        0 & |x|\geq1\\
+      \end{cases}
+	\label{eq:laplacian-distribution}
+\end{align}
+The one dimensional density has two Van Hove singularities at $\lambda=-4,0$ given by the arcsine law $\alpha(\lambda)$, whereas the two dimensional case has one at $\lambda=-4$ given by the complete elliptic integral of the first kind $K(m)$. Figure~\ref{fig:dos} reveals that in higher dimensions singularities do not occur; instead there appear to be discontinuities in the higher order derivatives. The density smooths out as repeated convolutions bring it to a normal distribution; this is another way to state the Central Limit Theorem. In the context of diffusion, the Laplacian is scaled by the diagonal diffusion matrix. To take this scaling into account, components $D_i$ are introduced in the arcsine laws
+\begin{align}
+	\alpha(\lambda) \rightarrow \frac{1}{D_i}\alpha(\lambda/D_i)
+\end{align}
+The eigenvalue distributions determine the eigenbasis evolution  \eqref{eq:eigenbasis-vector-evolution} which reveals that the second order derivative leads to exponential relaxation of all basis vectors, except for the subset with vanishing eigenvalue $\lambda=0$. The corresponding zero eigenvectors $v_0$ are the Fourier components of the steady state distribution, and are the only components that remain as $t\rightarrow\infty$. The diffusive components $D_i$ determine the timescale of relaxation in each dimension.
+
+
 \chapter{Interpretation of Morphogen Gradients by a Bistable Circuit}
 \label{appendix:double-exclusive}
 \includepdf[pages=1-51, offset=75 -90, scale=0.85, frame,

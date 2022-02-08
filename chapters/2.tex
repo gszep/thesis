@@ -33,7 +33,7 @@ In synthetic biology we can consider changes in $\theta$ as changes in the organ
 
 \begin{Figure}
 \includegraphics[scale=0.6]{waddington}
-\caption{Adapting Waddington's epigenetic landscapes metaphor for representing the set of available behaviours for two phenotypes in response to a controlled condition $p$. Phenotypes are related by changes in landscape topology via changes in $\theta$}
+\caption{Adopting Waddington's epigenetic landscapes metaphor for representing the set of available behaviours for two phenotypes in response to a controlled condition $p$. Phenotypes are related by changes in landscape topology via changes in $\theta$}
 \label{fig:waddington}
 \end{Figure}
 
@@ -348,10 +348,10 @@ Suppose we wanted to model the spatial distribution biochemicals across an organ
 	\label{eq:reaction-diffusion}
 \end{equation}
 where diagonal matrix $D\in\Reals^{N\times N}$ encodes the spatial mobility of each component. Depending on the spatial scale that is being modelled the components of $D$ will take on a different meaning. If we are modelling a population of cells then the components of $D$ quantify which components the cells can exchange between each other. If we are modelling the spatial distributions within a single cell, then $D$ encodes for components that are passively transported between locations. In order to model active transport we would include a first-order spatial derivative term, giving rise to an \emph{advection-reaction-diffusion} equation \cite{Tuimala2013Reaction-Diffusion-AdvectionEquation}. Although the inclusion of spatial derivatives and boundary conditions may seem quite complicated, ultimately the discretisation of partial differential equations will yield a matrix representation of the spatial derivative. Any partial differential equation with $N$ components can be discretised into $K$ spatial grid-points and re-cast as a set of $N\times K$ ordinary differential equation.
-
+\pagebreak
 \subsubsection{Eigenvalue Distributions of Derivative Operators}
 \label{section:eigenvalue-distributions}
-Using the Circular Diagonalization Theorem \cite{Ingleton1956TheMatrices} one can derive the eigenvalues $\lambda_k$ of an $K\times K$ matrix which represents the second-order central difference approximation to the second derivative on $K$ sites of a one dimensional ring
+The eigenvalue distribution $P(\lambda)$ of the diffusive term can be derived by applying the Circular Diagonalization Theorem \cite{Ingleton1956TheMatrices} to the $K\times K$ matrix representing its second-order central difference approximation with appropriate boundary conditions on $K$ sites, and then taking the limit as $K\rightarrow\infty$. For example, the diffusive term on a one dimensional ring can be represented as
 \begin{align}
 	\frac{\partial^2}{\partial x^2} \rightarrow
 	\begin{pmatrix}
@@ -361,94 +361,30 @@ Using the Circular Diagonalization Theorem \cite{Ingleton1956TheMatrices} one ca
 	  & & \ddots & \ddots & 1 & \\
 	  & & & 1 & -2 & 1 \\
 	  1 & & & & 1 & -2 \\
-	\end{pmatrix}\\
-	\begin{matrix}
-	  \lambda_k =2\left(\cos\left(\frac{2\pi k}{K}\right)-1\right) \\
-	  k\in\{0,1,\cdots,K-1\}
-	\end{matrix}
-	\qquad
+	\end{pmatrix}
+	\label{eq:diffusion-matrix}
 \end{align}
-As the number of sites $K\rightarrow\infty$ the argument $k/K\in[0,1]$
-and the eigenvalues remain bounded $-4<\lambda_k<0$. By shifting and scaling
-the index $k\rightarrow\frac{k-K\pi}{2\pi}$ the eigenvalues are expressed as
-a dispersion relation
-\begin{align}
-  \lambda(k)&=
-  -2\left(\cos k+1\right)
-  \quad k\in[-\pi,\pi]
-\end{align}
-The discrete $L$-dimensional Laplacian is simply the Kronecker sum $\oplus$ of one
-dimensional cases and thus its eigenvalues are simply the sum over one dimensional dispersions \cite{Laub2004MatrixEngineers}
-\begin{align}
-  \lambda(k)&=
-  -2\sum_{i=1}^L\left(\cos k_i+1\right)
-  \quad k\in[-\pi,\pi]^L
-\end{align}
-The probability density $P(\lambda)$ can be expressed as a density integral
-over the $L$-dimensional hypercube region $[-\pi,\pi]^L$
-\begin{align}
-	P(\lambda')&=\frac{1}{Z}\int_{[-\pi,\pi]^L}\!\delta(\lambda'-\lambda(k))\,\mathrm{d}k
-\end{align}
-We proceed with an element-wise change of variables $u=2\cos k$ and recognise that the integration region is $L$-fold symmetric across each component axis, which allows restriction of the domain of integration to a hyper-octant. In coordinates $u$ the region becomes $[-2,2]^L$
-\begin{align*}
-  P(\lambda)&=\frac{1}{Z}
-  \int_{\Omega'}\!
-  \frac{\delta(\Lambda_L+\sum_{i}u_i)}
-  {\sqrt{\prod_{i=1}^L(1-u_i^2/4) }}
-  \,\mathrm{d}u
-  \qquad
-  \begin{matrix}
-    \Lambda_L=\lambda+2L \\
-    |\Lambda_L|\leq2L
-  \end{matrix}\\
-  &=\frac{1}{2\pi Z}
-  \int_{-\infty}^{\infty}\int_{\Omega'}\!
-  \frac{\mathbb{e}^{\Lambda_L Ik}\exp[\sum_{i}u_i Ik]}
-  {\sqrt{\prod_{i=1}^L(1-u_i^2/4) }}
-  \,\mathrm{d}u\mathrm{d}k\\
-  &=\frac{1}{2\pi Z}
-  \int_{-\infty}^{\infty}\mathbb{e}^{\Lambda_L Ik}
-  \prod_{i=1}^L\int_{-2}^{2}\!
-  \frac{\mathbb{e}^{u_i Ik}}
-  {\sqrt{1-u_i^2/4}}
-  \,\mathrm{d}u_i\mathrm{d}k
-\end{align*}
-The Fourier representation of the delta function allowed the
-factorisation of the integral. We recognise a repeated Bessel integral and replace it with the Bessel function of the first kind $J_n(k)$, leaving only a Fourier transform which we define as $\mathcal{F} : f\rightarrow \frac{1}{\sqrt{2\pi}} \int_{-\infty}^{\infty}f(k)e^{ I\Lambda k}\mathrm{d}k$
-where
-\begin{equation*}
-    f(k) = \frac{1}{\sqrt{2\pi}Z}\prod_{i=1}^L\int_{-2}^{2}\!
-  \frac{\mathbb{e}^{u_i Ik}}
-  {\sqrt{1-u_i^2/4}} \mathrm{d}u_i
-\end{equation*}
-To clean the formula up even further we may use the convolution theorem to deal with the powers of $L$, leaving only the Fourier transform of the Bessel function $J_0(k)$, which is the arcsine distribution $\alpha(\lambda)$. The eigenvalue density of a Kronecker sum of matrices is the convolution of the densities of those matrices.
-
-\begin{align}
-  P(\lambda)=\underbrace{
-  \alpha(\lambda)*\alpha(\lambda)*\cdots*\alpha(\lambda)}_{L}\qquad\qquad\label{eq:mlap}\\
-    \alpha(\lambda)=
-      \frac{\Pi\left(\frac{\lambda+2}{2}\right)}{2\pi\sqrt{1-\left(\frac{\lambda+2}{2}\right)^2}}
-    \qquad
-    \Pi(x)=
-      \begin{cases}
-        1 & |x|<1\\
-        0 & |x|\geq1\\
-      \end{cases}
-	\label{eq:laplacian-distribution}
-\end{align}
-
+whose eigenvalues are always negative $\lambda \le 0$ and given by the arcsine distribution (derivation in Appendix \ref{appendix:eigenvalue-distributions}). In the absence of reaction terms, diffusion drives the dynamics towards a homogeneous steady state $\steady$ given be the eigenvector $\eigenvector$ corresponding the vanishing eigenvalue $\lambda=0$. We can Taylor expand the reaction term in equation \eqref{eq:reaction-diffusion} according to equation \eqref{eq:linearised-differential-equations} to investigate the geometry of state space in the vicinity of the homogeneous state $\steady$ yielding an equation linear in perturbations $\delta u$
+\begin{equation}
+\frac{d}{dt}(\delta u) = \mathcal{L}\,\delta u + \mathcal{O}(\delta u^2)
+\where \mathcal{L} := 
+	\left.\jacobian\right|_{u=\steady}\!\! + D\frac{\partial^2 }{\partial x^2}
+	\label{eq:linearised-reaction-diffusion}
+\end{equation}
+The linear operator $\mathcal{L}$ has an eigenvalue distribution that determines whether perturbations $\delta u$ shirk to zero or appear to grow. The matrix representation of this operator can be written in terms of kronecker products
+\begin{equation}
+    \mathcal{L} \rightarrow \left.\jacobian\right|_{u=\steady}\!\!\!\!\!\!\!\!\!\!\!\otimes\mathbb{1}_K + D\otimes\frac{\partial^2}{\partial x^2}
+\end{equation}
+where the product between the $N \times N$ Jacobian and the $K \times K$ identity matrix $\mathbb{1}_K$ yields an $NK \times NK$ matrix representing the reactive terms on for each component on each site. The product between the diagonal matrix $D$ and the matrix representation of the diffusive term also yields an $NK \times NK$ matrix that couples neighbouring sites with with magnitudes corresponding to the mobility of each component. Figure \ref{fig:reaction-diffusion-spectrum} illustrates how the eigenvalue distributions of $\mathcal{L}$ appear as distorted and transformed arcsine distributions. The transformation is non-trivial and depends on eigenvalues of the Jacobian as well as the diffusion coefficients.
 \begin{Figure}
 \includegraphics[width=0.8\linewidth]{laplacian-spectrum}
-\caption{Eigenvalue distributions $P(\lambda)$ of the $L$-dimensional Laplacian}
-\label{fig:dos}
+\caption{Eigenvalue distributions $P(\lambda)$ for the linearised reaction-diffusion operator $\mathcal{L}$ of an activator-inhibitor $N=2$ system on a one dimensional ring showing three cases: diffusion only (gray), reaction with equal diffusion coefficients (dark blue) and with differential diffusion (light blue) where the distribution crosses zero, destabilising the homogeneous steady state $\steady$}
+\label{fig:reaction-diffusion-spectrum}
 \end{Figure}
-The one dimensional density has two Van Hove singularities at $\lambda=-4,0$ given by the arcsine law $\alpha(\lambda)$, whereas the two dimensional case has one at $\lambda=-4$ given by the complete elliptic integral of the first kind $K(m)$. Figure~\ref{fig:dos} reveals that in higher dimensions singularities do not occur; instead there appear to be discontinuities in the higher order derivatives. The density smooths out as repeated convolutions bring it to a normal distribution; this is another way to state the Central Limit Theorem. In the context of diffusion, the Laplacian is scaled by the diagonal diffusion matrix. To take this scaling into account, components $D_i$ are introduced in the arcsine laws
-\begin{align}
-	\alpha(\lambda) \rightarrow \frac{1}{D_i}\alpha(\lambda/D_i)
-\end{align}
-The eigenvalue distributions determine the eigenbasis evolution  \eqref{eq:eigenbasis-vector-evolution} which reveals that the second order derivative leads to exponential relaxation of all basis vectors, except for the subset with vanishing eigenvalue $\lambda=0$. The corresponding zero eigenvectors $v_0$ are the Fourier components of the steady state distribution, and are the only components that remain as $t\rightarrow\infty$. The diffusive components $D_i$ determine the timescale of relaxation in each dimension.
 
 \subsubsection{Turing Bifurcations}
+We have seen how reaction and diffusion terms can come together and cause the eigenvalue distribution to cross zero (Figure \ref{fig:reaction-diffusion-spectrum}) de-stabilising the homogeneous steady state $\steady$. This may lead to pattern formation, similar to how de-stabilising a focus may lead to limit cycles in the Hopf bifurcation. This is known as a \emph{Turing bifurcation} and can also be analysed from the perspective of spatial modes $k$.
+
 The partial derivatives in the diffusion equation \eqref{eq:reaction-diffusion} can be converted into an algebraic expression with the help of Fourier transforms. Suppose we define the spatial-temporal Fourier transform as
 \begin{align}
 	\mathcal{F} : f\rightarrow \frac{1}{\sqrt{2\pi}^L} \int_{-\infty}^\infty\int_{\Reals^L} f(x,t)e^{\mathbb{i} k\cdot x-\omega t}\mathrm{d}x
@@ -460,11 +396,11 @@ where $\omega$ is an unknown dispersion relation that determines which modes $k$
 \end{equation}
 where we have a matrix vector multiplication on the left-hand side and the Fourier transform of a non-linear field on the right. Linearising the field $\rates$ around a fixed point $\steady$ yields an eigenvalue equation
 \begin{equation}
-	\left(\left.\jacobian\right|_{\steady} - |k|^2D - \omega I \right)\mathcal{F}[u] = 0
+	\left(\left.\jacobian\right|_{u=\steady} - |k|^2D - \omega I \right)\mathcal{F}[u] = 0
 \end{equation}
 identifying $\omega$ and the eigenvalues to corresponding eigenvectors $\mathcal{F}[u]$. Using the determinant equation
 \begin{equation}
-	\left|\,\,\left.\jacobian\right|_{\steady} - |k|^2D - \omega I \right| = 0
+	\left|\,\,\left.\jacobian\right|_{u=\steady} - |k|^2D - \omega I \right| = 0
 	\label{eq:dispersion-relation}
 \end{equation}
 
@@ -476,36 +412,51 @@ identifying $\omega$ and the eigenvalues to corresponding eigenvectors $\mathcal
 We can solve for the dispersion $\omega(k)$
 which yields the conditions necessary for diffusion-driven instability \cite{Strogatz2000}. Figure \ref{fig:turing-bifurcation} illustrates a typical dispersion relation that indicates a \emph{Turing} bifurcation at $p=p^\star$. The unstable modes $k$ where $\Real[\omega(k)]>0$ prevent the system from reaching a homogeneous steady state $\steady$, and instead leads to pattern formation. What may seem surprising is that the homogeneous steady state $\steady$ is stable in the absence of diffusion $k=0$.
 
-Whether its through eigenvalue distributions \eqref{eq:laplacian-distribution} or through dispersion relations \eqref{eq:dispersion-relation}, it is possible to analyse pattern formation by looking at when eigenvalues cross the imaginary axis. Progress has been made toward pattern analysis beyond linear stability, particularly in mass-conserving systems \cite{Halatek2018}. In this setting, we consider local equilibria in state space, the dynamics of which are determined by reactive and diffusive fluxes.
+Whether its through eigenvalue distributions (Figure \ref{fig:reaction-diffusion-spectrum}) or through dispersion relations \eqref{eq:dispersion-relation}, it is possible to analyse pattern formation by looking at when eigenvalues cross the imaginary axis. Progress has been made toward pattern analysis beyond linear stability, particularly in mass-conserving systems \cite{Halatek2018}. In this setting, we consider local equilibria in state space, the dynamics of which are determined by reactive and diffusive fluxes.
 
+\pagebreak
 \subsection{Basis Functions for State Space}
 \label{section:basis-function-methods}
 
-Suppose that we want to specify a differential equation model \eqref{eq:differential-equations} with high-level constraints without caring too much about the specific mathematical forms or derivations that lead to the model. In this setting the model will not have interpretable parameters $\theta$ to manipulate, and hence we will denote such models without a subscript $F$. This may be useful in settings where we know what qualitative behaviours the model of our phenotype has, but either do not know or maybe not care about the microscopic details. In this section we outline a novel basis function method for specifying state space structures, inspired by the mathematics of electromagnetism. These basis functions were used to generate vector fields for figures throughout the thesis.
+Suppose that we want to specify a differential equation model \eqref{eq:differential-equations} with high-level constraints without caring too much about the specific mathematical forms or derivations that lead to the model. In this setting the model will not have interpretable parameters $\theta$ to manipulate. We distinguish interpretable models $\rates$ from ones whose parameters do not have a clear meaning $F$; sometimes such models are referred to as non-parametric models. This may be useful in settings where we know what qualitative behaviours the model of our phenotype has, but either do not know or maybe not care about the microscopic details. In this section we outline a novel basis function method for specifying state space structures, inspired by the mathematics of electromagnetism. These basis functions were used to generate vector fields for figures throughout the thesis.
 
 Suppose we would like to define a differential equation model whose trajectories approach a given limit set $\partial\Omega$, which are typically either limit cycles or fixed points. We can define a norm from any point $u$ to the set
 \begin{equation}
 	N(u,\partial\Omega) := \min_{u'\in\partial\Omega}|u-u'| 
 	\label{eq:distance-function}
 \end{equation}
-which can be used as a scalar potential that generates a vector field $F(u)$ that drives the dynamics towards $\partial\Omega$. Additionally we would like the field to vanish on the limit set $F(u\in\partial\Omega)=0$ as well as far away from the limit set
+which can be used as a scalar potential that generates a basis function field $F(u)$ that drives the dynamics towards $\partial\Omega$. Once a trajectory reaches the limit set we want it to remain there and therefore we would like the basis function to vanish on the limit set
+\begin{equation}
+    F(u\in\partial\Omega)=0
+    \label{eq:steady-state-condition}
+\end{equation}
+Since we are trying to construct basis functions, another useful property to have is locality. Trajectories far away from a limit set should not feel its affect will therefore be attracted by the limit sets closest to it. Locality can be expressed as the basis function vanishing far away from its limit set
+
+\begin{equation}
+    N(u,\partial\Omega)\rightarrow \infty \implies F(u)\rightarrow 0 
+    \label{eq:locality-condition}
+\end{equation}
+A basis function that uses \eqref{eq:distance-function} as a scalar potential, satisfies steady state \eqref{eq:steady-state-condition} and locality \eqref{eq:locality-condition} conditions can be constructed as
 \begin{equation}
 	F(u) = -N(u,\partial\Omega)\mathbb{e}^{-N(u,\partial\Omega)}\frac{\partial}{\partial u}N(u,\partial\Omega)
 	\label{eq:scalar-potential}
 \end{equation}
-If the limit set $\partial\Omega$ is a connected surface we can additionally specify an angular momentum field $\omega(u)$ that gives rise to dynamics tangent to the limit set, which leads to limit cycles. We want the field to be tangent to the limit set $\left.\frac{\partial}{\partial u}N(u,\partial\Omega)\cdot F(u)\right|_{u\in\partial\Omega}=0$ and still vanish far away from the set. The field can be written in terms of tangential and normal field components to the limit set
+If the limit set $\partial\Omega$ is a connected surface we can additionally specify an angular momentum field $\omega(u)$ that gives rise to dynamics tangent to the limit set, which leading to limit cycles. The trajectory is not allowed to escape the limit set while it is circulating and therefore the basis function must obey a tangent condition
+\begin{equation}
+\left.\frac{\partial}{\partial u}N(u,\partial\Omega)\cdot F(u)\right|_{u\in\partial\Omega}=0
+    \label{eq:tangent-condition}
+\end{equation}
+For a given basis function we can now decompose the field into tangential components responsible for cycles and normal components that attract trajectories towards the limit set. Before we can combine the two components together we need to decide what the relative weighting coefficients should be for each component. While both components should still obey locality \eqref{eq:locality-condition}, the relative magnitudes of each component as we move away from a limit set will determine the direction of the field. If we allow the tangential components to vanish faster than the normal components, then the field will point normally towards the limit set. The result is that all limit sets look like fixed points at a sufficiently large distance and we believe this yields to most simple field $F$ for a given limit set $\partial\Omega$. The basis function
 \begin{equation}
 	F(u) = \mathbb{e}^{-N(u,\partial\Omega)}\left(\omega(u)\times\frac{\partial}{\partial u}-N(u,\partial\Omega)\frac{\partial}{\partial u}\right)N(u,\partial\Omega)
 	\label{eq:basis-functions}
 \end{equation}
-We also have an additional property that the tangential components $\omega(u)\times\frac{\partial}{\partial u}$ vanish faster than the normal components as $N(u,\partial\Omega)\rightarrow\infty$. This makes any limit set $\partial\Omega$ look like a stable fixed point from a sufficient distance. We note that the cross product is only defined for three dimensions $N=3$; the higher dimensional analogues of this operation is the wedge product $\wedge$ defined in the language of exterior algebra \cite{Flystad2015TheMathematics}.
-
-Forcing the fields to vanish sufficiently far from their limit sets allows us to construct the field for multiple limit sets $\partial\Omega_k$ with their associated angular momenta $\omega_k(u)$ as a superposition
+is a choice that satisfies all our requirements. We note that the cross product is only defined for three dimensions $N=3$; the higher dimensional analogues of this operation is the wedge product $\wedge$ defined in the language of exterior algebra \cite{Flystad2015TheMathematics}. We can now create a superposition of basis functions with amplitudes $\alpha_{k}$ to construct a field that has multiple limit sets $\partial\Omega_k$ with their associated angular momenta $\omega_k(u)$
 \begin{equation}
 	F(u) = \sum_{k}\alpha_{k}\mathbb{e}^{-|u-\partial\Omega_{k}|}\left(\omega_{k}(u)\times\frac{\partial}{\partial u}-|u-\partial\Omega_{k}|\frac{\partial}{\partial u}\right)|u-\partial\Omega_{k}|
 	\label{eq:basis-function-field}
 \end{equation}
-where the amplitudes $\alpha_{k}$ determine the relative sizes of the basins of attraction for each limit set. In addition we can let $\alpha_{k}<0$ to specify unstable structures. 
+The amplitudes $\alpha_{k}$ determine the relative sizes of the basins of attraction for each limit set. In addition we can let $\alpha_{k}<0$ to specify unstable structures.
 
 \clearpage
 \section{Applications in Cell Biology}
@@ -527,7 +478,6 @@ The first gene regulatory network that was discovered is the \emph{lac operon} i
 \end{Figure}
 
 Let us first consider what happens within a single cell of constant volume. We assume the rate $\alpha$ of transcription and translation of \emph{LacZ} into $\beta$-Gal is constant unless the operator region is blocked by \emph{LacR}. The repressor is inactivated by the binding of two (allo)lactose molecules $\ce{C12H22O11}$.
-
 \begin{align*}
 	\ce{
 	\bond{~}Operator\bond{~}LacZ\bond{~} &->[$\alpha$]
@@ -540,12 +490,9 @@ Proteins degrade over some finite half-life $\mu$ we also have
 \begin{align*}
 	\ce{$\beta$-Gal ->[$\mu$] \emptyset}
 \end{align*}
-
 The equilibrium dissociation constants $k,k'$ define the binding affinity if \emph{LacR} to the operator and its effector respectively. Let rate $\beta$ be the rate of hydrolysis of lactose by $\beta$-Gal. These rates are determined by molecular details, some of which can be modulated with genetic engineering. Changing the promoter sequences, for example, can modulate the rate $\alpha$. Thus it makes sense to collect these rates into our model parameter $\theta=(\alpha,\beta,k,k')$. Let the concentration of the effector be the experimentally controlled condition $p=[\ce{C12H22O11}]$ and the remaining concentrations be collected in state vector $u=(\mathrm{LacZ},\mathrm{LacR},\mathrm{Gal})$.
 
-From this set of reactions it is possible to write down a \emph{chemical master equation} \cite{Gillespie1992,Gillespie2007} whose \emph{mean field approximation} yields a set of ordinary differential equations of the form \eqref{eq:differential-equations} which are commonly referred to as \emph{reaction rate equations}. This procedure is equivalent to the mass-action assumption used in chemistry. We note that the two major assumptions here are: a thermodynamic limit where the number of molecules is sufficiently large such that correlations due to discreteness can be ignored and a sufficiently \emph{well mixed} cytoplasm so that we do not have to model space.
-
-The \emph{reaction rate equations} for the Lac operon become
+From this set of reactions it is possible to write down a \emph{chemical master equation} \cite{Gillespie1992,Gillespie2007} whose \emph{mean field approximation} yields a set of ordinary differential equations of the form \eqref{eq:differential-equations} which are commonly referred to as \emph{reaction rate equations}. This procedure is equivalent to the mass-action assumption used in chemistry. We note that the two major assumptions here are: a thermodynamic limit where the number of molecules is sufficiently large such that correlations due to discreteness can be ignored and a sufficiently \emph{well mixed} cytoplasm so that we do not have to model space. The \emph{reaction rate equations} for the Lac operon become
 \begin{align}
 \frac{d}{dt}\mathrm{LacR} =  \mathrm{LacR}^\prime-& \frac{p^2}{2} k^{\prime} \mathrm{LacR} +  \mathrm{LacZ}^\prime  - k \mathrm{LacR}\,\mathrm{LacZ} \label{eq:lacR}\\\nonumber
 \frac{d}{dt}\mathrm{LacR}^\prime =  -  &\mathrm{LacR}^\prime + \frac{p^{2}}{2} k^{\prime} \mathrm{LacR} \\\nonumber\\
@@ -575,7 +522,7 @@ This is a \emph{hill}-type term that yields a basal level of transcription $\mat
 \end{align}
 
 \begin{Figure}
-	\includegraphics[scale=0.6]{switch}
+	\includegraphics[scale=0.5]{switch}
 	\caption{Monostable and bistable behaviour in the lac operon}
 	\label{fig:switch}
 \end{Figure}
@@ -585,7 +532,7 @@ In order to trigger the \emph{switch}-like behaviour we must engineer the dynami
 	\frac{dp}{dt} = -\beta p\mathrm{Gal} + f(p,\mathrm{Gal})
 	\label{eq:lactose-control}
 \end{align}
-yields three intersections with equation \eqref{eq:gal-steady}. In practice $f$ can come from additional chemical reactions introduced by genetic engineering. We shall see how this was done with non-hydrolysable synthetic analogues of the \emph{lac operon} in Chapter \ref{chapter:double-exclusive}. The main take-away from this analysis is that whenever biochemical reactions yield \emph{hill}-type functions with inflection points, they tend to manifest on steady-state manifolds. This means that with  there is a good chance there exist chemical reactions that use it for its switching behaviour. In fact when the transglycosylation of lactose into \emph{allolactose} is taken into account, bistable behaviour is observed \cite{Yildirim2004DynamicsOperon}. Additional studies into the role of the permease LacY provides a positive feedback loop what can facilitate bistability \cite{}.
+yields three intersections with equation \eqref{eq:gal-steady}. In practice $f$ can come from additional chemical reactions introduced by genetic engineering. We shall see how this was done with non-hydrolysable synthetic analogues of the \emph{lac operon} in Chapter \ref{chapter:double-exclusive}. The main take-away from this analysis is that whenever biochemical reactions yield \emph{hill}-type functions with inflection points, they tend to manifest on steady-state manifolds. This means that with  there is a good chance there exist chemical reactions that use it for its switching behaviour. In fact when the transglycosylation of lactose into \emph{allolactose} is taken into account, bistable behaviour is observed \cite{Yildirim2004DynamicsOperon}. Additional studies into the role of the permease LacY provides a positive feedback loop what can facilitate bistability \cite{Novick1957EnzymePhenomenon,Vilar2003ModelingStudy,Ozbudak2004MultistabilityColi}.
 
 Now that we've understood how genetic switches can manifest within a single cell, we can begin asking questions about populations of cells. We will do this again in the \emph{mean field approximation}, where a large population of cells can be described as a continuum of spatially extended concentrations $u(x,t)$. Some of molecules can be exchanges between cells, which gives rise to non-zero \emph{diffusion coefficients}, while others are confined within cells. As we shall see in Chapter \ref{chapter:double-exclusive}, a bistable region gives rise to sharp boundaries in gene expression. Such boundaries, their velocity and stability have been studied in the context of \emph{travelling wave solutions} of the \emph{Kolmogorov-Petrovsky-Piskunov equation} \cite{Fisher1937TheGenes}.
 
@@ -685,7 +632,7 @@ The cells are then transferred into a flow cytometer, gated for live singlets an
     \targets = \{  (p,p^\prime) : D(P||Q)=\epsilon, \epsilon>0 \} 
 \end{align}
 
-This approach may break down if multi-modal distributions exist in the data. This would be the case if something happened to prevent a sub-population of cells to switch from one state another other. Reasons for this could include too much cell burden or not enough time given for cells to reach a steady state. In this case, quantifying the efficiency of switching from either side of the cusp could be a quantity of interest.
+This approach may break down if multi-modal distributions exist in the data. This would be the case if something happened to prevent a sub-population of cells to switch from one state another other. Reasons for this could include too much cell burden or not enough time given for cells to reach a steady state. In this case, quantifying the efficiency of switching from either side of the cusp could be a quantity of interest. In Chapter \ref{chapter:double-exclusive} we opted for a more basic method for extracting the location of a cusp in an effort not to introduce additional parameters that may have to be tuned. In Section \ref{afterword:inference} we discuss the limitations of that method and the benefits of an approach closer to that shown in Figure \ref{fig:cusp-sampling}.
 
 This approach would not work for extracting dynamic bifurcations such as \emph{Hopf} since only steady state information is available. Furthermore, the accuracy of this method is subject to noise amplitude. This method works well for cases where changes in the number of stable steady states can be resolved in the measured steady state distributions.
 
