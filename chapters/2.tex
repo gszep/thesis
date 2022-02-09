@@ -174,7 +174,7 @@ We remind ourselves that the blob $\sigma(t)$ is centred around state space poin
 	\right\rangle_{\sigma(t)}
 	\label{eq:finite-time-lyapunov}
 \end{equation}
-where $\left\langle\cdots\right\rangle_{\sigma(t)}$ is a shorthand for a weighted arithmetic average over the components of the initial blob $\sigma(t)$. We have used Jensen's Inequality \cite{ValeursMoyennes1906SurMoyennes} to show that the rate of distortions is bounded by the average of real parts of eigenvalues. This bound becomes an equality for eigenvalue $\lambda$ when the blob $\sigma(t)$ is initialised along only its eigenvector $\eigenvector$. We will see later how the \emph{Lyapunov exponents} are useful for extracting timescales around interesting structures in state space such as \emph{fixed points} and \emph{degeneracies}. 
+where $\left\langle\cdots\right\rangle_{\sigma(t)}$ is a shorthand for a weighted arithmetic average over the components of the initial blob $\sigma(t)$. We have used Jensen's Inequality \cite{Jensen1906SurMoyennes} to show that the rate of distortions is bounded by the average of real parts of eigenvalues. This bound becomes an equality for eigenvalue $\lambda$ when the blob $\sigma(t)$ is initialised along only its eigenvector $\eigenvector$. We will see later how the \emph{Lyapunov exponents} are useful for extracting timescales around interesting structures in state space such as \emph{fixed points} and \emph{degeneracies}. 
 
 \subsubsection{Fixed Points}
 
@@ -547,13 +547,7 @@ Suppose we define a reaction-diffusion system where the reaction term has a fini
 \end{Figure}
 
 \subsection{Self-organised Patterns \& Development}
-During the development of any organism a hierarchy of self-organisation takes place that leads to the breaking of symmetry from a spherical cluster of undifferentiated cells to the formation of organ segments and limbs. This process is known as morphogenesis. Figure \ref{fig:morph} shows an example in which \textit{Hox} gene expression patterns in the body segments of Drosophila can drastically affect its development.
-\begin{Figure}
-\includegraphics[width=100mm]{figures/morph1.png}\\
-\includegraphics[width=100mm]{figures/morph2.png}
-\caption{Top: \textit{Hox} gene expression patterns in body segments of \emph{Drosophila}. Bottom: Mutation where legs grow in-place of antenna. Figure reproduced from \cite{Several2022HoxGene}.}
-\label{fig:morph}
-\end{Figure}
+During the development of any organism a hierarchy of self-organisation takes place that leads to the breaking of symmetry from a spherical cluster of undifferentiated cells to the formation of organ segments and limbs. This process is known as morphogenesis. Figure \ref{fig:morph} shows an example in which \textit{Hox} gene expression patterns in the body segments of \emph{Drosophila} can drastically affect its development.
 
 \subsubsection{Morphogen-Driven Patterns}
 One of the central questions in developmental biology is how positional information is sensed by a population of cells and how sharp gene expression boundaries between populations are maintained for robust organ and body segment development. The French Flag model \cite{Wolpert1969PositionalDifferentiation.} proposes that cells have a threshold response to external signalling molecules -- henceforth referred to as morphogens -- which pre-pattern the organism from anterior to posterior and laterally. Some examples of morphogens include Wingless, Decapentaplegic and Sonic Hedgehog. Figure \ref{fig:gap} show the \textit{Gap} expression patterns that partition the Drosophila embryo into segments which are later differentiated by \textit{Hox} genes.
@@ -561,6 +555,12 @@ One of the central questions in developmental biology is how positional informat
 \includegraphics[width=100mm]{figures/gap.jpg}
 \caption{Expression patterns of pair-rule \textit{Gap} genes in the \emph{Drosophila} embryo. Figure reproduced from \cite{Hejnol2017LarvalLater}.}
 \label{fig:gap}
+\end{Figure}
+\begin{Figure}
+\includegraphics[width=100mm]{figures/morph1.png}\\
+\includegraphics[width=80mm]{figures/morph2.png}
+\caption{Top: \textit{Hox} gene expression patterns in body segments of \emph{Drosophila}. Bottom: Mutation where legs grow in-place of antenna. Figures from \cite{Reece2014CampbellBiology,Tzou2022HoxGene}.}
+\label{fig:morph}
 \end{Figure}
 This gene network can be modelled with reaction-diffusion equations, where the fixed points $\steady$ correspond to the concentrations of relevant biochemicals required to for tissue differentiation. Morphogens would have non-zero diffusion coefficients $D$ as they would be responsible for pre-patterning across the organism.
 
