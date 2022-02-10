@@ -1,18 +1,27 @@
 \documentclass[12pt,phd,a4paper,oneside]{thesis}
 
 \input{Packages}
-\input{LinksAndMetadata}
 \input{FloatSettings} % For things like figures and tables
-\bibliographystyle{unsrt}  % For bibliographies
 \input{Notation}
 
+\makeatletter
+\AtBeginDocument{
+    \hypersetup{
+        pdfsubject={Biophysics},
+        pdfkeywords={inference,bifurcations},
+        pdfauthor={Grisha Szep},
+        pdftitle={Inferring bifurcations between phenotypes},
+    }
+}
+\makeatother
+
+\bibliographystyle{unsrt}  % For bibliographies
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
 \setboolean{@twoside}{false}
 
 \begin{document}
 \raggedbottom % stops huge gaps between paragraphs
-\nobibliography*
 
 \include{Preamble}
 \include{chapters/1}
@@ -23,6 +32,6 @@
 \include{chapters/6}
 \include{Appendices} 
 
-\addcontentsline{toc}{chapter}{Bibliography}
 \bibliography{biblio}
+\addcontentsline{toc}{chapter}{Bibliography}
 \end{document}
