@@ -1,4 +1,4 @@
-# Inference of Bifurcations Between Phenotypes
+# Inferring Bifurcations Between Phenotypes
 
 This is an interactive presentation in Julia that utilises the package [Pluto.jl](https://github.com/fonsp/Pluto.jl). Once installed, run Pluto with the following commands:
 
