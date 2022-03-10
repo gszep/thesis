@@ -12,11 +12,12 @@ end
 
 # ╔═╡ cae037ca-af83-44ef-90a3-602990f6c63c
 begin
-	using LaTeXStrings, Parameters
-	using LinearAlgebra
+	using LaTeXStrings
+	using LinearAlgebra, Parameters
 	using WGLMakie
 
 	const style = JSServe.Dependency( :style, ["assets/style.css"])
+	const d3 = JSServe.Dependency( :d3, ["assets/d3.v6.min.js"])
 	html"""<center><button onclick=present()>Present Mode</button></center>"""
 end
 
@@ -30,11 +31,62 @@ Grisha Szep
 )">
 </center>""")
 
-# ╔═╡ 1fb11407-05ae-46d0-8686-7e353833a79a
-HTML("""<h1>Introduction & Motivation</h1>""")
+# ╔═╡ e3319933-a7d3-4239-92a2-23ca3e29cf63
+HTML("""<h1>Thesis Contents</h1>""")
 
-# ╔═╡ 173afa88-eafe-47a3-b16d-40281f46baa9
-md"""We shall demonstrate the expectation-maximisation algorithm on the gaussian mixture model ``p(\mathbf{x}|\mathbf{\theta})`` where parameters we want to  estimate ``\mathbf{\theta}= (\Sigma_1\dots,\Sigma_K,\mu_1\dots\mu_K,\pi_1\dots\pi_K)`` are the means ``\mu_k`` covariance matrices ``\Sigma_k`` and weight ``\pi_k`` for each mixture. The model is written as """
+# ╔═╡ 53dc1a67-1362-42b4-8fa4-b366e370ead9
+App() do session::Session
+        venn = DOM.div(id = "venn", class = "svg-container", style="height:400px")
+        JSServe.onload(session, venn, js"""
+        function (container){
+			var svg = $d3.select("div#venn").append("svg")
+		        .classed("svg-content", true)
+
+			svg.append("circle")
+			  .attr("cx", 2).attr("cy", 2).attr("r", 40).style("fill", "blue")
+			svg.append("circle")
+			  .attr("cx", 140).attr("cy", 70).attr("r", 40).style("fill", "red")
+			svg.append("circle")
+			  .attr("cx", 300).attr("cy", 150).attr("r", 40).style("fill", "green")
+			
+		}""")
+        return DOM.div(venn,style)
+end
+
+# ╔═╡ 1fb11407-05ae-46d0-8686-7e353833a79a
+HTML("""<h1>Thesis Contents</h1>""")
+
+# ╔═╡ ea729ba4-ad3d-4a52-a0c5-0dd9a892d505
+HTML("""Chapters in the thesis with <i>incorporated publications</i> and <b>research questions</b> 
+</br></br>
+<details><summary>
+3: <i>Interpretation of Morphogen Gradients by a Bistable Circuit</i>
+</summary>
+<ul>
+<li><b>How do dynamic morphogen gradients lead to robust gene expression domains?</b></li>
+<li><b>Which genetic designs satisfy a target cusp bifurcation in flow cytometry data?</b></li>
+</ul>
+</details>
+<details><summary>
+4: <i>Parameter Inference with Bifurcation Diagrams</i>
+</summary>
+<ul>
+<li><b>Which differential equations satisfy a target bifurcation diagram?</b></li>
+<li><b>How do we organise models in terms of geometric and topological equivalence?</b></li>
+</ul></details>
+<details><summary>
+5: Exploring Bifurcation between Phenotypes</summary>
+<ul>
+<li><b>How do we identify qualitatively distinct cell populations in flow cytometry data?</b></li>
+<li><b>What is the balance between domain expertise and unsupervised machine learning?</b></li>
+</ul></details>""")
+
+# ╔═╡ 640da705-e836-488c-9a55-7d8ada8602e5
+md""" #
+We could just look for the maximum likelihood estimate. However this allows any optimiser to place mixture ``k`` right on top of a single data point and descrease the covariance ``\Sigma_k\rightarrow 0``. This leads to singularities in the likeliood and makes it very difficult to find the optimal parameters ``\theta^*``
+
+Since optimising ``p(\mathbf{x}|\mathbf{\theta})`` directly is difficult we re-write the model in terms of ``K`` dimensional probability vectors ``\mathbf{z}``, its prior distirbution ``p(\mathbf{z}|\theta)`` and model ``p(\mathbf{x}|\mathbf{z},\theta)`` as
+"""
 
 # ╔═╡ 7699b0aa-0233-4040-bac0-3278e7f4ba5a
 L"""
@@ -47,13 +99,6 @@ p(\mathbf{x}|\mathbf{\theta}):=
 function 𝒩(x,μ,Σ) # multivariate gaussian
 	return exp( -(x-μ)'inv(Σ)*(x-μ)/2 ) / √( (2π)^length(x)*abs(det(Σ)) )
 end
-
-# ╔═╡ 640da705-e836-488c-9a55-7d8ada8602e5
-md""" #
-We could just look for the maximum likelihood estimate. However this allows any optimiser to place mixture ``k`` right on top of a single data point and descrease the covariance ``\Sigma_k\rightarrow 0``. This leads to singularities in the likeliood and makes it very difficult to find the optimal parameters ``\theta^*``
-
-Since optimising ``p(\mathbf{x}|\mathbf{\theta})`` directly is difficult we re-write the model in terms of ``K`` dimensional probability vectors ``\mathbf{z}``, its prior distirbution ``p(\mathbf{z}|\theta)`` and model ``p(\mathbf{x}|\mathbf{z},\theta)`` as
-"""
 
 # ╔═╡ a2f6263b-ed1f-4e73-81a1-b0a83cc7d4bc
 L"
@@ -98,8 +143,8 @@ HTML("""<h1>Interactive Simulation</h1>""")
 # ╔═╡ 8e86e4e1-0f55-4fca-b58c-49262abd5adb
 begin
 	# Set the default resolution to something that fits the Documenter theme
-	set_theme!(resolution=(800, 400))
-	scatter(1:4, color=1:4)
+	# set_theme!(resolution=(800, 400))
+	# scatter(1:4, color=1:4)
 end
 
 # ╔═╡ e2c520ec-2717-42c4-b4f0-0da56cf59927
@@ -1356,15 +1401,17 @@ version = "3.5.0+0"
 # ╟─e5db1a5a-9fb9-11ec-2ae1-4b4a6d89e282
 # ╟─cae037ca-af83-44ef-90a3-602990f6c63c
 # ╟─c91f9c9a-75be-4f59-97f2-cf7ccbabf726
+# ╟─e3319933-a7d3-4239-92a2-23ca3e29cf63
+# ╠═53dc1a67-1362-42b4-8fa4-b366e370ead9
 # ╟─1fb11407-05ae-46d0-8686-7e353833a79a
-# ╟─173afa88-eafe-47a3-b16d-40281f46baa9
+# ╟─ea729ba4-ad3d-4a52-a0c5-0dd9a892d505
+# ╟─640da705-e836-488c-9a55-7d8ada8602e5
 # ╟─7699b0aa-0233-4040-bac0-3278e7f4ba5a
 # ╠═e7add794-068c-4b91-9a29-ec76034e1888
-# ╟─640da705-e836-488c-9a55-7d8ada8602e5
 # ╟─a2f6263b-ed1f-4e73-81a1-b0a83cc7d4bc
 # ╟─5d5d4a2e-b8ff-4660-82ab-6ca786626cef
 # ╠═65d2b69e-528f-45d7-8a15-2a05b5f6e1db
-# ╟─eedf0b49-cca7-4683-b205-05eb27104d69
+# ╠═eedf0b49-cca7-4683-b205-05eb27104d69
 # ╟─0126a530-7322-4e75-be00-6e73420c5ec9
 # ╟─75a6e25c-2301-4fb7-a791-665d3d81363e
 # ╠═cd1e5b29-cfb0-4de3-ac24-772ebb6c4b76

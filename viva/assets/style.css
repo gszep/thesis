@@ -1,0 +1,16 @@
+/* #################################### d3 plots */
+.svg-container {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%;
+  vertical-align: top;
+  text-align:center;
+}
+.svg-content {
+  display: inline-block;
+  position: absolute;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
