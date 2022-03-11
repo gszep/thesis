@@ -18,6 +18,7 @@ begin
 
 	const style = JSServe.Dependency( :style, ["assets/style.css"])
 	const d3 = JSServe.Dependency( :d3, ["assets/d3.v6.min.js"])
+	const venn = JSServe.Dependency( :venn, ["assets/venn.js"])
 	html"""<center><button onclick=present()>Present Mode</button></center>"""
 end
 
@@ -32,29 +33,31 @@ Grisha Szep
 </center>""")
 
 # ╔═╡ e3319933-a7d3-4239-92a2-23ca3e29cf63
-HTML("""<h1>Thesis Contents</h1>""")
+HTML("""<h2>Thesis Contents</h2>""")
 
 # ╔═╡ 53dc1a67-1362-42b4-8fa4-b366e370ead9
 App() do session::Session
-        venn = DOM.div(id = "venn", class = "svg-container", style="height:400px")
-        JSServe.onload(session, venn, js"""
+        Venn = DOM.div(id = "venn", class = "svg-container", style="height:400px")
+        JSServe.onload(session, Venn, js"""
         function (container){
 			var svg = $d3.select("div#venn").append("svg")
 		        .classed("svg-content", true)
 
-			svg.append("circle")
-			  .attr("cx", 2).attr("cy", 2).attr("r", 40).style("fill", "blue")
-			svg.append("circle")
-			  .attr("cx", 140).attr("cy", 70).attr("r", 40).style("fill", "red")
-			svg.append("circle")
-			  .attr("cx", 300).attr("cy", 150).attr("r", 40).style("fill", "green")
+			const sets = [
+				  { sets: ['A'], size: 12 },
+				  { sets: ['B'], size: 12 },
+				  { sets: ['A', 'B'], size: 2 },
+			];
+
+		const chart = $venn.VennDiagram();
+		svg.datum(sets).call(chart);
 			
 		}""")
-        return DOM.div(venn,style)
+        return DOM.div(venn,style,Venn)
 end
 
 # ╔═╡ 1fb11407-05ae-46d0-8686-7e353833a79a
-HTML("""<h1>Thesis Contents</h1>""")
+HTML("""<h2>Thesis Contents</h2>""")
 
 # ╔═╡ ea729ba4-ad3d-4a52-a0c5-0dd9a892d505
 HTML("""Chapters in the thesis with <i>incorporated publications</i> and <b>research questions</b> 
@@ -1399,7 +1402,7 @@ version = "3.5.0+0"
 
 # ╔═╡ Cell order:
 # ╟─e5db1a5a-9fb9-11ec-2ae1-4b4a6d89e282
-# ╟─cae037ca-af83-44ef-90a3-602990f6c63c
+# ╠═cae037ca-af83-44ef-90a3-602990f6c63c
 # ╟─c91f9c9a-75be-4f59-97f2-cf7ccbabf726
 # ╟─e3319933-a7d3-4239-92a2-23ca3e29cf63
 # ╠═53dc1a67-1362-42b4-8fa4-b366e370ead9
