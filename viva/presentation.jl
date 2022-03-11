@@ -43,14 +43,57 @@ App() do session::Session
 			var svg = $d3.select("div#venn").append("svg")
 		        .classed("svg-content", true)
 
-			const sets = [
-				  { sets: ['A'], size: 12 },
-				  { sets: ['B'], size: 12 },
-				  { sets: ['A', 'B'], size: 2 },
-			];
+const sets = [
+  { sets: ['Cell Biology'], size: 12, fields: 'Lab Automation</br>Multiomics</br>Pathways' },
+  { sets: ['Dynamical Systems Theory'], size: 12, fields: 'Differential Equations </br>Bifurcations</br>Pattern Formation'  },
+  { sets: ['Machine Learning'], size: 12, fields: 'Automatic Differentiation</br>Deep Learning' },
+  { sets: ['Cell Biology', 'Dynamical Systems Theory'], size: 2, fields: 'Synthetic Biology</br>Systems Biology'  },
+  { sets: ['Dynamical Systems Theory', 'Machine Learning'], size: 2, fields: 'Differential Programming</br>Geometric Deep Learning</br>SciML'  },
+  { sets: ['Machine Learning', 'Cell Biology'], size: 2, fields: 'Bioinformatics</br>Clustering</br>Fitting'  },
+  { sets: ['Dynamical Systems Theory', 'Machine Learning', 'Cell Biology'], size: 2, fields: ''  },
+];
 
-		const chart = $venn.VennDiagram();
-		svg.datum(sets).call(chart);
+const chart = venn.VennDiagram();
+svg.datum(sets).call(chart);
+
+var tooltip = d3.select("body").append("div")
+    .attr("class", "venntooltip");
+
+svg.selectAll("path")
+    .style("stroke-opacity", 0)
+    .style("stroke", "#fff")
+    .style("stroke-width", 3)
+
+svg.selectAll("g")
+    .on("mouseover", function(event,d) {
+        // sort all the areas relative to the current item
+        venn.sortAreas(svg, d);
+        
+        // Display a tooltip with the current size
+        tooltip.transition().duration(400).style("opacity", .9);
+        tooltip.html(d.fields);
+
+        // highlight the current path
+        var selection = d3.select(this).transition("tooltip").duration(400);
+        selection.select("path")
+            .style("fill-opacity", d.sets.length == 1 ? .4 : .1)
+            .style("stroke-opacity", 1);
+    })
+
+    .on("mousemove", function(event) {
+        tooltip.style("left", (event.pageX) + "px")
+               .style("top", (event.pageY - 28) + "px");
+    })
+
+    .on("mouseout", function(event,d) {
+        tooltip.transition().duration(400).style("opacity", 0);
+        var selection = d3.select(this).transition("tooltip").duration(400);
+        selection.select("path")
+            .style("fill-opacity", d.sets.length == 1 ? .25 : .0)
+            .style("stroke-opacity", 0);
+    });
+
+
 			
 		}""")
         return DOM.div(venn,style,Venn)
@@ -1402,10 +1445,10 @@ version = "3.5.0+0"
 
 # ╔═╡ Cell order:
 # ╟─e5db1a5a-9fb9-11ec-2ae1-4b4a6d89e282
-# ╠═cae037ca-af83-44ef-90a3-602990f6c63c
+# ╟─cae037ca-af83-44ef-90a3-602990f6c63c
 # ╟─c91f9c9a-75be-4f59-97f2-cf7ccbabf726
 # ╟─e3319933-a7d3-4239-92a2-23ca3e29cf63
-# ╠═53dc1a67-1362-42b4-8fa4-b366e370ead9
+# ╟─53dc1a67-1362-42b4-8fa4-b366e370ead9
 # ╟─1fb11407-05ae-46d0-8686-7e353833a79a
 # ╟─ea729ba4-ad3d-4a52-a0c5-0dd9a892d505
 # ╟─640da705-e836-488c-9a55-7d8ada8602e5

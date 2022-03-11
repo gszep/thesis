@@ -14,3 +14,17 @@ main {
   padding: 0 6px 4rem 25px;
   width: 100%;
 }
+
+/* #################################### venn diagram */
+.venntooltip {
+  position: absolute;
+  text-align: center;
+  width: 200px;
+  height: 16px;
+  background: transparent;
+  color: #ddd;
+  padding: 2px;
+  border: 0px;
+  border-radius: 8px;
+  opacity: 0;
+}
