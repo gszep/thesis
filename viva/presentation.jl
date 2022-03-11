@@ -37,24 +37,26 @@ HTML("""<h2>Thesis Contents</h2>""")
 
 # ╔═╡ 53dc1a67-1362-42b4-8fa4-b366e370ead9
 App() do session::Session
-        Venn = DOM.div(id = "venn", class = "svg-container", style="height:400px")
-        JSServe.onload(session, Venn, js"""
-        function (container){
-			var svg = $d3.select("div#venn").append("svg")
-		        .classed("svg-content", true)
+    Venn = DOM.div(id = "venn", class = "svg-container", style="height:400px")
+    JSServe.onload(session, Venn, js"""function (container){
+
+var svg = $d3.select("div#venn").append("svg")
+	.classed("svg-content", true)
 
 const sets = [
   { sets: ['Cell Biology'], size: 12, fields: 'Lab Automation</br>Multiomics</br>Pathways' },
   { sets: ['Dynamical Systems Theory'], size: 12, fields: 'Differential Equations </br>Bifurcations</br>Pattern Formation'  },
   { sets: ['Machine Learning'], size: 12, fields: 'Automatic Differentiation</br>Deep Learning' },
   { sets: ['Cell Biology', 'Dynamical Systems Theory'], size: 2, fields: 'Synthetic Biology</br>Systems Biology'  },
-  { sets: ['Dynamical Systems Theory', 'Machine Learning'], size: 2, fields: 'Differential Programming</br>Geometric Deep Learning</br>SciML'  },
-  { sets: ['Machine Learning', 'Cell Biology'], size: 2, fields: 'Bioinformatics</br>Clustering</br>Fitting'  },
+  { sets: ['Dynamical Systems Theory', 'Machine Learning'], size: 2, fields: 'Differential Programming</br>Geometric Learning</br>SciML'  },
+  { sets: ['Machine Learning', 'Cell Biology'], size: 2, fields: 'Design-Build-Test-Learn</br>Bioinformatics'  },
   { sets: ['Dynamical Systems Theory', 'Machine Learning', 'Cell Biology'], size: 2, fields: ''  },
 ];
 
 const chart = venn.VennDiagram();
 svg.datum(sets).call(chart);
+svg.selectAll('text').style('fill', 'white');
+svg.selectAll('.venn-circle path').style('fill','#ddd');
 
 var tooltip = d3.select("body").append("div")
     .attr("class", "venntooltip");
@@ -77,12 +79,14 @@ svg.selectAll("g")
         var selection = d3.select(this).transition("tooltip").duration(400);
         selection.select("path")
             .style("fill-opacity", d.sets.length == 1 ? .4 : .1)
-            .style("stroke-opacity", 1);
+            .style("stroke-opacity", 1)
+            .style("stroke", d.sets.length == 3 ? '#ffd700' : "#fff")
+            .style("fill", d.sets.length == 3 ? '#ffd700' : "#fff")
     })
 
     .on("mousemove", function(event) {
-        tooltip.style("left", (event.pageX) + "px")
-               .style("top", (event.pageY - 28) + "px");
+        tooltip.style("left", (event.pageX - 28) + "px")
+               .style("top", (event.pageY - 40) + "px");
     })
 
     .on("mouseout", function(event,d) {
@@ -91,12 +95,13 @@ svg.selectAll("g")
         selection.select("path")
             .style("fill-opacity", d.sets.length == 1 ? .25 : .0)
             .style("stroke-opacity", 0);
-    });
+    })
+    .on("click", function(event,d) {
+        console.log("1")
+    })
 
-
-			
-		}""")
-        return DOM.div(venn,style,Venn)
+}""")
+    return DOM.div(venn,style,Venn)
 end
 
 # ╔═╡ 1fb11407-05ae-46d0-8686-7e353833a79a
