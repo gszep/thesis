@@ -19,7 +19,31 @@ begin
 	const style = JSServe.Dependency( :style, ["assets/style.css"])
 	const d3 = JSServe.Dependency( :d3, ["assets/d3.v6.min.js"])
 	const venn = JSServe.Dependency( :venn, ["assets/venn.js"])
-	html"""<center><button onclick=present()>Present Mode</button></center>"""
+	html"""<center><button onclick="
+		present();
+
+	    elements = document.getElementsByTagName('pluto-shoulder');
+	    for (var i = 0; i < elements.length; i++) {
+
+	        console.log(elements[i].style.display == '')
+	        elements[i].style.display = elements[i].style.display == '' ? 'none' : '';
+		};
+
+	    elements = document.getElementsByTagName('pluto-trafficlight');
+	    for (var i = 0; i < elements.length; i++) {
+
+	        console.log(elements[i].style.display == '')
+	        elements[i].style.display = elements[i].style.display == '' ? 'none' : '';
+		};
+
+	    elements = document.getElementsByClassName('add_cell');
+	    for (var i = 0; i < elements.length; i++) {
+
+	        console.log(elements[i].style.display == '')
+	        elements[i].style.display = elements[i].style.display == '' ? 'none' : '';
+		};
+	
+	">Present Mode</button></center>"""
 end
 
 # ╔═╡ c91f9c9a-75be-4f59-97f2-cf7ccbabf726
