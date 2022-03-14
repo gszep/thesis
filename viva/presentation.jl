@@ -12,7 +12,7 @@ end
 
 # ╔═╡ cae037ca-af83-44ef-90a3-602990f6c63c
 begin
-	using LinearAlgebra, BifurcationKit, ForwardDiff
+	using StatsBase, LinearAlgebra, BifurcationKit, ForwardDiff
 	using Parameters, Setfield, StaticArrays
 	using LaTeXStrings, WGLMakie, Colors
 
@@ -44,6 +44,27 @@ begin
 		};
 	
 	">Present Mode</button></center>"""
+
+	set_theme!(Theme(
+		backgroundcolor = colorant"#1f1f1f",
+		textcolor = :white,
+	    Axis = (
+	        xgridvisible  = false,
+			ygridvisible  = false,
+	        xticksvisible  = false,
+			yticksvisible  = false,
+	        xticklabelsvisible  = false,
+	        yticklabelsvisible  = false,
+	        ylabelpadding = 10,
+			xlabelpadding = 10,
+			xlabelsize = 24,
+			ylabelsize = 24,
+		    bottomspinecolor = :white,
+			leftspinecolor = :white,
+			rightspinecolor = :white,
+			topspinecolor = :white,
+		)
+	))
 end
 
 # ╔═╡ c91f9c9a-75be-4f59-97f2-cf7ccbabf726
@@ -220,102 +241,135 @@ Figure 2: Morphogen gradients <i>C<sub>6</sub></i> and <i>C<sub>12</sub></i> dif
 # ╔═╡ a0728fba-f63c-48cf-a2a3-43dd5a33c6d3
 begin
 	function F(u,p)
-
-		@unpack α, β = p
+		@unpack α, β, θ, origin = p
+		
 		F = similar(u)
+		x,y = origin
 
-		F[1] = α + β*u[1] - u[1]^3
+		α′ = (α-x)*cos(θ) - (β-y)*sin(θ)
+		β′ = (α-x)*sin(θ) + (β-y)*cos(θ)
+
+		F[1] = α′ + β′*u[1] - u[1]^3
 		return F
 	end
 
+	∂F(u,p) = ForwardDiff.jacobian(u->F(u,p),u)
+	N = 101; ∇² = SymTridiagonal([-1;fill(-2,N-2);-1],fill(1,N-1))
+	
 	function F!(u,p)
+		@unpack α, β, θ, origin, Dα, Dβ, kα, kβ, dt = p
 
-		@unpack α, β, Dα, Dβ, kα, kβ, dt = p
-		du, dα, dβ = similar(u), zero(α), zero(β)
-
-		# reaction
-		@. du = α + β*u - u^3
-
-		# diffusion
-		for i=2:length(u)-1
-			dα[i] = Dα * (α[i-1]-2*α[i]+α[i+1]) 
-			dβ[i] = Dβ * (β[i-1]-2*β[i]+β[i+1])
-		end
-
-		# with zero-flux boundaries
-		dα[1] = Dα * (α[2]-α[1])
-		dβ[1] = Dβ * (β[2]-β[1])
-
-		dα[end] = Dα * (α[end-1]-α[end])
-		dβ[end] = Dβ * (β[end-1]-β[end])
-
-		# relay reaction
-		dα .+= kα
-		dβ .+= kβ
-
-		# update
-		u .+= du * dt
-		α .+= dα * dt
-		β .+= dβ * dt
-	end
-
-	function bistable_region(F::Function)
-		∂F(u,p) = ForwardDiff.jacobian(u->F(u,p),u)
-
-		options = ContinuationPar(dsmin = 0.02, dsmax = 0.02, ds = 0.02,
-			pMin = -1.0, pMax = 1.0, saveSolEveryStep=1, maxSteps = 1000,
-			newtonOptions = NewtonPar(tol = 1e-6), detectBifurcation=3
-		)
-	
-		u, p = [-1.0], (α = -1.0, β = 1.0)
+		dα, dβ = zero(u[]), zero(u[])
+		x,y = origin[]
 		
-		branches, z = continuation( F, ∂F, u, p, 
-			(@lens _.α), options)
-	
-		branches, z = continuation( F, ∂F, branches, 2,
-			(@lens _.β), ContinuationPar(options, ds = -0.02 ))
-	
-		return Point2{Float32}[map( s -> (s.x.p,s.p), branches.sol)..., (1,1)]
+		α′ = @. (α[]-x)*cos(θ[]) - (β[]-y)*sin(θ[])
+		β′ = @. (α[]-x)*sin(θ[]) + (β[]-y)*cos(θ[])
+
+		# reaction-diffusion
+		u[] += @. ( α′ + β′*u[] - u[]^3 ) * dt
+		α[] += ( Dα[]*∇²*α[] .+ kα[] ) * dt
+		β[] += ( Dβ[]*∇²*β[] .+ kβ[] ) * dt
 	end
+
+	options = ContinuationPar(dsmin = 0.01, dsmax = 0.1, ds = -0.02,
+		pMin = -1.0, pMax = 1.0, maxSteps = 100,
+		newtonOptions = NewtonPar(tol = 1e-6), detectBifurcation=3
+	)
+	nothing
 end
 
 # ╔═╡ cd1e5b29-cfb0-4de3-ac24-772ebb6c4b76
 begin
-	u,x = collect(-range(-1,1,length=101)), range(0,1,length=101)
-	p = ( α = zero(u), β = zero(u),
-		  Dα = 0.1, Dβ = 0.1,
-		  kα = 0.0, kβ = 0.0,
-		  dt = 0.01
+	u,x = Observable(zeros(N)), range(0,1,length=N)
+	p = ( α = Observable(zeros(N)), β = Observable(zeros(N)),
+	
+		  Dα = Observable(0.1), Dβ = Observable(0.1),
+	      kα = Observable(0.0), kβ = Observable(0.0),
+
+		  θ = Observable(π/4), origin = Observable([0.25,0.25]),
+	      dt = 0.2, u₀ = [1.0],
 	)
 
-	p.α[1:30] .= 0.5 
-	p.β[end-30:end] .= 1.5 
+	p.α[][1:30] .= 1.5
+	p.β[][end-30:end] .= 2.5
 
-	for i in 1:100000 F!(u,p) end
-
-	figure = Figure(resolution=(4*256,2*256))
-
-	ax = figure[1,1] = Axis(figure)
-	deactivate_interaction!(ax,:rectanglezoom)
-
-	band!(ax, x, zero(u), min.(u,0), linewidth=5, color=colorant"#00b0f055")
-	band!(ax, x, max.(u,0), zero(u), linewidth=5, color=colorant"#ffd70055")
-
-	lines!(ax, x, p.β, linewidth=5, color=colorant"#000099", label=L"C_6")
-	lines!(ax, x, p.α, linewidth=5, color=colorant"#ff6600", label=L"C_{12}")
-
-	figure[1,2] = Legend(figure, ax, "Morphogens", framevisible = false)
-
-	ax = figure[1,3] = Axis(figure)
-	deactivate_interaction!(ax,:rectanglezoom)
-	xlims!(ax,-1.0,1.0); ylims!(ax, -1.0,1.0)
+	bistable_region = @lift begin
 	
-	poly!(ax, bistable_region(F), color=RGBA(1,0,0,0.5))
+		branches, z = continuation( F, ∂F, p.u₀,
+			(α = 1.0, β = 1.0, θ = $(p.θ), origin = $(p.origin)), 
+			(@lens _.α), options )
+	
+		branches, z = continuation( F, ∂F, branches, 1,
+			(@lens _.β), ContinuationPar(options, saveSolEveryStep=1))
+	
+		return Point2{Float32}[map( s -> (s.x.p,s.p), branches.sol)..., (1,1)]
+	end
+
+	figure = Figure(resolution=(5*256,2*256))
+
+	ax = figure[1:2,1] = Axis(figure,
+		xlabel = L"Space $x$",
+		ylabel = L"States $u(x,t)$")
+	
+	deactivate_interaction!(ax,:rectanglezoom)
+	deactivate_interaction!(ax,:scrollzoom)
+	
+	xlims!(ax,0,1)
+	ylims!(ax,0,3)
+	
+	c = band!(ax, x, zeros(N), @lift(-min.($u,0)) , linewidth=5, color=colorant"#00b0f055")
+	y = band!(ax, x, @lift(max.($u,0)), zeros(N), linewidth=5, color=colorant"#ffd70055")
+
+	b = lines!(ax, x, p.β, linewidth=5, color=colorant"#000099")
+	a = lines!(ax, x, p.α, linewidth=5, color=colorant"#ff6600")
+
+	Legend(figure[1,2], [c,y], [L"CFP",L"YFP"], titlesize=24,
+		L"Fluorescence $u_1,u_2$", framevisible = false, labelsize=18)
+	Legend(figure[2,2], [b,a], [L"C_6",L"C_{12}"], titlesize=24,
+		L"Morphogens $u_3,u_4$", framevisible = false, labelsize=20)
+
+	ax = figure[1:2,3] = Axis(figure,
+		xlabel = L"Signal $C_{12}(x,t)$",
+		ylabel = L"Signal $C_6(x,t)$")
+
+	play = Button(figure; label="Play")
+	point,circle = select_point(ax.scene), select_line(ax.scene)
+
+	point[] = [1,-1]
+	circle[] = [[-2,2],[-2,1]]
+
+	playing = Observable(false)
+	# on(play.clicks) do clicks; playing[] = !playing[]; end
+	
+	# on(play.clicks) do clicks
+	    @async while playing[]
+	
+	        F!(u,p)
+	        sleep(0.001)
+	    end
+	# end
+	
+	deactivate_interaction!(ax,:rectanglezoom)
+	deactivate_interaction!(ax,:scrollzoom)
+	
+	xlims!(ax,0.0,1.0)
+	ylims!(ax,0.0,1.0)
+	
+	region = poly!(ax, bistable_region, color=:gray)
+
+	mask = 0 .< u[]
+	scatter!(ax, @lift($(p.α)[mask]), @lift($(p.β)[mask]),
+		color=colorant"#ffc000")
+	scatter!(ax, @lift($(p.α)[.~mask]), @lift($(p.β)[.~mask]), 
+		color=colorant"#00b0f0")
+	
+	avg = scatter!(ax, @lift([mean($(p.α))]), @lift([mean($(p.β))]),
+		marker=:x, color=:black, markersize=15)
+
+	Legend(figure[1:2,4], [avg,region], ["Spatial Average","Bistable Region"],
+		framevisible = false)
 	figure
 end
-
-# ╔═╡ 5bf8e948-9aa9-4e2a-8555-13fc357e3e97
-colorant"#00b0f0"
 
 # ╔═╡ b890fb02-0b44-4abd-978f-8cdb6ad92ed0
 HTML("""<h1>Interactive Simulation</h1>""")
@@ -361,6 +415,7 @@ LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"
 Setfield = "efcf1570-3423-57d1-acb7-fd33fddbac46"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 WGLMakie = "276b4fcb-3e11-5398-bf8b-a0c2d153d008"
 
 [compat]
@@ -372,6 +427,7 @@ LaTeXStrings = "~1.3.0"
 Parameters = "~0.12.3"
 Setfield = "~0.8.2"
 StaticArrays = "~1.4.1"
+StatsBase = "~0.33.16"
 WGLMakie = "~0.4.5"
 """
 
@@ -1724,7 +1780,6 @@ version = "3.5.0+0"
 # ╟─cae037ca-af83-44ef-90a3-602990f6c63c
 # ╟─c91f9c9a-75be-4f59-97f2-cf7ccbabf726
 # ╟─e3319933-a7d3-4239-92a2-23ca3e29cf63
-# ╟─53dc1a67-1362-42b4-8fa4-b366e370ead9
 # ╟─1fb11407-05ae-46d0-8686-7e353833a79a
 # ╟─ea729ba4-ad3d-4a52-a0c5-0dd9a892d505
 # ╟─eedf0b49-cca7-4683-b205-05eb27104d69
@@ -1733,7 +1788,6 @@ version = "3.5.0+0"
 # ╟─75a6e25c-2301-4fb7-a791-665d3d81363e
 # ╟─a0728fba-f63c-48cf-a2a3-43dd5a33c6d3
 # ╠═cd1e5b29-cfb0-4de3-ac24-772ebb6c4b76
-# ╠═5bf8e948-9aa9-4e2a-8555-13fc357e3e97
 # ╟─b890fb02-0b44-4abd-978f-8cdb6ad92ed0
 # ╟─8e86e4e1-0f55-4fca-b58c-49262abd5adb
 # ╟─e2c520ec-2717-42c4-b4f0-0da56cf59927
