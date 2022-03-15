@@ -14,7 +14,7 @@ end
 begin
 	using StatsBase, LinearAlgebra, BifurcationKit, ForwardDiff
 	using Parameters, Setfield, StaticArrays
-	using LaTeXStrings, WGLMakie, Colors
+	using LaTeXStrings, WGLMakie, GeometryBasics, Colors
 
 	const style = JSServe.Dependency( :style, ["assets/style.css"])
 	const d3 = JSServe.Dependency( :d3, ["assets/d3.v6.min.js"])
@@ -44,27 +44,6 @@ begin
 		};
 	
 	">Present Mode</button></center>"""
-
-	set_theme!(Theme(
-		backgroundcolor = colorant"#1f1f1f",
-		textcolor = :white,
-	    Axis = (
-	        xgridvisible  = false,
-			ygridvisible  = false,
-	        xticksvisible  = false,
-			yticksvisible  = false,
-	        xticklabelsvisible  = false,
-	        yticklabelsvisible  = false,
-	        ylabelpadding = 10,
-			xlabelpadding = 10,
-			xlabelsize = 24,
-			ylabelsize = 24,
-		    bottomspinecolor = :white,
-			leftspinecolor = :white,
-			rightspinecolor = :white,
-			topspinecolor = :white,
-		)
-	))
 end
 
 # ╔═╡ c91f9c9a-75be-4f59-97f2-cf7ccbabf726
@@ -238,6 +217,9 @@ Figure 2: Morphogen gradients <i>C<sub>6</sub></i> and <i>C<sub>12</sub></i> dif
 </ul>
 """)
 
+# ╔═╡ 3f0e4940-9887-4827-9105-ef1c0082700c
+HTML("""<h2>Interpretation of Morphogen Gradients</br>by a Synthetic Bistable Circuit</h2>""")
+
 # ╔═╡ a0728fba-f63c-48cf-a2a3-43dd5a33c6d3
 begin
 	function F(u,p)
@@ -254,32 +236,49 @@ begin
 	end
 
 	∂F(u,p) = ForwardDiff.jacobian(u->F(u,p),u)
-	N = 101; ∇² = SymTridiagonal([-1;fill(-2,N-2);-1],fill(1,N-1))
+	N = 50; ∇² = SymTridiagonal([-1;fill(-2,N-2);-1],fill(1,N-1))
 	
 	function F!(u,p)
 		@unpack α, β, θ, origin, Dα, Dβ, kα, kβ, dt = p
 
-		dα, dβ = zero(u[]), zero(u[])
-		x,y = origin[]
-		
-		α′ = @. (α[]-x)*cos(θ[]) - (β[]-y)*sin(θ[])
-		β′ = @. (α[]-x)*sin(θ[]) + (β[]-y)*cos(θ[])
-
 		# reaction-diffusion
-		u[] += @. ( α′ + β′*u[] - u[]^3 ) * dt
-		α[] += ( Dα[]*∇²*α[] .+ kα[] ) * dt
-		β[] += ( Dβ[]*∇²*β[] .+ kβ[] ) * dt
+		u[] += @. ( (α[]-origin[][1])*cos(θ[]) - (β[]-origin[][2])*sin(θ[]) + ((α[]-origin[][1])*sin(θ[]) + (β[]-origin[][2])*cos(θ[]))*u[] - u[]^3 ) * dt[]
+		α[] += ( Dα[]*∇²*α[] .+ kα[] ) * dt[]
+		β[] += ( Dβ[]*∇²*β[] .+ kβ[] ) * dt[]
 	end
 
 	options = ContinuationPar(dsmin = 0.01, dsmax = 0.1, ds = -0.02,
 		pMin = -1.0, pMax = 1.0, maxSteps = 100,
 		newtonOptions = NewtonPar(tol = 1e-6), detectBifurcation=3
 	)
-	nothing
+
+	set_theme!(Theme(
+		backgroundcolor = colorant"#1f1f1f",
+		textcolor = :white,
+	    Axis = (
+	        xgridvisible  = false,
+			ygridvisible  = false,
+	        xticksvisible  = false,
+			yticksvisible  = false,
+	        xticklabelsvisible  = false,
+	        yticklabelsvisible  = false,
+	        ylabelpadding = 10,
+			xlabelpadding = 10,
+			xlabelsize = 24,
+			ylabelsize = 24,
+		    bottomspinecolor = :white,
+			leftspinecolor = :white,
+			rightspinecolor = :white,
+			topspinecolor = :white,
+		)
+	))
+	HTML("""<ul><li><b>
+	How do dynamic morphogen gradients lead to robust gene expression domains?
+	</b></li></ul>""")
 end
 
 # ╔═╡ cd1e5b29-cfb0-4de3-ac24-772ebb6c4b76
-begin
+App() do session::Session
 	u,x = Observable(zeros(N)), range(0,1,length=N)
 	p = ( α = Observable(zeros(N)), β = Observable(zeros(N)),
 	
@@ -287,11 +286,8 @@ begin
 	      kα = Observable(0.0), kβ = Observable(0.0),
 
 		  θ = Observable(π/4), origin = Observable([0.25,0.25]),
-	      dt = 0.2, u₀ = [1.0],
+	      dt = JSServe.Slider(range(0.2,1.0,length=50)), u₀ = [1.0],
 	)
-
-	p.α[][1:30] .= 1.5
-	p.β[][end-30:end] .= 2.5
 
 	bistable_region = @lift begin
 	
@@ -302,12 +298,12 @@ begin
 		branches, z = continuation( F, ∂F, branches, 1,
 			(@lens _.β), ContinuationPar(options, saveSolEveryStep=1))
 	
-		return Point2{Float32}[map( s -> (s.x.p,s.p), branches.sol)..., (1,1)]
+		return [map( s -> Point(s.x.p,s.p), branches.sol)..., Point(1.0,1.0)]
 	end
 
-	figure = Figure(resolution=(5*256,2*256))
+	figure = Figure(resolution=(4.5*256,2*256))
 
-	ax = figure[1:2,1] = Axis(figure,
+	ax = figure[1:3,1] = Axis(figure,
 		xlabel = L"Space $x$",
 		ylabel = L"States $u(x,t)$")
 	
@@ -328,26 +324,31 @@ begin
 	Legend(figure[2,2], [b,a], [L"C_6",L"C_{12}"], titlesize=24,
 		L"Morphogens $u_3,u_4$", framevisible = false, labelsize=20)
 
-	ax = figure[1:2,3] = Axis(figure,
+	ax = figure[1:3,3] = Axis(figure,
 		xlabel = L"Signal $C_{12}(x,t)$",
 		ylabel = L"Signal $C_6(x,t)$")
 
-	play = Button(figure; label="Play")
-	point,circle = select_point(ax.scene), select_line(ax.scene)
-
-	point[] = [1,-1]
-	circle[] = [[-2,2],[-2,1]]
-
-	playing = Observable(false)
-	# on(play.clicks) do clicks; playing[] = !playing[]; end
+	point = select_point(ax.scene)
+	edge_length = 10
 	
-	# on(play.clicks) do clicks
-	    @async while playing[]
-	
-	        F!(u,p)
-	        sleep(0.001)
-	    end
-	# end
+	on(point) do (x,y)
+		
+		p.α[] .= 0
+		p.α[][1:edge_length] .= x*N/edge_length
+		
+		p.β[] .= 0
+		p.β[][end-edge_length:end] .= y*N/edge_length
+
+		p.α[] = p.α[]
+		p.β[] = p.β[]
+	end
+
+	circle = select_line(ax.scene)
+	on(circle) do (r,dr)
+		
+		p.θ[] = π/4
+		p.origin[] = r
+	end
 	
 	deactivate_interaction!(ax,:rectanglezoom)
 	deactivate_interaction!(ax,:scrollzoom)
@@ -355,20 +356,29 @@ begin
 	xlims!(ax,0.0,1.0)
 	ylims!(ax,0.0,1.0)
 	
-	region = poly!(ax, bistable_region, color=:gray)
+	region = lines!(ax, bistable_region, linewidth=5, color=:gray)
 
-	mask = 0 .< u[]
-	scatter!(ax, @lift($(p.α)[mask]), @lift($(p.β)[mask]),
-		color=colorant"#ffc000")
-	scatter!(ax, @lift($(p.α)[.~mask]), @lift($(p.β)[.~mask]), 
-		color=colorant"#00b0f0")
+	scatter!(ax, p.α, p.β,
+		color=@lift(map( ui -> ui > 0 ? colorant"#ffc000" : colorant"#00b0f0", $u)))
 	
 	avg = scatter!(ax, @lift([mean($(p.α))]), @lift([mean($(p.β))]),
 		marker=:x, color=:black, markersize=15)
 
-	Legend(figure[1:2,4], [avg,region], ["Spatial Average","Bistable Region"],
+	Legend(figure[3,2], [avg,region], ["Spatial Average","Bistable Region"],
 		framevisible = false)
-	figure
+
+	play = JSServe.Button("Play")
+	playing = Observable(false)
+	
+    on(play) do click; playing[] = !playing[]; end
+	on(play) do click
+	    @async while playing[]
+	
+	        F!(u,p)
+	        sleep(0.001)
+	    end
+	end
+	return DOM.div( style="text-align: center", play, p.dt, figure )
 end
 
 # ╔═╡ b890fb02-0b44-4abd-978f-8cdb6ad92ed0
@@ -409,6 +419,7 @@ PLUTO_PROJECT_TOML_CONTENTS = """
 BifurcationKit = "0f109fa4-8a5d-4b75-95aa-f515264e7665"
 Colors = "5ae59095-9a9b-59fe-a467-6f913c188581"
 ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
+GeometryBasics = "5c1252a2-5f33-56bf-86c9-59e7332b4326"
 JSServe = "824d6782-a2ef-11e9-3a09-e5662e0c26f9"
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
@@ -422,6 +433,7 @@ WGLMakie = "276b4fcb-3e11-5398-bf8b-a0c2d153d008"
 BifurcationKit = "~0.1.11"
 Colors = "~0.12.8"
 ForwardDiff = "~0.10.25"
+GeometryBasics = "~0.3.10"
 JSServe = "~1.2.5"
 LaTeXStrings = "~1.3.0"
 Parameters = "~0.12.3"
@@ -1787,8 +1799,9 @@ version = "3.5.0+0"
 # ╟─0126a530-7322-4e75-be00-6e73420c5ec9
 # ╟─17220d8c-f64a-4707-a879-a2eed1875e9b
 # ╟─75a6e25c-2301-4fb7-a791-665d3d81363e
+# ╟─3f0e4940-9887-4827-9105-ef1c0082700c
 # ╟─a0728fba-f63c-48cf-a2a3-43dd5a33c6d3
-# ╠═cd1e5b29-cfb0-4de3-ac24-772ebb6c4b76
+# ╟─cd1e5b29-cfb0-4de3-ac24-772ebb6c4b76
 # ╟─b890fb02-0b44-4abd-978f-8cdb6ad92ed0
 # ╟─8e86e4e1-0f55-4fca-b58c-49262abd5adb
 # ╟─e2c520ec-2717-42c4-b4f0-0da56cf59927
