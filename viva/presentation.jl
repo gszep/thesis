@@ -243,13 +243,13 @@ begin
 
 		# reaction-diffusion
 		u[] += @. ( (α[]-origin[][1])*cos(θ[]) - (β[]-origin[][2])*sin(θ[]) + ((α[]-origin[][1])*sin(θ[]) + (β[]-origin[][2])*cos(θ[]))*u[] - u[]^3 ) * dt[]
-		α[] += ( Dα[]*∇²*α[] .+ kα[] ) * dt[]
-		β[] += ( Dβ[]*∇²*β[] .+ kβ[] ) * dt[]
+		α[] += ( Dα[]*∇²*α[] .- min.(u[],0)*kα[] ) * dt[]
+		β[] += ( Dβ[]*∇²*β[] .+ max.(u[],0)*kβ[] ) * dt[]
 	end
 
 	options = ContinuationPar(dsmin = 0.01, dsmax = 0.1, ds = -0.02,
 		pMin = -1.0, pMax = 1.0, maxSteps = 100,
-		newtonOptions = NewtonPar(tol = 1e-6), detectBifurcation=3
+		newtonOptions = NewtonPar(tol = 1e-6, maxIter=100), detectBifurcation=3
 	)
 
 	set_theme!(Theme(
@@ -281,88 +281,141 @@ end
 App() do session::Session
 	u,x = Observable(zeros(N)), range(0,1,length=N)
 	p = ( α = Observable(zeros(N)), β = Observable(zeros(N)),
-	
 		  Dα = Observable(0.1), Dβ = Observable(0.1),
-	      kα = Observable(0.0), kβ = Observable(0.0),
+	
+	      kα = JSServe.Slider(range(0.0,0.01,length=50)),
+		  kβ = JSServe.Slider(range(0.0,0.01,length=50)),
 
 		  θ = Observable(π/4), origin = Observable([0.25,0.25]),
 	      dt = JSServe.Slider(range(0.2,1.0,length=50)), u₀ = [1.0],
 	)
 
 	bistable_region = @lift begin
+		branches = nothing
 	
 		branches, z = continuation( F, ∂F, p.u₀,
 			(α = 1.0, β = 1.0, θ = $(p.θ), origin = $(p.origin)), 
 			(@lens _.α), options )
+
+		if length(branches.specialpoint) ≠ 0
 	
-		branches, z = continuation( F, ∂F, branches, 1,
-			(@lens _.β), ContinuationPar(options, saveSolEveryStep=1))
-	
-		return [map( s -> Point(s.x.p,s.p), branches.sol)..., Point(1.0,1.0)]
+			branches, z = continuation( F, ∂F, branches, 1,
+				(@lens _.β), ContinuationPar(options, saveSolEveryStep=1))
+
+			return [map( s -> Point(s.x.p,s.p), branches.sol)..., Point(1.0,1.0)]
+
+		else
+			branches, z = continuation( F, ∂F, p.u₀,
+				(α = 1.0, β = 1.0, θ = $(p.θ), origin = $(p.origin)), 
+				(@lens _.β), options )
+
+			branches, z = continuation( F, ∂F, branches, 1,
+				(@lens _.α), ContinuationPar(options, saveSolEveryStep=1))
+
+			return [map( s -> Point(s.p,s.x.p), branches.sol)..., Point(1.0,1.0)]
+		end
 	end
 
 	figure = Figure(resolution=(4.5*256,2*256))
 
-	ax = figure[1:3,1] = Axis(figure,
+	ax_space = figure[1:3,1] = Axis(figure,
 		xlabel = L"Space $x$",
 		ylabel = L"States $u(x,t)$")
-	
-	deactivate_interaction!(ax,:rectanglezoom)
-	deactivate_interaction!(ax,:scrollzoom)
-	
-	xlims!(ax,0,1)
-	ylims!(ax,0,3)
-	
-	c = band!(ax, x, zeros(N), @lift(-min.($u,0)) , linewidth=5, color=colorant"#00b0f055")
-	y = band!(ax, x, @lift(max.($u,0)), zeros(N), linewidth=5, color=colorant"#ffd70055")
 
-	b = lines!(ax, x, p.β, linewidth=5, color=colorant"#000099")
-	a = lines!(ax, x, p.α, linewidth=5, color=colorant"#ff6600")
+	pressed = Observable("")
+    on(events(ax_space.scene).mousebutton) do event
+        if Makie.is_mouseinside(ax_space.scene) && event.action == Mouse.press
+			pressed[] = event.button == Mouse.right ? "right" : "left"
+        end
+        if event.action ≠ Mouse.press && pressed[] ≠ ""
+            pressed[] = ""
+        end
+    end
+
+    on(events(ax_space.scene).mouseposition) do event
+        if Makie.is_mouseinside(ax_space.scene) && pressed[] ≠ ""
+	
+            xp,yp = mouseposition(ax_space.scene)
+			i = findfirst(x.>xp)
+
+			@show (i,yp)
+			if !isnothing(i)
+
+				pressed[] == "left" ? p.α[][i] = yp : p.β[][i] = yp
+				p.α[] = p.α[]; p.β[] = p.β[]
+			end
+        end
+    end
+	
+	deactivate_interaction!(ax_space,:rectanglezoom)
+	deactivate_interaction!(ax_space,:scrollzoom)
+	deactivate_interaction!(ax_space,:dragpan)
+	
+	xlims!(ax_space,0,1)
+	ylims!(ax_space,0,3)
+
+	cfp = @lift(-min.($u,0))
+	yfp = @lift(max.($u,0))
+	
+	c = band!(ax_space, x, zeros(N), cfp , linewidth=5, color=colorant"#00b0f055")
+	y = band!(ax_space, x, yfp, zeros(N), linewidth=5, color=colorant"#ffd70055")
+
+	b = lines!(ax_space, x, p.β, linewidth=5, color=colorant"#000099")
+	a = lines!(ax_space, x, p.α, linewidth=5, color=colorant"#ff6600")
 
 	Legend(figure[1,2], [c,y], [L"CFP",L"YFP"], titlesize=24,
 		L"Fluorescence $u_1,u_2$", framevisible = false, labelsize=18)
 	Legend(figure[2,2], [b,a], [L"C_6",L"C_{12}"], titlesize=24,
 		L"Morphogens $u_3,u_4$", framevisible = false, labelsize=20)
 
-	ax = figure[1:3,3] = Axis(figure,
+	ax_states = figure[1:3,3] = Axis(figure,
 		xlabel = L"Signal $C_{12}(x,t)$",
 		ylabel = L"Signal $C_6(x,t)$")
 
-	point = select_point(ax.scene)
 	edge_length = 10
-	
-	on(point) do (x,y)
-		
-		p.α[] .= 0
-		p.α[][1:edge_length] .= x*N/edge_length
-		
-		p.β[] .= 0
-		p.β[][end-edge_length:end] .= y*N/edge_length
+    on(events(ax_states.scene).mousebutton) do event
+        if event.button == Mouse.right && Makie.is_mouseinside(ax_states.scene)
+			
+            xp,yp = mouseposition(ax_states.scene)
+            if event.action == Mouse.press
+				
+					p.α[] .= 0
+					p.α[][1:edge_length] .= xp*N/edge_length
+					
+					p.β[] .= 0
+					p.β[][end-edge_length+1:end] .= yp*N/edge_length
+			
+					p.α[] = p.α[]
+					p.β[] = p.β[]
+				
+                return Consume(false)
+            end
+        end
+        return Consume(false)
+    end
 
-		p.α[] = p.α[]
-		p.β[] = p.β[]
-	end
-
-	circle = select_line(ax.scene)
+	circle = select_line(ax_states.scene)
 	on(circle) do (r,dr)
-		
-		p.θ[] = π/4
+
+		p.θ[] = atan((dr-r)...)
 		p.origin[] = r
 	end
 	
-	deactivate_interaction!(ax,:rectanglezoom)
-	deactivate_interaction!(ax,:scrollzoom)
+	deactivate_interaction!(ax_states,:rectanglezoom)
+	deactivate_interaction!(ax_states,:scrollzoom)
 	
-	xlims!(ax,0.0,1.0)
-	ylims!(ax,0.0,1.0)
+	xlims!(ax_states,0.0,1.0)
+	ylims!(ax_states,0.0,1.0)
 	
-	region = lines!(ax, bistable_region, linewidth=5, color=:gray)
-
-	scatter!(ax, p.α, p.β,
-		color=@lift(map( ui -> ui > 0 ? colorant"#ffc000" : colorant"#00b0f0", $u)))
+	region = lines!(ax_states, bistable_region, linewidth=5, color=:gray)
+	colors = @lift(map( ui -> ui > 0 ? colorant"#ffc000" : colorant"#00b0f0", $u))
 	
-	avg = scatter!(ax, @lift([mean($(p.α))]), @lift([mean($(p.β))]),
-		marker=:x, color=:black, markersize=15)
+	arrows!(ax_states, p.α, p.β, @lift( 10* $cfp * $(p.kα) ), @lift( 10* $yfp * $(p.kβ)),
+		color=colors, linewidth=3 )
+	scatter!(ax_states, p.α, p.β, color=colors)
+	
+	avg = scatter!(ax_states, @lift([mean($(p.α))]), @lift([mean($(p.β))]),
+		marker=:x, color=:blue, markersize=15)
 
 	Legend(figure[3,2], [avg,region], ["Spatial Average","Bistable Region"],
 		framevisible = false)
@@ -378,40 +431,128 @@ App() do session::Session
 	        sleep(0.001)
 	    end
 	end
-	return DOM.div( style="text-align: center", play, p.dt, figure )
+	return DOM.div( style="text-align: center", figure, play, p.dt, p.kα, p.kβ )
 end
 
-# ╔═╡ b890fb02-0b44-4abd-978f-8cdb6ad92ed0
-HTML("""<h1>Interactive Simulation</h1>""")
+# ╔═╡ 8cddf5fb-7b93-43c6-8c61-b9931d69fd83
+HTML("""<h2>Interpretation of Morphogen Gradients</br>by a Synthetic Bistable Circuit</h2>""")
 
-# ╔═╡ 8e86e4e1-0f55-4fca-b58c-49262abd5adb
-begin
-	# Set the default resolution to something that fits the Documenter theme
-	# set_theme!(resolution=(800, 400))
-	# scatter(1:4, color=1:4)
-end
+# ╔═╡ 0fd1d551-49b0-4194-b668-fec7aa3ed9a7
+HTML("""<ul>
+<li><b>Which genetic designs satisfy a target cusp bifurcation in flow cytometry data?</b></li>
+</br>
+<center><img src=$(JSServe.Asset("assets/hysteresis.svg")) width=600px>
+</br>
+Figure 3: Extracting limit points with respect to conditions <i>p,p\'</i>. Steady state distributions and similarity measure
+</center>
+</br>
+</ul>
+""")
 
 # ╔═╡ e2c520ec-2717-42c4-b4f0-0da56cf59927
-HTML("""<h1>Parameter Inference</br>with Bifurcation Diagrams </h1>""")
+HTML("""<h2>Parameter Inference</br>with Bifurcation Diagrams </h2>""")
+
+# ╔═╡ 03619862-196e-419d-9c37-2e9ada04c84d
+HTML("""<ul>
+<li><b>Which differential equations satisfy a target bifurcation diagram?</b></li>
+</br>
+<center><img src=$(JSServe.Asset("assets/saddle-node.gif")) width=250px>
+<img src=$(JSServe.Asset("assets/pitchfork.gif")) width=250px>
+
+</br>
+To-do: Make interactive
+</center>
+</br>
+</ul>
+""")
 
 # ╔═╡ 681fb5e9-6670-454e-9712-6b777274880b
-HTML("""<h1>Interactive Simulation</h1>""")
+HTML("""<h2>Parameter Inference</br>with Bifurcation Diagrams </h2>""")
+
+# ╔═╡ 4848bb39-9d19-47c5-bc6e-4fd06a1fc49e
+HTML("""<ul>
+<li><b>How do we organise models in terms of geometric and topological equivalence?</b></li>
+</br>
+<center><img src=$(JSServe.Asset("assets/saddle-node.png")) width=250px>
+<img src=$(JSServe.Asset("assets/pitchfork.png")) width=250px>
+</br>
+Todo : Update to prettier version
+</center>
+</br>
+</ul>
+""")
 
 # ╔═╡ 492b8dbf-3aac-4966-ba4c-03c78fea787d
-HTML("""<h1>Exploring Bifurcations</br>Between Phenotypes</h1>""")
+HTML("""<h2>Exploring Bifurcations</br>Between Phenotypes</h2>""")
 
-# ╔═╡ 941e5558-0d2d-4126-b9d9-8207b27438f6
-HTML("""<h1>Interactive Demonstration</h1>""")
+# ╔═╡ c3501463-f43a-465c-a81d-4bd5629793a3
+HTML("""<ul>
+<li><b>How do we identify qualitatively distinct cell populations in flow cytometry data?</b></li>
+</br>
+<center><img src=$(JSServe.Asset("assets/impute-reduce-cluster.svg")) width=600px>
+</br>
+Figure : Impute, Reduce, Cluster pipeline
+</center>
+</br>
+</ul>
+""")
+
+# ╔═╡ 72a402a4-7dc2-4fdc-8b46-6f1355dabc5a
+HTML("""<h2>Exploring Bifurcations</br>Between Phenotypes</h2>""")
+
+# ╔═╡ 8da8ac24-9398-4293-8893-00eea4b9fc1e
+HTML("""<ul>
+<li><b>What is the balance between domain expertise and unsupervised machine learning?
+</b></li>
+</br>
+<center><img src=$(JSServe.Asset("assets/")) width=600px>
+</br>
+Figure :
+</center>
+</br>
+</ul>
+""")
 
 # ╔═╡ 47ecff8a-c30d-40b5-87a0-324e39493f1e
-HTML("""<h1>Conclusions</h1>""")
+HTML("""<h2>Conclusions</h2>""")
 
 # ╔═╡ f7a1eb21-e615-4209-baa2-d682aefa1f1b
-md""" #
-We could just look for the maximum likelihood estimate. However this allows any optimiser to place mixture ``k`` right on top of a single data point and descrease the covariance ``\Sigma_k\rightarrow 0``. This leads to singularities in the likeliood and makes it very difficult to find the optimal parameters ``\theta^*``
+HTML("""Chapters in the thesis with <i>incorporated publications</i> and <b>research questions</b> 
+</br></br>
+<details><summary>
+<b style='color:#ffd700'>6.1.1</b> A design–learn workflow for synthetic biology
+</summary>
+<ul>
+<li><b>How do dynamic morphogen gradients lead to robust gene expression domains?</b></li>
+<li><b>Which genetic designs satisfy a target cusp bifurcation in flow cytometry data?</b></li>
+</ul>
+</details>
+<details><summary>
+<b style='color:#ffd700'>6.1.2</b> Bifurcations and model order reduction
+</summary>
+<ul>
+<li><b>Which differential equations satisfy a target bifurcation diagram?</b></li>
+<li><b>How do we organise models in terms of geometric and topological equivalence?</b></li>
+</ul></details>""")
 
-Since optimising ``p(\mathbf{x}|\mathbf{\theta})`` directly is difficult we re-write the model in terms of ``K`` dimensional probability vectors ``\mathbf{z}``, its prior distirbution ``p(\mathbf{z}|\theta)`` and model ``p(\mathbf{x}|\mathbf{z},\theta)`` as
-"""
+# ╔═╡ fc60be23-b455-4803-930e-1738f70a3c76
+HTML("""<h2>Future Work</h2>""")
+
+# ╔═╡ e8d0ae6b-18b9-48c7-b374-df29f39ff517
+HTML("""Chapters in the thesis with <i>incorporated publications</i> and <b>research questions</b> 
+</br></br>
+<details><summary>
+<b style='color:#ffd700'>6.3.1</b> Designing Limit Cycles
+</summary>
+<ul>
+
+</ul>
+</details>
+<details><summary>
+<b style='color:#ffd700'>6.3.2</b> Spatially Extended Systems
+</summary>
+<ul>
+</ul></details>""")
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1802,13 +1943,19 @@ version = "3.5.0+0"
 # ╟─3f0e4940-9887-4827-9105-ef1c0082700c
 # ╟─a0728fba-f63c-48cf-a2a3-43dd5a33c6d3
 # ╟─cd1e5b29-cfb0-4de3-ac24-772ebb6c4b76
-# ╟─b890fb02-0b44-4abd-978f-8cdb6ad92ed0
-# ╟─8e86e4e1-0f55-4fca-b58c-49262abd5adb
+# ╟─8cddf5fb-7b93-43c6-8c61-b9931d69fd83
+# ╟─0fd1d551-49b0-4194-b668-fec7aa3ed9a7
 # ╟─e2c520ec-2717-42c4-b4f0-0da56cf59927
+# ╟─03619862-196e-419d-9c37-2e9ada04c84d
 # ╟─681fb5e9-6670-454e-9712-6b777274880b
+# ╟─4848bb39-9d19-47c5-bc6e-4fd06a1fc49e
 # ╟─492b8dbf-3aac-4966-ba4c-03c78fea787d
-# ╟─941e5558-0d2d-4126-b9d9-8207b27438f6
+# ╟─c3501463-f43a-465c-a81d-4bd5629793a3
+# ╟─72a402a4-7dc2-4fdc-8b46-6f1355dabc5a
+# ╟─8da8ac24-9398-4293-8893-00eea4b9fc1e
 # ╟─47ecff8a-c30d-40b5-87a0-324e39493f1e
 # ╟─f7a1eb21-e615-4209-baa2-d682aefa1f1b
+# ╟─fc60be23-b455-4803-930e-1738f70a3c76
+# ╟─e8d0ae6b-18b9-48c7-b374-df29f39ff517
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
