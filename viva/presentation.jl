@@ -82,8 +82,8 @@ const sets = [
   { sets: ['Machine Learning'], size: 12, fields: 'Automatic Differentiation</br>Deep Learning' },
   { sets: ['Cell Biology', 'Dynamical Systems Theory'], size: 2, fields: 'Synthetic Biology</br>Systems Biology'  },
   { sets: ['Dynamical Systems Theory', 'Machine Learning'], size: 2, fields: 'Differential Programming</br>Geometric Learning</br>SciML'  },
-  { sets: ['Machine Learning', 'Cell Biology'], size: 2, fields: 'Design-Build-Test-Learn</br>Bioinformatics'  },
-  { sets: ['Dynamical Systems Theory', 'Machine Learning', 'Cell Biology'], size: 2, fields: ''  },
+  { sets: ['Machine Learning', 'Cell Biology'], size: 2, fields: 'Bioinformatics</br>Design Biology'  },
+  { sets: ['Dynamical Systems Theory', 'Machine Learning', 'Cell Biology'], size: 2, fields: 'Design-Build-Test-Learn'  },
 ];
 
 const chart = venn.VennDiagram();
@@ -158,34 +158,6 @@ svg.selectAll("g")
 }""")
     return DOM.div(venn,style,Venn)
 end
-
-# ╔═╡ 1fb11407-05ae-46d0-8686-7e353833a79a
-HTML("""<h2>Thesis Contents</h2>""")
-
-# ╔═╡ ea729ba4-ad3d-4a52-a0c5-0dd9a892d505
-HTML("""Chapters in the thesis with <i>incorporated publications</i> and <b>research questions</b> 
-</br></br>
-<details><summary>
-<b style='color:#ffd700'>3</b> <i>Interpretation of Morphogen Gradients by a Bistable Circuit</i>
-</summary>
-<ul>
-<li><b>How do dynamic morphogen gradients lead to robust gene expression domains?</b></li>
-<li><b>Which genetic designs satisfy a target cusp bifurcation in flow cytometry data?</b></li>
-</ul>
-</details>
-<details><summary>
-<b style='color:#ffd700'>4</b> <i>Parameter Inference with Bifurcation Diagrams</i>
-</summary>
-<ul>
-<li><b>Which differential equations satisfy a target bifurcation diagram?</b></li>
-<li><b>How do we organise models in terms of geometric and topological equivalence?</b></li>
-</ul></details>
-<details><summary>
-<b style='color:#ffd700'>5</b> Exploring Bifurcation between Phenotypes</summary>
-<ul>
-<li><b>How do we identify qualitatively distinct cell populations in flow cytometry data?</b></li>
-<li><b>What is the balance between domain expertise and unsupervised machine learning?</b></li>
-</ul></details>""")
 
 # ╔═╡ eedf0b49-cca7-4683-b205-05eb27104d69
 HTML("""<h2>Interpretation of Morphogen Gradients</br>by a Synthetic Bistable Circuit</h2>""")
@@ -460,7 +432,7 @@ HTML("""<ul>
 <img src=$(JSServe.Asset("assets/pitchfork.gif")) width=250px>
 
 </br>
-To-do: Make interactive
+To-do: Make interactive; show equations
 </center>
 </br>
 </ul>
@@ -476,7 +448,7 @@ HTML("""<ul>
 <center><img src=$(JSServe.Asset("assets/saddle-node.png")) width=250px>
 <img src=$(JSServe.Asset("assets/pitchfork.png")) width=250px>
 </br>
-Todo : Update to prettier version
+Todo : Update to prettier version; mention why there are symmetries in both plots
 </center>
 </br>
 </ul>
@@ -492,22 +464,6 @@ HTML("""<ul>
 <center><img src=$(JSServe.Asset("assets/impute-reduce-cluster.svg")) width=600px>
 </br>
 Figure : Impute, Reduce, Cluster pipeline
-</center>
-</br>
-</ul>
-""")
-
-# ╔═╡ 72a402a4-7dc2-4fdc-8b46-6f1355dabc5a
-HTML("""<h2>Exploring Bifurcations</br>Between Phenotypes</h2>""")
-
-# ╔═╡ 8da8ac24-9398-4293-8893-00eea4b9fc1e
-HTML("""<ul>
-<li><b>What is the balance between domain expertise and unsupervised machine learning?
-</b></li>
-</br>
-<center><img src=$(JSServe.Asset("assets/")) width=600px>
-</br>
-Figure :
 </center>
 </br>
 </ul>
@@ -1934,8 +1890,6 @@ version = "3.5.0+0"
 # ╟─c91f9c9a-75be-4f59-97f2-cf7ccbabf726
 # ╟─e3319933-a7d3-4239-92a2-23ca3e29cf63
 # ╟─53dc1a67-1362-42b4-8fa4-b366e370ead9
-# ╟─1fb11407-05ae-46d0-8686-7e353833a79a
-# ╟─ea729ba4-ad3d-4a52-a0c5-0dd9a892d505
 # ╟─eedf0b49-cca7-4683-b205-05eb27104d69
 # ╟─0126a530-7322-4e75-be00-6e73420c5ec9
 # ╟─17220d8c-f64a-4707-a879-a2eed1875e9b
@@ -1951,8 +1905,6 @@ version = "3.5.0+0"
 # ╟─4848bb39-9d19-47c5-bc6e-4fd06a1fc49e
 # ╟─492b8dbf-3aac-4966-ba4c-03c78fea787d
 # ╟─c3501463-f43a-465c-a81d-4bd5629793a3
-# ╟─72a402a4-7dc2-4fdc-8b46-6f1355dabc5a
-# ╟─8da8ac24-9398-4293-8893-00eea4b9fc1e
 # ╟─47ecff8a-c30d-40b5-87a0-324e39493f1e
 # ╟─f7a1eb21-e615-4209-baa2-d682aefa1f1b
 # ╟─fc60be23-b455-4803-930e-1738f70a3c76
