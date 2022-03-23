@@ -12,10 +12,13 @@ end
 
 # ╔═╡ cae037ca-af83-44ef-90a3-602990f6c63c
 begin
-	using StatsBase, LinearAlgebra, BifurcationInference, BifurcationKit, ForwardDiff
+	using StatsBase, LinearAlgebra, BifurcationInference, BifurcationKit
 	using Parameters, Setfield, StaticArrays
-	using LaTeXStrings, WGLMakie, GeometryBasics, Colors
-	using Flux: Optimise
+	using LaTeXStrings, WGLMakie, GeometryBasics, TriplotBase, Triangulate, Colors, ColorSchemes
+	
+	using ForwardDiff, Flux, Logging
+	using BifurcationInference: measure, mean, window_function
+	global_logger(NullLogger())
 
 	const style = JSServe.Dependency( :style, ["assets/style.css"])
 	const d3 = JSServe.Dependency( :d3, ["assets/d3.v6.min.js"])
@@ -237,6 +240,7 @@ begin
 	        yticklabelsvisible  = false,
 	        ylabelpadding = 10,
 			xlabelpadding = 10,
+			titlesize = 24,
 			xlabelsize = 24,
 			ylabelsize = 24,
 		    bottomspinecolor = :white,
@@ -275,7 +279,7 @@ App() do session::Session
 			branches, z = continuation( F, ∂F, branches, 1,
 				(@lens _.β), ContinuationPar(options, saveSolEveryStep=1))
 
-			return [map( s -> Point(s.x.p,s.p), branches.sol)..., Point(1.0,1.0)]
+			return map( s -> Point(s.x.p,s.p), branches.sol)
 
 		else
 			branches, z = continuation( F, ∂F, p.u₀,
@@ -285,7 +289,7 @@ App() do session::Session
 			branches, z = continuation( F, ∂F, branches, 1,
 				(@lens _.α), ContinuationPar(options, saveSolEveryStep=1))
 
-			return [map( s -> Point(s.p,s.x.p), branches.sol)..., Point(1.0,1.0)]
+			return map( s -> Point(s.p,s.x.p), branches.sol)
 		end
 	end
 
@@ -386,7 +390,7 @@ App() do session::Session
 		color=colors, linewidth=3 )
 	scatter!(ax_states, p.α, p.β, color=colors)
 	
-	avg = scatter!(ax_states, @lift([mean($(p.α))]), @lift([mean($(p.β))]),
+	avg = scatter!(ax_states, @lift([StatsBase.mean($(p.α))]), @lift([StatsBase.mean($(p.β))]),
 		marker=:x, color=:blue, markersize=15)
 
 	Legend(figure[3,2], [avg,region], ["Spatial Average","Bistable Region"],
@@ -422,23 +426,9 @@ Figure 3: Extracting limit points with respect to conditions <i>p,p\'</i>. Stead
 """)
 
 # ╔═╡ e2c520ec-2717-42c4-b4f0-0da56cf59927
-HTML("""<h2>Parameter Inference</br>with Bifurcation Diagrams </h2>""")
+HTML("""<h2>Parameter Inference</br>with Bifurcation Diagrams</h2>""")
 
 # ╔═╡ 03619862-196e-419d-9c37-2e9ada04c84d
-HTML("""<ul>
-<li><b>Which differential equations satisfy a target bifurcation diagram?</b></li>
-</br>
-<center><img src=$(JSServe.Asset("assets/saddle-node.gif")) width=250px>
-<img src=$(JSServe.Asset("assets/pitchfork.gif")) width=250px>
-
-</br>
-To-do: Make interactive; show equations
-</center>
-</br>
-</ul>
-""")
-
-# ╔═╡ cc0c9d38-eb52-4f9e-87bf-70aeef1847db
 begin
 	saddle(z::BorderedArray,θ::AbstractVector) = saddle(z.u,(θ=θ,p=z.p))
 	function saddle(u::AbstractVector,parameters::NamedTuple)
@@ -451,39 +441,150 @@ begin
 		return F
 	end
 
-	pitchfork(z::BorderedArray,θ::AbstractVector) = pitchfork(z.u,(θ=θ,p=z.p))
-	function pitchfork(u::AbstractVector,parameters::NamedTuple)
-		@unpack θ,p = parameters
-	
-		f = first(u)*first(p)*first(θ)
-		F = similar(u,typeof(f))
-	
-		F[1] = θ[1] + p*u[1] + θ[2]*u[1]^3
-		return F
+	X = StateSpace( 1, -2:0.01:2, [-1.0,1.0] )
+	parameters = ( θ=SizedVector{2}(5.0,-0.93), p=minimum(X.parameter) )
+	hyperparameters = getParameters(X)
+
+	r,α = range(0.01,5,length=100), range(0.01-π,π-0.01,length=100)
+	θ₁ = vec(@. r*cos(α')); θ₂ = vec(@. r*sin(α'))
+
+	triangles = first(triangulate("Q",
+		Triangulate.TriangulateIO( pointlist = [θ₁'; θ₂'] ))
+	).trianglelist
+
+	state_landscape = map( (x,y) -> deflationContinuation( saddle, X.roots,
+		( θ=SizedVector{2}(x,y), p=parameters.p ), hyperparameters ), θ₁, θ₂)
+
+	predictions = map( branches -> unique([ s.z for branch ∈ branches for s ∈ branch if s.bif ]; atol=2*step(X.parameter)), state_landscape)
+
+	function norm( F::Function, z::BorderedArray, θ::AbstractVector, targets::StateSpace )
+		return window_function(targets.parameter,z)
+	end
+
+	function norm( F::Function, branch::Vector{<:NamedTuple}, θ::AbstractVector, targets::StateSpace )
+		return sum( s -> norm(F,s.z,θ,targets)*s.ds, branch )
 	end
 	
-	######################################################### targets and initial guess
-	X = StateSpace( 1, -2:0.01:2, [1,-1] )
+	function norm( F::Function, branches::AbstractVector{<:AbstractVector}, θ::AbstractVector, targets::StateSpace )
+		return sum( branch -> norm(F,branch,θ,targets), branches )
+	end
 
-	parameters = ( θ=SizedVector{2}(5.0,-0.93), p=minimum(X.parameter) )
-	trajectory = train!( saddle, parameters, X;  iter=3, optimiser=Optimise.ADAM(0.01) )
+	measures = map( (x,y,s,p) -> (2-length(p))*(log(measure(saddle,s,SizedVector{2}(x,y),X))-log(norm(saddle,s,SizedVector{2}(x,y),X))), θ₁, θ₂, state_landscape, predictions)
+
+	HTML("""<ul><li><b>Which differential equations satisfy a target bifurcation diagram?</b></li><li><b>How do we organise models in terms of geometric and topological equivalence?</b></li></ul>""")
 end
 
-# ╔═╡ 681fb5e9-6670-454e-9712-6b777274880b
-HTML("""<h2>Parameter Inference</br>with Bifurcation Diagrams </h2>""")
+# ╔═╡ cc0c9d38-eb52-4f9e-87bf-70aeef1847db
+App() do session::Session
+	
+	optimiser = Flux.Optimise.Momentum(0.01)
+	targets, θ = Observable([X.targets...]), Observable(parameters.θ)
 
-# ╔═╡ 4848bb39-9d19-47c5-bc6e-4fd06a1fc49e
-HTML("""<ul>
-<li><b>How do we organise models in terms of geometric and topological equivalence?</b></li>
-</br>
-<center><img src=$(JSServe.Asset("assets/saddle-node.png")) width=250px>
-<img src=$(JSServe.Asset("assets/pitchfork.png")) width=250px>
-</br>
-Todo : Update to prettier version; mention why there are symmetries in both plots
-</center>
-</br>
-</ul>
-""")
+	levels = [0.1,0.25,0.5,0.75,1.0,1.25,1.5,1.75,2.0,3.0,4.0]
+	contours = @lift begin
+		errors = map( x -> mean( p′-> mean( z->(z.p-p′)^2, x; type=:geometric ), $targets; type=:arithmetic ), predictions )
+		return TriplotBase.tricontour(θ₁,θ₂,asinh.(errors-measures),triangles,levels)
+	end
+
+	steady_states = @lift begin
+		return deflationContinuation( saddle, X.roots, ( θ=$θ, p=parameters.p ), hyperparameters )
+	end
+	
+	∂L = @lift begin
+		return ∇loss( saddle, $steady_states, $θ, StateSpace{1,Float64}(X.roots,X.parameter,$targets) )[2]
+	end
+
+	bifurcation_diagram = @lift begin
+		return vcat(map( branch -> [map( s -> Point(s.z.p,s.z.u[1]), branch )..., Point(NaN,NaN)], $steady_states )...)
+	end
+
+	bifurcation_colors = @lift begin
+		return vcat(map( branch -> [map( s -> real(s.λ[1]) < 0 ? :darkblue : :lightblue, branch )..., :transparent], $steady_states )...)
+	end
+
+	smin,smax = extrema(levels)
+	landscape = @lift begin
+		
+		contour_lines = Point{2,Float32}[]
+		contour_colors = RGB{Float32}[]
+		
+		for contour ∈ $contours
+			s = 1 - (contour.level - smin) / (smax - smin)
+
+			for x ∈ contour.polylines
+				
+				points = [map(Point,x)..., Point(NaN,NaN)]
+				append!(contour_lines,points)
+				
+				colors = get(ColorSchemes.tempo,fill(s,size(points)))
+				append!(contour_colors,colors)
+			end
+		end
+
+		return contour_lines,contour_colors
+	end
+
+	figure = Figure(resolution=(4*256,2*256))
+	ax_cost = figure[1:2,1] = Axis(figure,
+
+		title = L"Cost Landscape $L(\theta)$",
+		xlabel = L"parameter $\theta_1$",
+		ylabel = L"parameter $\theta_2$")
+
+	lines!(ax_cost, lift(first,landscape), color=lift(last,landscape) )
+	scatter!(ax_cost, @lift([ $θ ]), color=get(ColorSchemes.tempo,1))
+	Colorbar(figure[1:2,2], limits = (0,4), colormap = :tempo)
+
+    on(events(ax_cost.scene).mousebutton) do event
+        if event.button == Mouse.left && Makie.is_mouseinside(ax_cost.scene)
+            if event.action == Mouse.press
+				θ[] = mouseposition(ax_cost.scene)
+            end
+        end
+    end
+
+	deactivate_interaction!(ax_cost,:rectanglezoom)
+	deactivate_interaction!(ax_cost,:scrollzoom)
+	deactivate_interaction!(ax_cost,:dragpan)
+	
+	xlims!(ax_cost,-5,5)
+	ylims!(ax_cost,-5,5)
+
+	ax_morphogens = figure[1:2,3] = Axis(figure,
+		title = L"Bifurcation Diagram $F_\theta(u,p)=0$",
+		xlabel = L"condition $p$",
+		ylabel = L"fixed points $u$")
+
+	bistable_select = select_line(ax_morphogens.scene, linewidth=1, color=:gold)
+	on(bistable_select) do (r,dr)
+		targets[] = [r[1],dr[1]]
+		@show targets[]
+	end
+
+	deactivate_interaction!(ax_morphogens,:rectanglezoom)
+	deactivate_interaction!(ax_morphogens,:scrollzoom)
+	deactivate_interaction!(ax_morphogens,:dragpan)
+
+	lines!(ax_morphogens, bifurcation_diagram, color=bifurcation_colors, linewidth=5)
+	vlines!(ax_morphogens, targets, linewidth=1, color=:gold )
+
+	xlims!(ax_morphogens,-2,2)
+	ylims!(ax_morphogens,-4,4)
+	
+	play = JSServe.Button("Play")
+	playing = Observable(false)
+	
+    on(play) do click; playing[] = !playing[]; end
+	on(play) do click
+	    @async while playing[]
+
+	        Flux.update!(optimiser, θ[], ∂L[] )
+			θ[] = θ[]
+	        sleep(0.01)
+	    end
+	end
+	return DOM.div( style="text-align: center", figure, play )
+end
 
 # ╔═╡ 492b8dbf-3aac-4966-ba4c-03c78fea787d
 HTML("""<h2>Exploring Bifurcations</br>Between Phenotypes</h2>""")
@@ -546,6 +647,7 @@ PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
 BifurcationInference = "7fe238d6-d31e-4646-aa16-9d8429fd6da8"
 BifurcationKit = "0f109fa4-8a5d-4b75-95aa-f515264e7665"
+ColorSchemes = "35d6a980-a343-548e-a6ea-1d62b119f2f4"
 Colors = "5ae59095-9a9b-59fe-a467-6f913c188581"
 Flux = "587475ba-b771-5e3f-ad9e-33799f191a9c"
 ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
@@ -553,15 +655,19 @@ GeometryBasics = "5c1252a2-5f33-56bf-86c9-59e7332b4326"
 JSServe = "824d6782-a2ef-11e9-3a09-e5662e0c26f9"
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
 Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"
 Setfield = "efcf1570-3423-57d1-acb7-fd33fddbac46"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
+Triangulate = "f7e6ffb2-c36d-4f8f-a77e-16e897189344"
+TriplotBase = "981d1d27-644d-49a2-9326-4793e63143c3"
 WGLMakie = "276b4fcb-3e11-5398-bf8b-a0c2d153d008"
 
 [compat]
 BifurcationInference = "~0.1.3"
 BifurcationKit = "~0.1.11"
+ColorSchemes = "~3.17.1"
 Colors = "~0.12.8"
 Flux = "~0.12.9"
 ForwardDiff = "~0.10.25"
@@ -572,6 +678,8 @@ Parameters = "~0.12.3"
 Setfield = "~0.8.2"
 StaticArrays = "~1.4.2"
 StatsBase = "~0.33.16"
+Triangulate = "~2.1.2"
+TriplotBase = "~0.1.0"
 WGLMakie = "~0.4.5"
 """
 
@@ -1937,6 +2045,23 @@ git-tree-sha1 = "8d0d7a3fe2f30d6a7f833a5f19f7c7a5b396eae6"
 uuid = "a2a6695c-b41b-5b7d-aed9-dbfdeacea5d7"
 version = "0.3.0"
 
+[[Triangle_jll]]
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
+git-tree-sha1 = "bfdd9ef1004eb9d407af935a6f36a4e0af711369"
+uuid = "5639c1d2-226c-5e70-8d55-b3095415a16a"
+version = "1.6.1+0"
+
+[[Triangulate]]
+deps = ["DocStringExtensions", "Libdl", "Printf", "Test", "Triangle_jll"]
+git-tree-sha1 = "ffa6491b39ad78fd977e3b09fc6a21f28d82a4ae"
+uuid = "f7e6ffb2-c36d-4f8f-a77e-16e897189344"
+version = "2.1.2"
+
+[[TriplotBase]]
+git-tree-sha1 = "4d4ed7f294cda19382ff7de4c137d24d16adc89b"
+uuid = "981d1d27-644d-49a2-9326-4793e63143c3"
+version = "0.1.0"
+
 [[URIs]]
 git-tree-sha1 = "97bbe755a53fe859669cd907f2d96aee8d2c1355"
 uuid = "5c2747f8-b7ea-4ff2-ba2e-563bfd36b1d4"
@@ -2242,8 +2367,6 @@ version = "0.9.1+5"
 # ╟─e2c520ec-2717-42c4-b4f0-0da56cf59927
 # ╟─03619862-196e-419d-9c37-2e9ada04c84d
 # ╟─cc0c9d38-eb52-4f9e-87bf-70aeef1847db
-# ╟─681fb5e9-6670-454e-9712-6b777274880b
-# ╟─4848bb39-9d19-47c5-bc6e-4fd06a1fc49e
 # ╟─492b8dbf-3aac-4966-ba4c-03c78fea787d
 # ╟─c3501463-f43a-465c-a81d-4bd5629793a3
 # ╟─47ecff8a-c30d-40b5-87a0-324e39493f1e
