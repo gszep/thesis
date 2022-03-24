@@ -14,4 +14,5 @@
 *.mx1
 Manifest.toml
 *.csv
+*.so
 Main.pdf

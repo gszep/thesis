@@ -13,8 +13,9 @@ end
 # ╔═╡ cae037ca-af83-44ef-90a3-602990f6c63c
 begin
 	using StatsBase, LinearAlgebra, BifurcationInference, BifurcationKit
-	using Parameters, Setfield, StaticArrays, InvertedIndices
+	using Parameters, Setfield, StaticArrays
 	using LaTeXStrings, WGLMakie, GeometryBasics, TriplotBase, Triangulate, Colors, ColorSchemes
+	
 	using DataStructures: CircularBuffer
 	using ForwardDiff, Flux, Logging
 	using BifurcationInference: measure, mean, window_function
@@ -652,27 +653,14 @@ Figure 7 : Using global constraints with basis functions in state space</br> and
 # ╔═╡ d1eb323f-f72f-4538-b4de-1c9541acf453
 App() do session::Session
 	function fixed_point(r::AbstractVector, r₀::AbstractVector; stable::Bool=true, α::Real=1)
-	    return -ForwardDiff.gradient( r -> exp(-α*norm(r-r₀)) * ( stable ? -1 : 1 ), r )
+	    return -ForwardDiff.gradient( r -> exp(-α*LinearAlgebra.norm(r-r₀)) * ( stable ? -1 : 1 ), r )
 	end
-	
-	# function limit_cycle(r::AbstractVector, f::Function; stable::Bool=true, ω::Real=1)
-	
-	#     normal = ForwardDiff.gradient(r->norm(f(r)),r)
-	#     normal /= norm(normal)
-	
-	#     ∂f = ForwardDiff.jacobian( typeof(f(r))<:Number ? r->[f(r)] : f, r )
-	# 	tangent = [ (-1)^(i+1) * det(∂f[:,Not(i)]) for i ∈ 1:length(r) ]
-	#     tangent /= norm(tangent)
-	
-	#     F = norm(f(r))
-	#     return - ( stable ? 1 : -1 ) * ( tangent*ω*exp(-F) + normal*F*exp(-F) )
-	# end
 	
 	function limit_cycle(r::Point2{T}, f::Function; stable::Bool=true, ω::Real=1) where T<:Real
 	    ∇F, F = ForwardDiff.gradient(r->abs(f(r)),r), abs(f(r))
 	
-	    normal = ∇F / norm(∇F)
-	    tangent = Point2{T}(-∇F[2],∇F[1]) / norm(∇F)
+	    normal = ∇F / LinearAlgebra.norm(∇F)
+	    tangent = Point2{T}(-∇F[2],∇F[1]) / LinearAlgebra.norm(∇F)
 	
 	    return - ( stable ? 1 : -1 ) * ( tangent*ω*sign(f(r))*exp(-F) + normal*F*exp(-F) )
 	end
@@ -696,13 +684,13 @@ App() do session::Session
 	point[] = [1,-1]
 	circle[] = [[-2,2],[-2,1]]
 	
-	field = @lift( x-> limit_cycle(x,r->norm(r-first($circle))-norm(first($circle)-last($circle))) + fixed_point(x,$point) )
+	field = @lift( x-> limit_cycle(x,r->LinearAlgebra.norm(r-first($circle))-LinearAlgebra.norm(first($circle)-last($circle))) + fixed_point(x,$point) )
 	streamplot!( ax_field, field, x, y, density=1, linewidth=1, colormap=[:lightblue], arrow_size = 0)
 	
 	scatter!( ax_field, point, markersize=8, color=:darkblue)
 	scatter!( ax_field, @lift(first($circle)), markersize=8, color=:lightblue)
 	
-	tail, ensembleSize = 200, 200
+	tail, ensembleSize = 20, 20
 	ensemble = Vector{Observable{CircularBuffer{Point2{Float32}}}}(undef,ensembleSize)
 	
 	for i ∈ 1:ensembleSize
@@ -717,12 +705,10 @@ App() do session::Session
 	
 	ds = 0.01
 	playing = Observable(false)
-	on(play.clicks) do clicks; playing[] = !playing[]; end
+	on(play) do click; playing[] = !playing[]; end
 	
-	on(play.clicks) do clicks
-	    @async while playing[]
-	        isopen(figure.scene) || break
-	
+	on(play) do click
+	    @async while playing[]	
 	        @async for trajectory ∈ ensemble
 	
 	            xt = last(trajectory[])
@@ -731,7 +717,7 @@ App() do session::Session
 	            rand() < 1e-3 ? push!.( Ref(trajectory[]), fill(Point2{Float32}(u),tail) ) : push!( trajectory[], xt + field[](xt)*ds )
 	            trajectory[] = trajectory[]
 	        end
-	        sleep(0.001)
+	        sleep(0.01)
 	    end
 	end
 	
@@ -759,7 +745,6 @@ DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
 Flux = "587475ba-b771-5e3f-ad9e-33799f191a9c"
 ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
 GeometryBasics = "5c1252a2-5f33-56bf-86c9-59e7332b4326"
-InvertedIndices = "41ab1584-1d38-5bbf-9106-f11c6c58b48f"
 JSServe = "824d6782-a2ef-11e9-3a09-e5662e0c26f9"
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
@@ -781,7 +766,6 @@ DataStructures = "~0.18.11"
 Flux = "~0.12.9"
 ForwardDiff = "~0.10.25"
 GeometryBasics = "~0.3.10"
-InvertedIndices = "~1.1.0"
 JSServe = "~1.2.5"
 LaTeXStrings = "~1.3.0"
 Parameters = "~0.12.3"
