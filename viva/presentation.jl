@@ -13,9 +13,9 @@ end
 # ╔═╡ cae037ca-af83-44ef-90a3-602990f6c63c
 begin
 	using StatsBase, LinearAlgebra, BifurcationInference, BifurcationKit
-	using Parameters, Setfield, StaticArrays
+	using Parameters, Setfield, StaticArrays, InvertedIndices
 	using LaTeXStrings, WGLMakie, GeometryBasics, TriplotBase, Triangulate, Colors, ColorSchemes
-	
+	using DataStructures: CircularBuffer
 	using ForwardDiff, Flux, Logging
 	using BifurcationInference: measure, mean, window_function
 	global_logger(NullLogger())
@@ -295,7 +295,7 @@ App() do session::Session
 
 	figure = Figure(resolution=(4.5*256,2*256))
 
-	ax_space = figure[1:3,1] = Axis(figure,
+	ax_space = figure[1:3,1] = Axis(figure, backgroundcolor=colorant"#2a2928",
 		xlabel = L"Space $x$",
 		ylabel = L"States $u(x,t)$")
 
@@ -344,7 +344,7 @@ App() do session::Session
 	Legend(figure[2,2], [b,a], [L"C_6",L"C_{12}"], titlesize=24,
 		L"Morphogens $u_3,u_4$", framevisible = false, labelsize=20)
 
-	ax_states = figure[1:3,3] = Axis(figure,
+	ax_states = figure[1:3,3] = Axis(figure, backgroundcolor=colorant"#2a2928",
 		xlabel = L"Signal $C_{12}(x,t)$",
 		ylabel = L"Signal $C_6(x,t)$")
 
@@ -383,7 +383,7 @@ App() do session::Session
 	xlims!(ax_states,0.0,1.0)
 	ylims!(ax_states,0.0,1.0)
 	
-	region = lines!(ax_states, bistable_region, linewidth=5, color=:gray)
+	region = lines!(ax_states, bistable_region, linewidth=5, color=:white)
 	colors = @lift(map( ui -> ui > 0 ? colorant"#ffc000" : colorant"#00b0f0", $u))
 	
 	arrows!(ax_states, p.α, p.β, @lift( 10* $cfp * $(p.kα) ), @lift( 10* $yfp * $(p.kβ)),
@@ -391,9 +391,9 @@ App() do session::Session
 	scatter!(ax_states, p.α, p.β, color=colors)
 	
 	avg = scatter!(ax_states, @lift([StatsBase.mean($(p.α))]), @lift([StatsBase.mean($(p.β))]),
-		marker=:x, color=:blue, markersize=15)
+		marker=:x, color=:white, markersize=15)
 
-	Legend(figure[3,2], [avg,region], ["Spatial Average","Bistable Region"],
+	Legend(figure[3,2], [avg,region], ["Spatial Average","Limit Points"],
 		framevisible = false)
 
 	play = JSServe.Button("Play")
@@ -407,7 +407,7 @@ App() do session::Session
 	        sleep(0.01)
 	    end
 	end
-	return DOM.div( style="text-align: center", figure, play, p.dt, p.kα, p.kβ )
+	return DOM.div( style="text-align: center", figure, play, html"&nbsp;&nbsp;&nbsp;&nbsp;", p.dt, p.kα, p.kβ )
 end
 
 # ╔═╡ 8cddf5fb-7b93-43c6-8c61-b9931d69fd83
@@ -499,24 +499,25 @@ App() do session::Session
 	end
 
 	bifurcation_colors = @lift begin
-		return vcat(map( branch -> [map( s -> real(s.λ[1]) < 0 ? :darkblue : :lightblue, branch )..., :transparent], $steady_states )...)
+		return vcat(map( branch -> [map( s -> real(s.λ[1]) < 0 ? :blue : :lightblue, branch )..., :transparent], $steady_states )...)
 	end
 
 	smin,smax = extrema(levels)
+	colormap = cgrad([:white,colorant"#2a2928",:black], [0,0.25,1])
 	landscape = @lift begin
 		
 		contour_lines = Point{2,Float32}[]
 		contour_colors = RGB{Float32}[]
 		
 		for contour ∈ $contours
-			s = 1 - (contour.level - smin) / (smax - smin)
+			s = (contour.level - smin) / (smax - smin)
 
 			for x ∈ contour.polylines
 				
 				points = [map(Point,x)..., Point(NaN,NaN)]
 				append!(contour_lines,points)
 				
-				colors = get(ColorSchemes.tempo,fill(s,size(points)))
+				colors = get(colormap,fill(s,size(points)))
 				append!(contour_colors,colors)
 			end
 		end
@@ -524,16 +525,16 @@ App() do session::Session
 		return contour_lines,contour_colors
 	end
 
-	figure = Figure(resolution=(4*256,2*256))
-	ax_cost = figure[1:2,1] = Axis(figure,
+	figure = Figure(resolution=(4.5*256,2*256))
+	ax_cost = figure[1:2,1] = Axis(figure, backgroundcolor=colorant"#2a2928",
 
 		title = L"Cost Landscape $L(\theta)$",
 		xlabel = L"parameter $\theta_1$",
 		ylabel = L"parameter $\theta_2$")
 
-	lines!(ax_cost, lift(first,landscape), color=lift(last,landscape) )
-	scatter!(ax_cost, @lift([ $θ ]), color=get(ColorSchemes.tempo,1))
-	Colorbar(figure[1:2,2], limits = (0,4), colormap = :tempo)
+	lines!(ax_cost, lift(first,landscape), color=lift(last,landscape), linewidth=5 )
+	scatter!(ax_cost, @lift([ $θ ]), color=get(colormap,0))
+	Colorbar(figure[1:2,2], limits = (0,4), colormap = colormap)
 
     on(events(ax_cost.scene).mousebutton) do event
         if event.button == Mouse.left && Makie.is_mouseinside(ax_cost.scene)
@@ -550,26 +551,33 @@ App() do session::Session
 	xlims!(ax_cost,-5,5)
 	ylims!(ax_cost,-5,5)
 
-	ax_morphogens = figure[1:2,3] = Axis(figure,
+	ax_diagram = figure[1:2,3] = Axis(figure, backgroundcolor=colorant"#2a2928",
 		title = L"Bifurcation Diagram $F_\theta(u,p)=0$",
 		xlabel = L"condition $p$",
 		ylabel = L"fixed points $u$")
 
-	bistable_select = select_line(ax_morphogens.scene, linewidth=1, color=:gold)
+	bistable_select = select_line(ax_diagram.scene, linewidth=1, color=:gold)
 	on(bistable_select) do (r,dr)
 		targets[] = [r[1],dr[1]]
 		@show targets[]
 	end
 
-	deactivate_interaction!(ax_morphogens,:rectanglezoom)
-	deactivate_interaction!(ax_morphogens,:scrollzoom)
-	deactivate_interaction!(ax_morphogens,:dragpan)
+	deactivate_interaction!(ax_diagram,:rectanglezoom)
+	deactivate_interaction!(ax_diagram,:scrollzoom)
+	deactivate_interaction!(ax_diagram,:dragpan)
 
-	lines!(ax_morphogens, bifurcation_diagram, color=bifurcation_colors, linewidth=5)
-	vlines!(ax_morphogens, targets, linewidth=1, color=:gold )
+	lines!(ax_diagram, bifurcation_diagram, color=bifurcation_colors, linewidth=5)
+	t = vlines!(ax_diagram, targets, linewidth=1, color=:gold )
 
-	xlims!(ax_morphogens,-2,2)
-	ylims!(ax_morphogens,-4,4)
+	xlims!(ax_diagram,-2,2)
+	ylims!(ax_diagram,-4,4)
+
+	s = lines!(ax_diagram, [Point(NaN,NaN)], color=:blue, linewidth=5)
+	u = lines!(ax_diagram, [Point(NaN,NaN)], color=:lightblue, linewidth=5)
+
+	Legend(figure[1:2,4], [s,u,t],
+		[L"stable $\Re$e$[\lambda]<0$",L"unstable $\Re$e$[\lambda]>0$",L"targets $p$"],
+		framevisible = false, labelsize=20)
 	
 	play = JSServe.Button("Play")
 	playing = Observable(false)
@@ -595,7 +603,7 @@ HTML("""<ul>
 </br>
 <center><img src=$(JSServe.Asset("assets/impute-reduce-cluster.svg")) width=600px>
 </br>
-Figure : Impute, Reduce, Cluster pipeline
+Figure 4 : Impute, Reduce, Cluster pipeline
 </center>
 </br>
 </ul>
@@ -605,42 +613,140 @@ Figure : Impute, Reduce, Cluster pipeline
 HTML("""<h2>Conclusions</h2>""")
 
 # ╔═╡ f7a1eb21-e615-4209-baa2-d682aefa1f1b
-HTML("""Chapters in the thesis with <i>incorporated publications</i> and <b>research questions</b> 
-</br></br>
+HTML("""
 <details><summary>
 <b style='color:#ffd700'>6.1.1</b> A design–learn workflow for synthetic biology
 </summary>
-<ul>
-<li><b>How do dynamic morphogen gradients lead to robust gene expression domains?</b></li>
-<li><b>Which genetic designs satisfy a target cusp bifurcation in flow cytometry data?</b></li>
-</ul>
+</br>
+<center><img src=$(JSServe.Asset("assets/design-learn.svg")) width=600px>
+</br>
+Figure 5 : Overview for a <i>design-learn</i> workflow, developed in hindsight, for genetic design of the <i>double exclusive reporter</i>
+</center>
+</br>
 </details>
 <details><summary>
 <b style='color:#ffd700'>6.1.2</b> Bifurcations and model order reduction
 </summary>
-<ul>
-<li><b>Which differential equations satisfy a target bifurcation diagram?</b></li>
-<li><b>How do we organise models in terms of geometric and topological equivalence?</b></li>
-</ul></details>""")
+</br>
+<center><img src=$(JSServe.Asset("assets/model-reduction.svg")) width=600px>
+</br>
+Figure 6 : Overview of how <i>FlowAtlas.jl</i> can be adapted to explore the space of models with respect to a given </br> control condition. The parameter embedding would align clusters of equivalent bifurcations in different models
+</center>
+</br></details>""")
 
 # ╔═╡ fc60be23-b455-4803-930e-1738f70a3c76
 HTML("""<h2>Future Work</h2>""")
 
 # ╔═╡ e8d0ae6b-18b9-48c7-b374-df29f39ff517
-HTML("""Chapters in the thesis with <i>incorporated publications</i> and <b>research questions</b> 
-</br></br>
+HTML("""
 <details><summary>
 <b style='color:#ffd700'>6.3.1</b> Designing Limit Cycles
 </summary>
-<ul>
+</br>
+<center><img src=$(JSServe.Asset("assets/design-limit-cycles.svg")) width=600px>
+</br>
+Figure 7 : Using global constraints with basis functions in state space</br> and local constraints can help design global bifurcations of limit cycles
+</center>
+</br>""")
 
-</ul>
-</details>
+# ╔═╡ d1eb323f-f72f-4538-b4de-1c9541acf453
+App() do session::Session
+	function fixed_point(r::AbstractVector, r₀::AbstractVector; stable::Bool=true, α::Real=1)
+	    return -ForwardDiff.gradient( r -> exp(-α*norm(r-r₀)) * ( stable ? -1 : 1 ), r )
+	end
+	
+	# function limit_cycle(r::AbstractVector, f::Function; stable::Bool=true, ω::Real=1)
+	
+	#     normal = ForwardDiff.gradient(r->norm(f(r)),r)
+	#     normal /= norm(normal)
+	
+	#     ∂f = ForwardDiff.jacobian( typeof(f(r))<:Number ? r->[f(r)] : f, r )
+	# 	tangent = [ (-1)^(i+1) * det(∂f[:,Not(i)]) for i ∈ 1:length(r) ]
+	#     tangent /= norm(tangent)
+	
+	#     F = norm(f(r))
+	#     return - ( stable ? 1 : -1 ) * ( tangent*ω*exp(-F) + normal*F*exp(-F) )
+	# end
+	
+	function limit_cycle(r::Point2{T}, f::Function; stable::Bool=true, ω::Real=1) where T<:Real
+	    ∇F, F = ForwardDiff.gradient(r->abs(f(r)),r), abs(f(r))
+	
+	    normal = ∇F / norm(∇F)
+	    tangent = Point2{T}(-∇F[2],∇F[1]) / norm(∇F)
+	
+	    return - ( stable ? 1 : -1 ) * ( tangent*ω*sign(f(r))*exp(-F) + normal*F*exp(-F) )
+	end
+	
+	figure = Figure(resolution = 72 .* (8,8) )
+	x,y = -5..2,-2..4
+	minima, maxima = minimum.([x,y]), maximum.([x,y])
+	ax_field = Axis(figure[1,1],
+	
+	    ylabel = "",
+	    xlabel = L"vector field $F_\theta$",
+	
+	    xlims = (minima[1],maxima[1]),
+	    ylims = (minima[2],maxima[2])
+	)
+	
+	play = JSServe.Button("Play")
+	point,circle = select_point(ax_field.scene), select_line(ax_field.scene)
+	deactivate_interaction!(ax_field,:rectanglezoom)
+	
+	point[] = [1,-1]
+	circle[] = [[-2,2],[-2,1]]
+	
+	field = @lift( x-> limit_cycle(x,r->norm(r-first($circle))-norm(first($circle)-last($circle))) + fixed_point(x,$point) )
+	streamplot!( ax_field, field, x, y, density=1, linewidth=1, colormap=[:lightblue], arrow_size = 0)
+	
+	scatter!( ax_field, point, markersize=8, color=:darkblue)
+	scatter!( ax_field, @lift(first($circle)), markersize=8, color=:lightblue)
+	
+	tail, ensembleSize = 200, 200
+	ensemble = Vector{Observable{CircularBuffer{Point2{Float32}}}}(undef,ensembleSize)
+	
+	for i ∈ 1:ensembleSize
+	    trajectory = CircularBuffer{Point2{Float32}}(tail)
+	
+	    fill!(trajectory,(maxima-minima).*rand(2)+minima)
+	    ensemble[i] = Observable(trajectory)
+	end
+	
+	color = map(i->RGBA{Float32}(to_color(:darkblue).r,to_color(:darkblue).g,to_color(:darkblue).b,(i/tail)^2),1:tail);
+	map( trajectory -> lines!(ax_field, trajectory; color=color, linewidth=3), ensemble)
+	
+	ds = 0.01
+	playing = Observable(false)
+	on(play.clicks) do clicks; playing[] = !playing[]; end
+	
+	on(play.clicks) do clicks
+	    @async while playing[]
+	        isopen(figure.scene) || break
+	
+	        @async for trajectory ∈ ensemble
+	
+	            xt = last(trajectory[])
+	            u = (maxima-minima).*rand(2)+minima
+	
+	            rand() < 1e-3 ? push!.( Ref(trajectory[]), fill(Point2{Float32}(u),tail) ) : push!( trajectory[], xt + field[](xt)*ds )
+	            trajectory[] = trajectory[]
+	        end
+	        sleep(0.001)
+	    end
+	end
+	
+	return DOM.div( style="text-align: center", figure, play )
+end
+
+# ╔═╡ 440651dd-2ee5-46c0-a9ea-a5bce1093643
+HTML("""<h2>Future Work</h2>""")
+
+# ╔═╡ 60d407f7-0b36-4355-b4e0-ef0c6d83f800
+HTML("""
 <details><summary>
 <b style='color:#ffd700'>6.3.2</b> Spatially Extended Systems
 </summary>
-<ul>
-</ul></details>""")
+</details>""")
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -649,9 +755,11 @@ BifurcationInference = "7fe238d6-d31e-4646-aa16-9d8429fd6da8"
 BifurcationKit = "0f109fa4-8a5d-4b75-95aa-f515264e7665"
 ColorSchemes = "35d6a980-a343-548e-a6ea-1d62b119f2f4"
 Colors = "5ae59095-9a9b-59fe-a467-6f913c188581"
+DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
 Flux = "587475ba-b771-5e3f-ad9e-33799f191a9c"
 ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
 GeometryBasics = "5c1252a2-5f33-56bf-86c9-59e7332b4326"
+InvertedIndices = "41ab1584-1d38-5bbf-9106-f11c6c58b48f"
 JSServe = "824d6782-a2ef-11e9-3a09-e5662e0c26f9"
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
@@ -669,9 +777,11 @@ BifurcationInference = "~0.1.3"
 BifurcationKit = "~0.1.11"
 ColorSchemes = "~3.17.1"
 Colors = "~0.12.8"
+DataStructures = "~0.18.11"
 Flux = "~0.12.9"
 ForwardDiff = "~0.10.25"
 GeometryBasics = "~0.3.10"
+InvertedIndices = "~1.1.0"
 JSServe = "~1.2.5"
 LaTeXStrings = "~1.3.0"
 Parameters = "~0.12.3"
@@ -2373,5 +2483,8 @@ version = "0.9.1+5"
 # ╟─f7a1eb21-e615-4209-baa2-d682aefa1f1b
 # ╟─fc60be23-b455-4803-930e-1738f70a3c76
 # ╟─e8d0ae6b-18b9-48c7-b374-df29f39ff517
+# ╟─d1eb323f-f72f-4538-b4de-1c9541acf453
+# ╟─440651dd-2ee5-46c0-a9ea-a5bce1093643
+# ╟─60d407f7-0b36-4355-b4e0-ef0c6d83f800
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
