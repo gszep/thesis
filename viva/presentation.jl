@@ -16,9 +16,9 @@ begin
 	using Parameters, Setfield, StaticArrays
 	using LaTeXStrings, WGLMakie, GeometryBasics, TriplotBase, Triangulate, Colors, ColorSchemes
 	
-	using DataStructures: CircularBuffer
 	using ForwardDiff, Flux, Logging
-	using BifurcationInference: measure, mean, window_function
+	using BifurcationInference: mean, window_function, ∂Fu, realeigvals, tangent_field, derivative, ∇measure, ∇errors
+	
 	global_logger(NullLogger())
 
 	const style = JSServe.Dependency( :style, ["assets/style.css"])
@@ -199,7 +199,7 @@ HTML("""<h2>Interpretation of Morphogen Gradients</br>by a Synthetic Bistable Ci
 
 # ╔═╡ a0728fba-f63c-48cf-a2a3-43dd5a33c6d3
 begin
-	function F(u,p)
+	function switch(u,p)
 		@unpack α, β, θ, origin = p
 		
 		F = similar(u)
@@ -212,10 +212,10 @@ begin
 		return F
 	end
 
-	∂F(u,p) = ForwardDiff.jacobian(u->F(u,p),u)
+	∂F(u,p) = ForwardDiff.jacobian(u->switch(u,p),u)
 	N = 50; ∇² = SymTridiagonal([-1;fill(-2,N-2);-1],fill(1,N-1))
 	
-	function F!(u,p)
+	function switch!(u,p)
 		@unpack α, β, θ, origin, Dα, Dβ, kα, kβ, dt = p
 
 		# reaction-diffusion
@@ -271,23 +271,23 @@ App() do session::Session
 	bistable_region = @lift begin
 		branches = nothing
 	
-		branches, z = continuation( F, ∂F, p.u₀,
+		branches, z = continuation( switch, ∂F, p.u₀,
 			(α = 1.0, β = 1.0, θ = $(p.θ), origin = $(p.origin)), 
 			(@lens _.α), options )
 
 		if length(branches.specialpoint) ≠ 0
 	
-			branches, z = continuation( F, ∂F, branches, 1,
+			branches, z = continuation( switch, ∂F, branches, 1,
 				(@lens _.β), ContinuationPar(options, saveSolEveryStep=1))
 
 			return map( s -> Point(s.x.p,s.p), branches.sol)
 
 		else
-			branches, z = continuation( F, ∂F, p.u₀,
+			branches, z = continuation( switch, ∂F, p.u₀,
 				(α = 1.0, β = 1.0, θ = $(p.θ), origin = $(p.origin)), 
 				(@lens _.β), options )
 
-			branches, z = continuation( F, ∂F, branches, 1,
+			branches, z = continuation( switch, ∂F, branches, 1,
 				(@lens _.α), ContinuationPar(options, saveSolEveryStep=1))
 
 			return map( s -> Point(s.p,s.x.p), branches.sol)
@@ -404,7 +404,7 @@ App() do session::Session
 	on(play) do click
 	    @async while playing[]
 	
-	        F!(u,p)
+	        switch!(u,p)
 	        sleep(0.01)
 	    end
 	end
@@ -430,9 +430,18 @@ Figure 3: Extracting limit points with respect to conditions <i>p,p\'</i>. Stead
 HTML("""<h2>Parameter Inference</br>with Bifurcation Diagrams</h2>""")
 
 # ╔═╡ 03619862-196e-419d-9c37-2e9ada04c84d
+HTML("""<ul><li><b>Which differential equations satisfy a target bifurcation diagram?</b></li><li><b>How do we organise models in terms of geometric and topological equivalence?</b></li></ul>""")
+
+# ╔═╡ 55e55af6-f0c2-4fbd-96a5-dcc1bd2f1dd4
+L"""
+$\frac{\partial u}{\partial t} = F_\theta(u,p) \quad \mathrm{where} \quad F_\theta(u,p) := p + \theta_1 u + \theta_2 u^3$
+"""
+
+# ╔═╡ 9d69479a-e21b-4316-b46d-c36bbf634f0b
 begin
-	saddle(z::BorderedArray,θ::AbstractVector) = saddle(z.u,(θ=θ,p=z.p))
-	function saddle(u::AbstractVector,parameters::NamedTuple)
+	F(z::BorderedArray,θ::AbstractVector) = F(z.u,(θ=θ,p=z.p))
+	function F(u::AbstractVector,parameters::NamedTuple)
+
 		@unpack θ,p = parameters
 	
 		f = first(u)*first(p)*first(θ)
@@ -441,19 +450,55 @@ begin
 		F[1] = p + θ[1]*u[1] + θ[2]*u[1]^3
 		return F
 	end
+end
+
+# ╔═╡ 2c67684f-392d-4a48-abba-be0fa8079344
+HTML("""<h2>Parameter Inference</br>with Bifurcation Diagrams</h2>""")
+
+# ╔═╡ 10ee39be-371b-487c-ac7c-9cbe60d2b367
+HTML("""<ul><li><b>Which differential equations satisfy a target bifurcation diagram?</b></li><li><b>How do we organise models in terms of geometric and topological equivalence?</b></li></ul>""")
+
+# ╔═╡ a127bc38-a03c-494a-a8c0-142d1674dc6c
+L"""
+$L(\theta) := \Big\langle |p(\theta)-p'| \Big\rangle_{\! p,\,p'} - \mu\log\Psi(\theta)
+"""
+
+# ╔═╡ 65bc7068-0cb1-4d54-9b81-8ec307893db8
+L"""
+\Psi(\theta):=\frac{\int_{F_\theta=0}\varphi_\theta(s)\,\mathrm{d}s}{\int_{F_\theta=0}\mathrm{d}s}
+\quad\mathrm{where}\quad
+\varphi_\theta(s) := \sum_{\lambda\in\frac{\partial F_\theta}{\partial u}}\left(\left|\frac{d}{ds}\log\Re\mathrm{e}[\lambda(s)]\right|^{-1}+1\right)^{-1}
+"""
+
+# ╔═╡ d88dddba-d9e1-4aaf-86ca-b107bb937fd8
+begin 
+	import BifurcationInference: measure
+	function measure(F::Function,z::BorderedArray,θ::AbstractVector,t::StateSpace)
+		
+		λ = realeigvals(∂Fu(F,z,θ))
+		dλ = derivative( z -> realeigvals(∂Fu(F,z,θ)), z, tangent_field(F,z,θ) )
+		
+		return window_function(t.parameter,z) * mapreduce(
+			(λ,dλ) -> 1 / ( 1 + abs(λ/dλ)^2 ), +, λ, dλ
+		)
+	end
+end
+
+# ╔═╡ cc0c9d38-eb52-4f9e-87bf-70aeef1847db
+App() do session::Session
 
 	X = StateSpace( 1, -2:0.01:2, [-1.0,1.0] )
 	parameters = ( θ=SizedVector{2}(5.0,-0.93), p=minimum(X.parameter) )
 	hyperparameters = getParameters(X)
 
-	r,α = range(0.01,5,length=100), range(0.01-π,π-0.01,length=100)
+	r,α = range(0.01,5,length=10), range(0.01-π,π-0.01,length=40)
 	θ₁ = vec(@. r*cos(α')); θ₂ = vec(@. r*sin(α'))
 
 	triangles = first(triangulate("Q",
 		Triangulate.TriangulateIO( pointlist = [θ₁'; θ₂'] ))
 	).trianglelist
 
-	state_landscape = map( (x,y) -> deflationContinuation( saddle, X.roots,
+	state_landscape = map( (x,y) -> deflationContinuation( F, X.roots,
 		( θ=SizedVector{2}(x,y), p=parameters.p ), hyperparameters ), θ₁, θ₂)
 
 	predictions = map( branches -> unique([ s.z for branch ∈ branches for s ∈ branch if s.bif ]; atol=2*step(X.parameter)), state_landscape)
@@ -470,29 +515,31 @@ begin
 		return sum( branch -> norm(F,branch,θ,targets), branches )
 	end
 
-	measures = map( (x,y,s,p) -> (2-length(p))*(log(measure(saddle,s,SizedVector{2}(x,y),X))-log(norm(saddle,s,SizedVector{2}(x,y),X))), θ₁, θ₂, state_landscape, predictions)
-
-	HTML("""<ul><li><b>Which differential equations satisfy a target bifurcation diagram?</b></li><li><b>How do we organise models in terms of geometric and topological equivalence?</b></li></ul>""")
-end
-
-# ╔═╡ cc0c9d38-eb52-4f9e-87bf-70aeef1847db
-App() do session::Session
+	measures = map( (x,y,s,p) -> (length(p)==0)*(log(measure(F,s,SizedVector{2}(x,y),X))-log(norm(F,s,SizedVector{2}(x,y),X))), θ₁, θ₂, state_landscape, predictions)
 	
 	optimiser = Flux.Optimise.Momentum(0.01)
 	targets, θ = Observable([X.targets...]), Observable(parameters.θ)
 
-	levels = [0.1,0.25,0.5,0.75,1.0,1.25,1.5,1.75,2.0,3.0,4.0]
+	levels = [0.1,0.25,0.5,0.75,1.0,1.25,1.5,1.75,2.0]
 	contours = @lift begin
 		errors = map( x -> mean( p′-> mean( z->(z.p-p′)^2, x; type=:geometric ), $targets; type=:arithmetic ), predictions )
 		return TriplotBase.tricontour(θ₁,θ₂,asinh.(errors-measures),triangles,levels)
 	end
 
 	steady_states = @lift begin
-		return deflationContinuation( saddle, X.roots, ( θ=$θ, p=parameters.p ), hyperparameters )
+		return deflationContinuation( F, X.roots, ( θ=$θ, p=parameters.p ), hyperparameters )
 	end
 	
 	∂L = @lift begin
-		return ∇loss( saddle, $steady_states, $θ, StateSpace{1,Float64}(X.roots,X.parameter,$targets) )[2]
+
+		p = unique([ s.z for branch ∈ $steady_states for s ∈ branch if s.bif ]; atol=2*step(X.parameter))
+		t = StateSpace{1,Float64}(X.roots,X.parameter,$targets)
+	
+		if length(p) == 0 
+			return -∇measure(F,$steady_states,$θ,t)/measure(F,$steady_states,$θ,t)
+		else
+			return ∇errors(F,p,$θ,t)
+		end
 	end
 
 	bifurcation_diagram = @lift begin
@@ -504,7 +551,7 @@ App() do session::Session
 	end
 
 	smin,smax = extrema(levels)
-	colormap = cgrad([:white,colorant"#2a2928",:black], [0,0.25,1])
+	colormap = cgrad([:white,colorant"#2a2928",:black], [0,0.5,1])
 	landscape = @lift begin
 		
 		contour_lines = Point{2,Float32}[]
@@ -535,7 +582,7 @@ App() do session::Session
 
 	lines!(ax_cost, lift(first,landscape), color=lift(last,landscape), linewidth=5 )
 	scatter!(ax_cost, @lift([ $θ ]), color=get(colormap,0))
-	Colorbar(figure[1:2,2], limits = (0,4), colormap = colormap)
+	Colorbar(figure[1:2,2], limits = (smin,smax), colormap = colormap)
 
     on(events(ax_cost.scene).mousebutton) do event
         if event.button == Mouse.left && Makie.is_mouseinside(ax_cost.scene)
@@ -638,18 +685,6 @@ Figure 6 : Overview of how <i>FlowAtlas.jl</i> can be adapted to explore the spa
 # ╔═╡ fc60be23-b455-4803-930e-1738f70a3c76
 HTML("""<h2>Future Work</h2>""")
 
-# ╔═╡ e8d0ae6b-18b9-48c7-b374-df29f39ff517
-HTML("""
-<details><summary>
-<b style='color:#ffd700'>6.3.1</b> Designing Limit Cycles
-</summary>
-</br>
-<center><img src=$(JSServe.Asset("assets/design-limit-cycles.svg")) width=600px>
-</br>
-Figure 7 : Using global constraints with basis functions in state space</br> and local constraints can help design global bifurcations of limit cycles
-</center>
-</br>""")
-
 # ╔═╡ d1eb323f-f72f-4538-b4de-1c9541acf453
 App() do session::Session
 	function fixed_point(r::AbstractVector, r₀::AbstractVector; stable::Bool=true, α::Real=1)
@@ -665,10 +700,10 @@ App() do session::Session
 	    return - ( stable ? 1 : -1 ) * ( tangent*ω*sign(f(r))*exp(-F) + normal*F*exp(-F) )
 	end
 	
-	figure = Figure(resolution = 72 .* (8,8) )
+	figure = Figure(resolution = 72 .* (5,5) )
 	x,y = -5..2,-2..4
 	minima, maxima = minimum.([x,y]), maximum.([x,y])
-	ax_field = Axis(figure[1,1],
+	ax_field = Axis(figure[1,1], backgroundcolor=colorant"#2a2928",
 	
 	    ylabel = "",
 	    xlabel = L"vector field $F_\theta$",
@@ -678,50 +713,31 @@ App() do session::Session
 	)
 	
 	play = JSServe.Button("Play")
-	point,circle = select_point(ax_field.scene), select_line(ax_field.scene)
-	deactivate_interaction!(ax_field,:rectanglezoom)
-	
-	point[] = [1,-1]
+	point, circle = Observable(Point(1.0,-1.0)), select_line(ax_field.scene, color=:gold, linewidth=5)
 	circle[] = [[-2,2],[-2,1]]
+
+    on(events(ax_field.scene).mousebutton) do event
+        if event.button == Mouse.right && Makie.is_mouseinside(ax_field.scene)
+			
+            xp,yp = mouseposition(ax_field.scene)
+            if event.action == Mouse.press
+				point[] = [xp,yp]
+            end
+        end
+    end
+	deactivate_interaction!(ax_field,:rectanglezoom)
+	deactivate_interaction!(ax_field,:scrollzoom)
+	deactivate_interaction!(ax_field,:dragpan)
 	
 	field = @lift( x-> limit_cycle(x,r->LinearAlgebra.norm(r-first($circle))-LinearAlgebra.norm(first($circle)-last($circle))) + fixed_point(x,$point) )
-	streamplot!( ax_field, field, x, y, density=1, linewidth=1, colormap=[:lightblue], arrow_size = 0)
+	streamplot!( ax_field, field, x, y, density=1, linewidth=5, colormap=[:white], arrow_size = 0)
 	
-	scatter!( ax_field, point, markersize=8, color=:darkblue)
-	scatter!( ax_field, @lift(first($circle)), markersize=8, color=:lightblue)
+	scatter!( ax_field, point, markersize=16, color=:blue)
+	scatter!( ax_field, @lift(first($circle)), markersize=16, color=:lightblue)
 	
-	tail, ensembleSize = 20, 20
-	ensemble = Vector{Observable{CircularBuffer{Point2{Float32}}}}(undef,ensembleSize)
-	
-	for i ∈ 1:ensembleSize
-	    trajectory = CircularBuffer{Point2{Float32}}(tail)
-	
-	    fill!(trajectory,(maxima-minima).*rand(2)+minima)
-	    ensemble[i] = Observable(trajectory)
-	end
-	
-	color = map(i->RGBA{Float32}(to_color(:darkblue).r,to_color(:darkblue).g,to_color(:darkblue).b,(i/tail)^2),1:tail);
-	map( trajectory -> lines!(ax_field, trajectory; color=color, linewidth=3), ensemble)
-	
-	ds = 0.01
-	playing = Observable(false)
-	on(play) do click; playing[] = !playing[]; end
-	
-	on(play) do click
-	    @async while playing[]	
-	        @async for trajectory ∈ ensemble
-	
-	            xt = last(trajectory[])
-	            u = (maxima-minima).*rand(2)+minima
-	
-	            rand() < 1e-3 ? push!.( Ref(trajectory[]), fill(Point2{Float32}(u),tail) ) : push!( trajectory[], xt + field[](xt)*ds )
-	            trajectory[] = trajectory[]
-	        end
-	        sleep(0.01)
-	    end
-	end
-	
-	return DOM.div( style="text-align: center", figure, play )
+	return DOM.div(HTML("""<details><summary> <b style='color:#ffd700'>6.3.1</b> Designing Limit Cycles</summary>
+		</br> <center><img src=$(JSServe.Asset("assets/design-limit-cycles.svg")) width=300px>"""), figure,
+		HTML("""Figure 7 : Using global constraints with basis functions in state space</br> and local constraints can help design global bifurcations of limit cycles</center></br>""") )
 end
 
 # ╔═╡ 440651dd-2ee5-46c0-a9ea-a5bce1093643
@@ -741,7 +757,6 @@ BifurcationInference = "7fe238d6-d31e-4646-aa16-9d8429fd6da8"
 BifurcationKit = "0f109fa4-8a5d-4b75-95aa-f515264e7665"
 ColorSchemes = "35d6a980-a343-548e-a6ea-1d62b119f2f4"
 Colors = "5ae59095-9a9b-59fe-a467-6f913c188581"
-DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
 Flux = "587475ba-b771-5e3f-ad9e-33799f191a9c"
 ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
 GeometryBasics = "5c1252a2-5f33-56bf-86c9-59e7332b4326"
@@ -762,7 +777,6 @@ BifurcationInference = "~0.1.3"
 BifurcationKit = "~0.1.11"
 ColorSchemes = "~3.17.1"
 Colors = "~0.12.8"
-DataStructures = "~0.18.11"
 Flux = "~0.12.9"
 ForwardDiff = "~0.10.25"
 GeometryBasics = "~0.3.10"
@@ -2460,13 +2474,19 @@ version = "0.9.1+5"
 # ╟─0fd1d551-49b0-4194-b668-fec7aa3ed9a7
 # ╟─e2c520ec-2717-42c4-b4f0-0da56cf59927
 # ╟─03619862-196e-419d-9c37-2e9ada04c84d
+# ╟─55e55af6-f0c2-4fbd-96a5-dcc1bd2f1dd4
+# ╠═9d69479a-e21b-4316-b46d-c36bbf634f0b
+# ╟─2c67684f-392d-4a48-abba-be0fa8079344
+# ╟─10ee39be-371b-487c-ac7c-9cbe60d2b367
+# ╟─a127bc38-a03c-494a-a8c0-142d1674dc6c
 # ╟─cc0c9d38-eb52-4f9e-87bf-70aeef1847db
+# ╟─65bc7068-0cb1-4d54-9b81-8ec307893db8
+# ╠═d88dddba-d9e1-4aaf-86ca-b107bb937fd8
 # ╟─492b8dbf-3aac-4966-ba4c-03c78fea787d
 # ╟─c3501463-f43a-465c-a81d-4bd5629793a3
 # ╟─47ecff8a-c30d-40b5-87a0-324e39493f1e
 # ╟─f7a1eb21-e615-4209-baa2-d682aefa1f1b
 # ╟─fc60be23-b455-4803-930e-1738f70a3c76
-# ╟─e8d0ae6b-18b9-48c7-b374-df29f39ff517
 # ╟─d1eb323f-f72f-4538-b4de-1c9541acf453
 # ╟─440651dd-2ee5-46c0-a9ea-a5bce1093643
 # ╟─60d407f7-0b36-4355-b4e0-ef0c6d83f800
